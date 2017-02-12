@@ -44,6 +44,7 @@ public class Schema {
    */
   public Record verify(List<DataBox> values) throws SchemaException {
     // TODO: implement me!
+    //Hello can you see me
     return null;
   }
 
@@ -57,7 +58,7 @@ public class Schema {
    * @return the encoded record as a byte[]
    */
   public byte[] encode(Record record) {
-    // TODO: implement me!
+    // TODO: implement me! use java.nio.ByteBuffer
     return null;
   }
 
@@ -69,7 +70,7 @@ public class Schema {
    * @return the decoded Record
    */
   public Record decode(byte[] input) {
-    // TODO: implement me!
+    // TODO: implement me! use Arrays.copyOfRange
     return null;
   }
 
