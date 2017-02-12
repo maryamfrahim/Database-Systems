@@ -152,8 +152,29 @@ public class Table implements Iterable<Record>, Closeable {
    * @throws DatabaseException if the values passed in to this method do not
    *         correspond to the schema of this table
    */
-  public RecordID addRecord(List<DataBox> values) throws DatabaseException {
+  public RecordID addRecord(List<DataBox> values) throws DatabaseException, SchemaException {
     // TODO: implement me!
+    try {
+      Record wth = schema.verify(values);
+    } catch (SchemaException expection) {
+      throw new DatabaseException ("You got 99 problems and this is one. Ya got the wrong schema");
+    }
+    byte[] recc = schema.encode(new Record(values));
+    if (numRecords != numEntriesPerPage) { //there free slot USE spaceOnPage(Page p) getNumEntriesPerPage()
+      int location = schema.getEntrySize() * (int) numRecords; allocator.iterator();
+
+
+    } else {
+      allocator.iterator();
+      int location = 0;
+      int RecordID = location;
+      this.freePages.iterator().next();
+
+    }
+    RecordID returnable = new RecordID(recc);
+    this.numRecords +=1;
+    this.stats.addRecord(new Record(values));
+
     return null;
   }
 
@@ -216,6 +237,7 @@ public class Table implements Iterable<Record>, Closeable {
    */
   private boolean checkRecordIDValidity(RecordID rid) throws DatabaseException {
     // TODO: implement me!
+
     return false;
   }
 
@@ -229,7 +251,17 @@ public class Table implements Iterable<Record>, Closeable {
    * Should set this.pageHeaderSize and this.numEntriesPerPage.
    */
   private void setEntryCounts() {
-    // TODO: implement me!
+    //How many slots are on the page
+    // pages are Page.pageSize ie  4KB
+    // record also fixed size
+    //header = 1 bit
+    int size = schema.getEntrySize() + (int) 0.125;
+    int buf = Page.pageSize / size % 8;
+    this.numEntriesPerPage = Page.pageSize / size - buf;
+
+    this.pageHeaderSize = this.numEntriesPerPage * (int) 0.125;
+
+
   }
 
   /**
