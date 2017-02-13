@@ -153,30 +153,103 @@ public class Table implements Iterable<Record>, Closeable {
    *         correspond to the schema of this table
    */
   public RecordID addRecord(List<DataBox> values) throws DatabaseException, SchemaException {
-    // TODO: implement me!
+    // TODO
     try {
-      Record wth = schema.verify(values);
+      schema.verify(values);
     } catch (SchemaException expection) {
       throw new DatabaseException ("You got 99 problems and this is one. Ya got the wrong schema");
     }
+
+    if (this.freePages.first() != this.freePages.last()) { //has space
+        int free = this.freePages.first();
+        int location = schema.getEntrySize() * (int) numRecords;
+        Page currPage = this.allocator.fetchPage(free);
+        Byte value = currPage.writeBytes(0, 1, );
+        writeBitToHeader(currPage, getNumEntriesPerPage(), value);
+        getNumEntriesPerPage()
+    } else {
+        freePages.add(allocator.iterator()) //allocPage());
+    }
+
     byte[] recc = schema.encode(new Record(values));
     if (numRecords != numEntriesPerPage) { //there free slot USE spaceOnPage(Page p) getNumEntriesPerPage()
-      int location = schema.getEntrySize() * (int) numRecords; allocator.iterator();
-
+      int location = schema.getEntrySize() * (int) numRecords;
 
     } else {
       allocator.iterator();
       int location = 0;
       int RecordID = location;
-      this.freePages.iterator().next();
+      int free = this.freePages.first(); //free pages allocator.fetchPage fetch page...header
+//      Page yo = fetchPage(free);iterator() readHeaderPage
+//
+//      If the freePages set is empty,
+//      do we need to use the allocator to add a new page to the file?
+//              And then add it to freePages?
+//      readHeaderPage();
+//    }
 
-    }
+//      if full, take it out of the free pages after add
+//
+//    In addRecord, how can we add a record's data into a block? Or flipping the bit to 1 is enough?
+//    Page.java has a writeBytes() method which should allow you to write bytes to a page.
+//
+//            No, the record object is "stored" on the page, you can derive a record object from the data on a page if you need to get it back
+//    Doesn't that mean we need to write the bytes of a record to the page?
+
     RecordID returnable = new RecordID(recc);
     this.numRecords +=1;
     this.stats.addRecord(new Record(values));
 
     return null;
   }
+    return null;
+  }
+
+//    this.allocator = new PageAllocator(pathname, false);
+//    this.readHeaderPage();
+//
+//    this.stats = new TableStats(this.schema);
+//
+//    this.freePages = new TreeSet<Integer>();
+//    this.setEntryCounts();
+//    Iterator<Page> pIter = this.allocator.iterator();
+//    pIter.next();
+//
+//    long freshCountRecords = 0;
+//
+//    while(pIter.hasNext()) {
+//        Page p = pIter.next();
+//
+//        // add all records in this page to TableStats
+//        int entryNum = 0;
+//        byte[] header = this.readPageHeader(p);
+//        while (entryNum < this.getNumEntriesPerPage()) {
+//            byte b = header[entryNum/8];
+//            int bitOffset = 7 - (entryNum % 8);
+//            byte mask = (byte) (1 << bitOffset);
+//
+//            byte value = (byte) (b & mask);
+//            if (value != 0) {
+//                int entrySize = this.schema.getEntrySize();
+//
+//                int offset = this.pageHeaderSize + (entrySize * entryNum);
+//                byte[] bytes = p.readBytes(offset, entrySize);
+//
+//                Record record = this.schema.decode(bytes);
+//                this.stats.addRecord(record);
+//            }
+//
+//            entryNum++;
+//        }
+//
+//        if (spaceOnPage(p)) {
+//            this.freePages.add(p.getPageNum());
+//        }
+//
+//        freshCountRecords += numValidEntries(p);
+//    }
+//
+//    this.numRecords = freshCountRecords;
 
   /**
    * Deletes the record specified by rid from the table. Make sure to update
@@ -251,17 +324,11 @@ public class Table implements Iterable<Record>, Closeable {
    * Should set this.pageHeaderSize and this.numEntriesPerPage.
    */
   private void setEntryCounts() {
-    //How many slots are on the page
-    // pages are Page.pageSize ie  4KB
-    // record also fixed size
-    //header = 1 bit
     int size = schema.getEntrySize() + (int) 0.125;
-    int buf = Page.pageSize / size % 8;
-    this.numEntriesPerPage = Page.pageSize / size - buf;
+    int buf = (Page.pageSize / size) % 8;
+    this.numEntriesPerPage = (Page.pageSize / size) - buf;
 
     this.pageHeaderSize = this.numEntriesPerPage * (int) 0.125;
-
-
   }
 
   /**
