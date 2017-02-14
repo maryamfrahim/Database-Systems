@@ -161,66 +161,44 @@ public class Table implements Iterable<Record>, Closeable {
       throw new DatabaseException ("You got 99 problems and this is one. Ya got the wrong schema");
     }
 
-    //getting the net free page. If out of space, then we allocate more space. save the page number we are on
+    //getting the next free page. If out of space, then we allocate more space. save the page number we are on
     this.setEntryCounts();
-    Iterator<Page> pIter = this.allocator.iterator();
-    pIter.next();
-    int pageNum;
-    if (this.freePages.isEmpty()) {  //.first() != this.freePages.last()) { //has space
-      pageNum = this.freePages.first();
-      int location = schema.getEntrySize() * (int) numRecords;
-    } else {
-        pIter.next();
+    int pageNum = 0;
+    if (this.freePages.isEmpty()) {
         freePages.add(allocator.allocPage()); //iterator()); //allocPage());
-        pageNum = this.freePages.first();
-        int location = schema.getEntrySize() * (int) numRecords;
     }
+      int location = schema.getEntrySize() * (int) numRecords;
+      Page currPage = this.allocator.fetchPage(this.freePages.first());
 
-      Page currPage = this.allocator.fetchPage(pageNum);
-      Page p = pIter.next();
       //yay we have the page number. now we need to iterate though that page and find where the free space is
-    while(spaceOnPage(currPage)) { //pIter.hasNext()) {
-        //Byte value = currPage.writeBytes(0, 1, ); GET THIS TO WORK
-        //writeBitToHeader(currPage, getNumEntriesPerPage(), value);
+      int entryNum = 0;
+      while(spaceOnPage(currPage)) { //pIter.hasNext()) {
         getNumEntriesPerPage();
-        int entryNum = 0;
-        byte[] header = this.readPageHeader(p);
+        byte[] header = this.readPageHeader(currPage);
         while (this.getNumEntriesPerPage() > entryNum) {
             //actually writing hopefully
             byte bit = header[entryNum/8];
             int bitOffset = 1 * 7 - (entryNum % 8);
             byte mask = (byte) (1 << bitOffset);
-
             byte valued = (byte) (bit & mask);
-            if (valued != 0) {
-                int Size = this.schema.getEntrySize();
-
-                int offset = (Size * entryNum) + this.pageHeaderSize;
-                byte[] bytes = p.readBytes(offset, Size);
-
-                Record record = this.schema.decode(bytes);
-                this.stats.addRecord(record);
             }
+        //write byte to this page
+          byte bytw = 1;
+          writeHeaderPage();
+          writeBitToHeader(currPage, entryNum, bytw);
             entryNum++;
     }
 
     //update everything after the fact
     byte[] recc = schema.encode(new Record(values));
-        RecordID returnable = new RecordID(recc);
+      RecordID returnable = new RecordID(recc);
         this.numRecords +=1;
         this.stats.addRecord(new Record(values));
-
-        return returnable;
+        return new RecordID(pageNum, entryNum);
     }
-      return null;
-  }
 
-
-//
-//
 //    if (numRecords != numEntriesPerPage) { //there free slot USE spaceOnPage(Page p) getNumEntriesPerPage()
 //      int location = schema.getEntrySize() * (int) numRecords;
-//
 //    } else {
 //      allocator.iterator();
 //      int location = 0;
@@ -241,9 +219,6 @@ public class Table implements Iterable<Record>, Closeable {
 //
 //            No, the record object is "stored" on the page, you can derive a record object from the data on a page if you need to get it back
 //    Doesn't that mean we need to write the bytes of a record to the page?
-
-
-
 
   /**
    * Deletes the record specified by rid from the table. Make sure to update
@@ -267,6 +242,7 @@ public class Table implements Iterable<Record>, Closeable {
    */
   public Record getRecord(RecordID rid) throws DatabaseException {
     // TODO: implement me!
+
     return null;
   }
 
@@ -304,6 +280,34 @@ public class Table implements Iterable<Record>, Closeable {
    */
   private boolean checkRecordIDValidity(RecordID rid) throws DatabaseException {
     // TODO: implement me!
+      // try that allocator, PageException
+      try {
+          allocator.allocPage();
+      } catch (PageException something) {
+          throw new DatabaseException(" you suck");
+      }
+
+//      check if the slot in the page specified by the record ID contain a valid record
+//      ie check header?
+
+
+      int checkingpagenumber = rid.getPageNum();
+      int entrynumber = rid.getEntryNumber();
+
+      //checkingpagenumber is zero, then  DatabaseException
+      int fetching = rid.getPageNum();
+
+      if (entrynumber > getNumEntriesPerPage()) {
+          throw new DatabaseException("out of page");
+      }
+
+      // get the header, do some bit manipulation to get the header and then find the position we are interested in
+      readHeaderPage();
+      int bit = 0;
+      // check that the bit is 1, else false.
+      if (bit ==1) {
+          return true;
+      }
 
     return false;
   }
