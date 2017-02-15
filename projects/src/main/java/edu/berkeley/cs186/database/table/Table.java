@@ -1,5 +1,7 @@
 package edu.berkeley.cs186.database.table;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import edu.berkeley.cs186.database.Database;
 import edu.berkeley.cs186.database.DatabaseException;
 import edu.berkeley.cs186.database.databox.*;
 import edu.berkeley.cs186.database.databox.DataBox;
@@ -84,6 +86,7 @@ public class Table implements Iterable<Record>, Closeable {
 
                 byte value = (byte) (b & mask);
                 if (value != 0) {
+
                     int entrySize = this.schema.getEntrySize();
 
                     int offset = this.pageHeaderSize + (entrySize * entryNum);
@@ -218,13 +221,11 @@ public class Table implements Iterable<Record>, Closeable {
         this.numRecords += 1;
         this.stats.addRecord(record);
 
-
         if (!spaceOnPage(currPage)) {
             freePages.remove(pageNum);
         }
 
         return returnable;
-        // return null;
         }
 
 //    In addRecord, how can we add a record's data into a block? Or flipping the bit to 1 is enough?
@@ -252,24 +253,24 @@ public class Table implements Iterable<Record>, Closeable {
      */
     public Record getRecord(RecordID rid) throws DatabaseException {
         // TODO: implement me!
+        Boolean hmm = checkRecordIDValidity(rid);
+        if (!hmm) {
+            throw new DatabaseException ("get your ish together");
+        }
 
-//        int pagenumber = rid.getPageNum();
-//        int entrynumber = rid.getEntryNumber();
-////      fetchpage
-//        Page headerPage = this.allocator.fetchPage(this.allocator.allocPage());
-////              readthebytes
-//        byte[] header = this.readPageHeader(headerPage);
-//
-//        Record record = this.schema.decode(header);
-//
-//        try {
-//            schema.verify(record.getValues());
-//        } catch (SchemaException expection) {
-//            throw new DatabaseException ("You got 99 problems and this is one. Ya got the wrong schema");
-//        }
-//
-//        return record;
-        return null;
+        int pageNum = rid.getPageNum();
+        Page headerPage = this.allocator.fetchPage(pageNum);
+        int entrySize = this.schema.getEntrySize();
+        int entryNum = rid.getEntryNumber();
+        int offset = this.pageHeaderSize + (entrySize * entryNum);
+        byte[] header = headerPage.readBytes(offset, entrySize);
+        Record record = this.schema.decode(header);
+        try {
+            return this.schema.verify(record.getValues());
+        } catch (SchemaException name) {
+            throw new DatabaseException("hello");
+        }
+        //return null;
     }
 
     /**
@@ -304,45 +305,36 @@ public class Table implements Iterable<Record>, Closeable {
      * @return true if rid corresponds to a valid record, otherwise false
      * @throws DatabaseException if rid does not reference an existing data page slot
      */
+
     private boolean checkRecordIDValidity(RecordID rid) throws DatabaseException {
         // TODO: implement me!
-//        try {
-//            allocator.allocPage();
-//        } catch (PageException something) {
-//            throw new DatabaseException(" you suck");
-//        }
-//
-////      check if the slot in the page specified by the record ID contain a valid record
-////      ie check header?
-//        int checkingpagenumber = rid.getPageNum();
-//        int entrynumber = rid.getEntryNumber();
-//
-//        if (checkingpagenumber == 0) {
-//            throw new DatabaseException ("not valid");
-//        }
-//
-//        int fetching = rid.getPageNum();
-//
-//        if (entrynumber > getNumEntriesPerPage()) {
-//            throw new DatabaseException("out of page");
-//        }
-//
-//        Page page = null;
-//        readHeaderPage();
-//        byte[] header = this.readPageHeader(page);
-//        int byteOffset = entrynumber / 8;
-//        int bitOffset = 7 - (entrynumber % 8);
-//
-//        byte mask = (byte) ((double)bitOffset * (double)bitOffset ); //(byte) ~((1 << bitOffset));
-//        header[byteOffset] = (byte) (header[byteOffset] & mask);
-//        byte checking = header[byteOffset];
-//
-////          byte mask = (byte) (1 << bitOffset);
-////          header[byteOffset] = (byte) (header[byteOffset] | mask);
-//
-//        if (checking == 1) {
-//            return true;
-//        }
+        Page page = null;
+        try {
+            int pageNum = rid.getPageNum();
+            page = this.allocator.fetchPage(pageNum);
+        } catch (PageException something) {
+            throw new DatabaseException(" you suck");
+        }
+
+        int checkingpagenumber = rid.getPageNum();
+        int entrynumber = rid.getEntryNumber();
+
+        if (checkingpagenumber == 0 || entrynumber >= this.numEntriesPerPage) {
+            throw new DatabaseException ("not valid");
+        }
+
+        byte[] header = this.readPageHeader(page);
+        int byteOffset = entrynumber / 8;
+        int bitOffset = 7 - (entrynumber % 8);
+
+//        byte mask = (byte) ((double)bitOffset * (double)bitOffset);
+        byte mask = (byte) (1 << bitOffset);
+        header[byteOffset] = (byte) (header[byteOffset] & mask);
+        byte checking = header[byteOffset];
+
+        if (checking != 0) {
+            return true;
+        }
         return false;
     }
 

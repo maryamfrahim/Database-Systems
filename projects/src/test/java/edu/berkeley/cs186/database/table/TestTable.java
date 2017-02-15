@@ -90,12 +90,9 @@ public class TestTable {
     Record input = TestUtils.createRecordWithAllTypes();
 
     RecordID rid = table.addRecord(input.getValues());
-    System.out.println("WHOOOO HOOOOOO BOOOo");
     // This is a new table, so it should be put into the first slot of the first page.
     assertEquals(1, rid.getPageNum());
     assertEquals(0, rid.getEntryNumber());
-    System.out.println(rid.getPageNum());
-    System.out.println(rid.getEntryNumber());
 
     Record output = table.getRecord(rid);
     assertEquals(input, output);
@@ -109,25 +106,18 @@ public class TestTable {
 
     // create one page's worth of entries
     for (int i = 0; i < numEntriesPerPage; i++) {
-      //System.out.println("test 2");
       RecordID rid = table.addRecord(input.getValues());
 
 
       // ensure that records are created in sequential slot order on the sam page
       assertEquals(1, rid.getPageNum());
       assertEquals(i, rid.getEntryNumber());
-      //System.out.println(1 + " and " + rid.getPageNum());
-      //System.out.println(i + " bro " + rid.getEntryNumber());
     }
 
     // add one more to make sure the next page is created
-    System.out.println("test 3 leggoo");
     RecordID rid = table.addRecord(input.getValues());
-    System.out.println("i work");
     assertEquals(2, rid.getPageNum());
-    System.out.println(2 +" and "+ rid.getPageNum());
     assertEquals(0, rid.getEntryNumber());
-    System.out.println(0 +" and "+ rid.getEntryNumber());
   }
 
   @Test(expected = DatabaseException.class)
