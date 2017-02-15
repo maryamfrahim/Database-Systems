@@ -140,6 +140,28 @@ public class Table implements Iterable<Record>, Closeable {
     }
 
     /**
+     * Returns where the first entry location is available to add bytes to on a page.
+     *
+     * @param P Page we are trying to find location for
+     * @return the entry location
+     */
+    private int getEntryLoc(Page P) {
+
+        byte[] header = this.readPageHeader(P);
+        int entryNum = 0;
+
+        for (byte b : header) {
+            for (int mask = 0x80; mask != 0x00; mask >>>= 1) {
+                if ((b & (byte) mask) == 0) {
+                    return entryNum;
+                }
+                entryNum++;
+            }
+        }
+        return entryNum;
+    }
+
+    /**
      * Adds a new record to this table. The record should be added to the first
      * free slot of the first free page if one exists, otherwise a new page should
      * be allocated and the record should be placed in the first slot of that
@@ -152,74 +174,62 @@ public class Table implements Iterable<Record>, Closeable {
      * @throws DatabaseException if the values passed in to this method do not
      *         correspond to the schema of this table
      */
-    public RecordID addRecord(List<DataBox> values) throws DatabaseException, SchemaException {
-        // TODO
-        //Check to see if exception
-        try {
-            schema.verify(values);
-        } catch (SchemaException expection) {
-            throw new DatabaseException ("You got 99 problems and this is one. Ya got the wrong schema");
-        }
-
-        //getting the next free page. If out of space, then we allocate more space. save the page number we are on
-        this.setEntryCounts();
+    public RecordID addRecord(List<DataBox> values) throws DatabaseException {
         int pageNum = 0;
-        if (this.freePages.isEmpty()) {
-            freePages.add(allocator.allocPage()); //iterator()); //allocPage());
-        }
-        int location = schema.getEntrySize() * (int) numRecords;
-        Page currPage = this.allocator.fetchPage(this.freePages.first());
+        Record record;
 
-        //yay we have the page number. now we need to iterate though that page and find where the free space is
-        int entryNum = 0;
-        while(spaceOnPage(currPage)) { //pIter.hasNext()) {
-            getNumEntriesPerPage();
-            byte[] header = this.readPageHeader(currPage);
-            while (this.getNumEntriesPerPage() > entryNum) {
-                //actually writing hopefully
-                byte bit = header[entryNum/8];
-                int bitOffset = 1 * 7 - (entryNum % 8);
-                byte mask = (byte) (1 << bitOffset);
-                byte valued = (byte) (bit & mask);
-            }
-            //write byte to this page
-            byte bytw = 1;
-            writeHeaderPage();
-            writeBitToHeader(currPage, entryNum, bytw);
-            entryNum++;
+        try {
+            record = schema.verify(values);
+        } catch (SchemaException exception) {
+            throw new DatabaseException("You got 99 problems and this is one. Ya got the wrong schema");
         }
+
+        if (this.freePages.isEmpty()) {
+            pageNum = this.allocator.allocPage();
+            this.freePages.add(pageNum);
+        } else {
+            pageNum = this.freePages.first();
+        }
+        Page currPage = this.allocator.fetchPage(pageNum);
+        byte[] header = this.readPageHeader(currPage);
+        int entryNum = 0;
+
+        secondforloop:
+        for (byte b : header) {
+            //System.out.println("after first for loop");
+            for (int mask = 0x80; mask != 0x00; mask >>>= 1) {
+                //System.out.println("after second for loop");
+                if ((b & (byte) mask) == 0) {
+                    break secondforloop;
+                }
+                entryNum++;
+            }
+        }
+
+        byte bytw = 1;
+        writeBitToHeader(currPage, entryNum, bytw);
 
         //update everything after the fact
-        byte[] recc = schema.encode(new Record(values));
-        RecordID returnable = new RecordID(recc);
-        this.numRecords +=1;
-        this.stats.addRecord(new Record(values));
-        return new RecordID(pageNum, entryNum);
-    }
+        byte[] recc = schema.encode(record);
+        int pos = schema.getEntrySize() * entryNum + pageHeaderSize;
+        currPage.writeBytes(pos, schema.getEntrySize(), recc);
 
-//    if (numRecords != numEntriesPerPage) { //there free slot USE spaceOnPage(Page p) getNumEntriesPerPage()
-//      int location = schema.getEntrySize() * (int) numRecords;
-//    } else {
-//      allocator.iterator();
-//      int location = 0;
-//      int RecordID = location;
-//      int free = this.freePages.first(); //free pages allocator.fetchPage fetch page...header
-//      Page yo = fetchPage(free);iterator() readHeaderPage
-//
-//      If the freePages set is empty,
-//      do we need to use the allocator to add a new page to the file?
-//              And then add it to freePages?
-//      readHeaderPage();
-//    }
+        RecordID returnable = new RecordID(pageNum, entryNum);
+        this.numRecords += 1;
+        this.stats.addRecord(record);
 
-//      if full, take it out of the free pages after add
-//
+
+        if (!spaceOnPage(currPage)) {
+            freePages.remove(pageNum);
+        }
+
+        return returnable;
+        // return null;
+        }
+
 //    In addRecord, how can we add a record's data into a block? Or flipping the bit to 1 is enough?
 //    Page.java has a writeBytes() method which should allow you to write bytes to a page.
 //
-//            No, the record object is "stored" on the page, you can derive a record object from the data on a page if you need to get it back
-//    Doesn't that mean we need to write the bytes of a record to the page?
-
     /**
      * Deletes the record specified by rid from the table. Make sure to update
      * this.stats, this.freePages, and this.numRecords as necessary.
@@ -243,22 +253,23 @@ public class Table implements Iterable<Record>, Closeable {
     public Record getRecord(RecordID rid) throws DatabaseException {
         // TODO: implement me!
 
-        int pagenumber = rid.getPageNum();
-        int entrynumber = rid.getEntryNumber();
-//      fetchpage
-        Page headerPage = this.allocator.fetchPage(this.allocator.allocPage());
-//              readthebytes
-        byte[] header = this.readPageHeader(headerPage);
-
-        Record record = this.schema.decode(header);
-
-        try {
-            schema.verify(record.getValues());
-        } catch (SchemaException expection) {
-            throw new DatabaseException ("You got 99 problems and this is one. Ya got the wrong schema");
-        }
-
-        return record;
+//        int pagenumber = rid.getPageNum();
+//        int entrynumber = rid.getEntryNumber();
+////      fetchpage
+//        Page headerPage = this.allocator.fetchPage(this.allocator.allocPage());
+////              readthebytes
+//        byte[] header = this.readPageHeader(headerPage);
+//
+//        Record record = this.schema.decode(header);
+//
+//        try {
+//            schema.verify(record.getValues());
+//        } catch (SchemaException expection) {
+//            throw new DatabaseException ("You got 99 problems and this is one. Ya got the wrong schema");
+//        }
+//
+//        return record;
+        return null;
     }
 
     /**
@@ -295,43 +306,43 @@ public class Table implements Iterable<Record>, Closeable {
      */
     private boolean checkRecordIDValidity(RecordID rid) throws DatabaseException {
         // TODO: implement me!
-        try {
-            allocator.allocPage();
-        } catch (PageException something) {
-            throw new DatabaseException(" you suck");
-        }
-
-//      check if the slot in the page specified by the record ID contain a valid record
-//      ie check header?
-        int checkingpagenumber = rid.getPageNum();
-        int entrynumber = rid.getEntryNumber();
-
-        if (checkingpagenumber == 0) {
-            throw new DatabaseException ("not valid");
-        }
-
-        int fetching = rid.getPageNum();
-
-        if (entrynumber > getNumEntriesPerPage()) {
-            throw new DatabaseException("out of page");
-        }
-
-        Page page = null;
-        readHeaderPage();
-        byte[] header = this.readPageHeader(page);
-        int byteOffset = entrynumber / 8;
-        int bitOffset = 7 - (entrynumber % 8);
-
-        byte mask = (byte) ((double)bitOffset * (double)bitOffset ); //(byte) ~((1 << bitOffset));
-        header[byteOffset] = (byte) (header[byteOffset] & mask);
-        byte checking = header[byteOffset];
-
-//          byte mask = (byte) (1 << bitOffset);
-//          header[byteOffset] = (byte) (header[byteOffset] | mask);
-
-        if (checking == 1) {
-            return true;
-        }
+//        try {
+//            allocator.allocPage();
+//        } catch (PageException something) {
+//            throw new DatabaseException(" you suck");
+//        }
+//
+////      check if the slot in the page specified by the record ID contain a valid record
+////      ie check header?
+//        int checkingpagenumber = rid.getPageNum();
+//        int entrynumber = rid.getEntryNumber();
+//
+//        if (checkingpagenumber == 0) {
+//            throw new DatabaseException ("not valid");
+//        }
+//
+//        int fetching = rid.getPageNum();
+//
+//        if (entrynumber > getNumEntriesPerPage()) {
+//            throw new DatabaseException("out of page");
+//        }
+//
+//        Page page = null;
+//        readHeaderPage();
+//        byte[] header = this.readPageHeader(page);
+//        int byteOffset = entrynumber / 8;
+//        int bitOffset = 7 - (entrynumber % 8);
+//
+//        byte mask = (byte) ((double)bitOffset * (double)bitOffset ); //(byte) ~((1 << bitOffset));
+//        header[byteOffset] = (byte) (header[byteOffset] & mask);
+//        byte checking = header[byteOffset];
+//
+////          byte mask = (byte) (1 << bitOffset);
+////          header[byteOffset] = (byte) (header[byteOffset] | mask);
+//
+//        if (checking == 1) {
+//            return true;
+//        }
         return false;
     }
 

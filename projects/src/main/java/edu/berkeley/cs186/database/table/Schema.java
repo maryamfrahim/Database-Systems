@@ -54,8 +54,8 @@ public class Schema {
         }
       }
     }
-    SchemaException expection = new SchemaException ("Dishonor on you. Dishonor on your cow. Also Values specified don't conform to this Schema");
-    throw expection;
+    SchemaException exception = new SchemaException ("Dishonor on you. Dishonor on your cow. Also Values specified don't conform to this Schema");
+    throw exception;
     //return null;
   }
 
