@@ -209,6 +209,52 @@ public class TestTable {
     assertTrue(iRec.hasNext());
   }
 
+  @Test
+  @Category(StudentTest.class)
+  public void test9updatetest()  throws DatabaseException {
+    Record input1 = TestUtils.createRecordWithAllTypes();
+    Record input2 = TestUtils.createRecordWithAllTypes();
+    Record input3= TestUtils.createRecordWithAllTypes();
+    Record input4= TestUtils.createRecordWithAllTypes();
+
+    RecordID rid1 = table.addRecord(input1.getValues());
+    RecordID rid2 = table.addRecord(input2.getValues());
+    RecordID rid3 = table.addRecord(input3.getValues());
+    RecordID rid4 = table.addRecord(input4.getValues());
+
+    byte[] three = schema.encode(input3);
+    byte[] four = schema.encode(input4);
+
+    Iterator<Record> iRec = table.iterator();
+    assertTrue(iRec.hasNext());
+    iRec.next();
+    assertTrue(iRec.hasNext());
+    iRec.next();
+    assertTrue(iRec.hasNext());
+    iRec.next();
+    iRec.next();
+    assertFalse(iRec.hasNext());
+  }
+
+  @Test
+  @Category(StudentTest.class)
+  public void test10addDeleteaddDeleteadd()  throws DatabaseException {
+    Record input1 = TestUtils.createRecordWithAllTypes();
+    Record input2 = TestUtils.createRecordWithAllTypes();
+    Record input3= TestUtils.createRecordWithAllTypes();
+
+    RecordID rid1 = table.addRecord(input1.getValues());
+    table.deleteRecord(rid1);
+    RecordID rid2 = table.addRecord(input2.getValues());
+    table.deleteRecord(rid2);
+
+    Iterator<Record> iRec = table.iterator();
+    assertFalse(iRec.hasNext());
+    RecordID rid3 = table.addRecord(input3.getValues());
+    assertTrue(iRec.hasNext());
+    table.deleteRecord(rid2);
+    assertFalse(iRec.hasNext());
+  }
 
   @Test
   public void testTableNumEntries() throws DatabaseException {

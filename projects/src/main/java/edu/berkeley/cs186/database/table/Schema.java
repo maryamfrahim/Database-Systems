@@ -88,10 +88,6 @@ public class Schema {
   public Record decode(byte[] input) {
     // TODO: implement me! use Arrays.copyOfRange which copies the specified range of the specified array into a new array
 
-//    go though the this.feildtype
-//            get type and size
-//            and make a new databox and add it to a list
-//            return the list
     int counter = 0;
     List<DataBox> returnable = new ArrayList<DataBox>();
     for (DataBox item : this.fieldTypes) {  //fieldtypes
@@ -120,30 +116,6 @@ public class Schema {
     }
     return new Record(returnable);
   }
-//
-//    int el = input.length;
-//    int counter = 0;
-//    DataBox help = input.getClass();
-//    for (int i = 0; i < input.length; i++) {
-//      int current = i.getSize();
-//      int bluff = 5;
-//      DataBox hey = new DataBox(bluff);
-//      if(item.type() == DataBox.Types.BOOL){
-//        i.getsize();
-//        byte[] buf = Arrays.copyOfRange(input, i, i+1);
-//        DataBox segment = buf.DataBox();
-//      }
-//      if(Databox i == FloatDataBox){
-//        Arrays.copyOfRange(input, i, i+8);
-//      }
-//      if(Databox i == IntDataBox){
-//        Arrays.copyOfRange(input, i, i+8);
-//      }
-//      if(Databox i == StringDataBox){
-//        Arrays.copyOfRange(input, i, i+i.size());
-//      }
-//    }
-
 
   public int getEntrySize() {
     return this.size;
