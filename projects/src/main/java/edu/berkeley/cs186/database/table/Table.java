@@ -9,8 +9,9 @@ import edu.berkeley.cs186.database.io.PageAllocator;
 import edu.berkeley.cs186.database.io.Page;
 import edu.berkeley.cs186.database.io.PageException;
 import edu.berkeley.cs186.database.table.stats.TableStats;
+//import javafx.scene.control.Tab;
 
-import javax.xml.crypto.Data;
+//import javax.xml.crypto.Data;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
@@ -578,24 +579,26 @@ public class Table implements Iterable<Record>, Closeable {
      * of the records in this table.
      */
     private class TableIterator implements Iterator<Record> {
-        private Page page; // readPageHeader(Page page) to get the byte[] if want it
-        RecordID rid;
-        int numRecord;
+        private Page page;
         private Iterator<Page> pageIterator;
+        private int recordOnThisPage;
+        private int recordPerPages;
+        private int numEntry;
+        private Iterator<Record> recordIterator;
+        private byte[] header;
+        Record currRecord;
 
         public TableIterator() {
+            this.numEntry = 0;
             this.pageIterator = Table.this.allocator.iterator();
-            int pageNum = this.pageIterator.next().getPageNum();
-
-            int entryNum = 0;
-            if (pageNum != 0) {
+            if (this.pageIterator.next().getPageNum() != 0) {
                 return;
-            }
-            if (Table.this.allocator.iterator().hasNext()) {
-                Page page = Table.this.allocator.iterator().next();
-                byte[] header = Table.this.readPageHeader(page);
-//                pageNum = this.pageIterator.next().getPageNum()
-//                Page currPage = Table.this.allocator.fetchPage(pageNum);
+            } else {
+                Boolean next = this.pageIterator.hasNext();
+                if (next==true) {
+                    this.page = this.pageIterator.next();
+                    this.header = Table.this.readPageHeader(this.page);
+                }
             }
         }
 
@@ -605,10 +608,13 @@ public class Table implements Iterable<Record>, Closeable {
          * @return true if this iterator has another record to yield, otherwise false
          */
         public boolean hasNext() {
-            // TODO: implement me!
-//            if (this.next != null) {
-//                return true;
-//            }
+            if (this.page != null ) {
+                if (this.recordOnThisPage < Table.this.numRecords ) {
+                    return true;
+                }
+            } else {
+                return false;
+            }
             return false;
         }
 
@@ -619,15 +625,38 @@ public class Table implements Iterable<Record>, Closeable {
          * @throws NoSuchElementException if there are no more Records to yield
          */
         public Record next() {
-            // TODO: implement me
+            Record record;
+            int pageheadersize = Table.this.pageHeaderSize;
+            int entrynumber = Table.this.schema.getEntrySize();
+            byte[] byteArray;
+            int entries = 0;
 
-//            try {
-//                return getRecord(next);
-//            } catch (DatabaseException e) {
-//                throw new NoSuchElementException("hope im not messing everything up");
-//            }
+            while(this.hasNext()) { //pages
+                if (this.page != null) {
+                    this.recordPerPages += entrynumber;
+                }
+                while((Table.this.numEntriesPerPage) > this.numEntry) {
+                    int bitOffset = 7 - (this.numEntry % 8);
+                    byte mask = (byte) (1 << bitOffset);
+                    byte checking = (byte) ((header[this.numEntry / 8])&mask);
 
-            return null;
+                    if (checking != 0) { //not a header whoo hooo
+                        int numzz = pageheadersize + (entrynumber * numEntry);
+                        numEntry+=1;
+                        this.recordOnThisPage+=1;
+                        byteArray = this.page.readBytes(numzz, entrynumber);
+                        record = Table.this.schema.decode(byteArray);
+                        return record;
+                    }
+                    this.numEntry+=1;
+                }
+                if (this.hasNext()) {
+                    this.numEntry = 0;
+                    this.page = this.pageIterator.next();
+                    this.header = Table.this.readPageHeader(this.page);
+                }
+            }
+            throw new NoSuchElementException("hope im not messing everything up");
         }
 
         public void remove() {

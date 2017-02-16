@@ -14,6 +14,7 @@ import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 import org.junit.experimental.categories.Category;
 
+import javax.xml.bind.DataBindingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
@@ -59,6 +60,155 @@ public class TestTable {
   public void testSample() {
     assertEquals(true, true); // Do not actually write a test like this!
   }
+
+  @Test
+  @Category(StudentTest.class)
+  public void test1DoubleAdd() throws DatabaseException {
+    Record input1 = TestUtils.createRecordWithAllTypes();
+    Record input2 = TestUtils.createRecordWithAllTypes();
+
+    RecordID rid1 = table.addRecord(input1.getValues());
+    RecordID rid2 = table.addRecord(input2.getValues());
+
+    // This is a new table, so it should be put into the first slot of the first page.
+    assertEquals(1, rid1.getPageNum());
+    assertEquals(0, rid1.getEntryNumber());
+    assertFalse(0 == rid2.getEntryNumber());
+  }
+
+  @Test
+  @Category(StudentTest.class)
+  public void test2DoubleAddGetRec() throws DatabaseException {
+    Record input1 = TestUtils.createRecordWithAllTypes();
+    Record input2 = TestUtils.createRecordWithAllTypes();
+
+    RecordID rid1 = table.addRecord(input1.getValues());
+    RecordID rid2 = table.addRecord(input2.getValues());
+
+    // This is a new table, so it should be put into the first slot of the first page.
+    assertEquals(1, rid1.getPageNum());
+    assertEquals(0, rid1.getEntryNumber());
+    assertFalse(0 == rid2.getEntryNumber());
+
+    Record output = table.getRecord(rid1);
+    assertEquals(input1, output);
+    Record output2 = table.getRecord(rid2);
+    assertEquals(input2, output2);
+  }
+
+  @Test
+  @Category(StudentTest.class)
+  public void test3Delete()  throws DatabaseException {
+    Record input = TestUtils.createRecordWithAllTypes();
+    RecordID rid = table.addRecord(input.getValues());
+    assertEquals(1, rid.getPageNum());
+    assertEquals(0, rid.getEntryNumber());
+
+    Record output = table.getRecord(rid);
+    assertEquals(input, output);
+
+    table.deleteRecord(rid);
+    Iterator<Record> iRec = table.iterator();
+    assertFalse(iRec.hasNext());
+  }
+
+  @Test
+  @Category(StudentTest.class)
+  public void test4addtwiceDelete()  throws DatabaseException {
+    Record input1 = TestUtils.createRecordWithAllTypes();
+    Record input2 = TestUtils.createRecordWithAllTypes();
+
+    RecordID rid1 = table.addRecord(input1.getValues());
+    RecordID rid2 = table.addRecord(input2.getValues());
+
+    // This is a new table, so it should be put into the first slot of the first page.
+    assertEquals(1, rid1.getPageNum());
+    assertEquals(0, rid1.getEntryNumber());
+    assertFalse(0 == rid2.getEntryNumber());
+
+    table.deleteRecord(rid2);
+    Iterator<Record> iRec = table.iterator();
+    assertTrue(iRec.hasNext());
+  }
+
+  @Test
+  @Category(StudentTest.class)
+  public void test5addtwiceDeletetwice()  throws DatabaseException {
+    Record input1 = TestUtils.createRecordWithAllTypes();
+    Record input2 = TestUtils.createRecordWithAllTypes();
+
+    RecordID rid1 = table.addRecord(input1.getValues());
+    RecordID rid2 = table.addRecord(input2.getValues());
+
+    // This is a new table, so it should be put into the first slot of the first page.
+    assertEquals(1, rid1.getPageNum());
+    assertEquals(0, rid1.getEntryNumber());
+    assertFalse(0 == rid2.getEntryNumber());
+
+    table.deleteRecord(rid2);
+    table.deleteRecord(rid1);
+    Iterator<Record> iRec = table.iterator();
+    assertFalse(iRec.hasNext());
+  }
+
+  @Test
+  @Category(StudentTest.class)
+  public void test6threetimesthecharm()  throws DatabaseException {
+    Record input1 = TestUtils.createRecordWithAllTypes();
+    Record input2 = TestUtils.createRecordWithAllTypes();
+    Record input3= TestUtils.createRecordWithAllTypes();
+
+    RecordID rid1 = table.addRecord(input1.getValues());
+    RecordID rid2 = table.addRecord(input2.getValues());
+    RecordID rid3 = table.addRecord(input3.getValues());
+
+    // This is a new table, so it should be put into the first slot of the first page.
+    assertEquals(1, rid1.getPageNum());
+    assertEquals(0, rid1.getEntryNumber());
+    assertFalse(0 == rid2.getEntryNumber());
+
+    table.deleteRecord(rid2);
+    table.deleteRecord(rid1);
+    table.deleteRecord(rid3);
+    Iterator<Record> iRec = table.iterator();
+    assertFalse(iRec.hasNext());
+  }
+
+  @Test
+  @Category(StudentTest.class)
+  public void test7addDeleteaddDelete()  throws DatabaseException {
+    Record input1 = TestUtils.createRecordWithAllTypes();
+    Record input2 = TestUtils.createRecordWithAllTypes();
+    Record input3= TestUtils.createRecordWithAllTypes();
+
+    RecordID rid1 = table.addRecord(input1.getValues());
+    table.deleteRecord(rid1);
+    RecordID rid2 = table.addRecord(input2.getValues());
+    table.deleteRecord(rid2);
+    RecordID rid3 = table.addRecord(input3.getValues());
+    table.deleteRecord(rid3);
+
+    Iterator<Record> iRec = table.iterator();
+    assertFalse(iRec.hasNext());
+  }
+
+  @Test
+  @Category(StudentTest.class)
+  public void test8addDeleteaddDeleteadd()  throws DatabaseException {
+    Record input1 = TestUtils.createRecordWithAllTypes();
+    Record input2 = TestUtils.createRecordWithAllTypes();
+    Record input3= TestUtils.createRecordWithAllTypes();
+
+    RecordID rid1 = table.addRecord(input1.getValues());
+    table.deleteRecord(rid1);
+    RecordID rid2 = table.addRecord(input2.getValues());
+    table.deleteRecord(rid2);
+    RecordID rid3 = table.addRecord(input3.getValues());
+
+    Iterator<Record> iRec = table.iterator();
+    assertTrue(iRec.hasNext());
+  }
+
 
   @Test
   public void testTableNumEntries() throws DatabaseException {
