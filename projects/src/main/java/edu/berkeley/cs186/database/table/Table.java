@@ -10,6 +10,7 @@ import edu.berkeley.cs186.database.io.Page;
 import edu.berkeley.cs186.database.io.PageException;
 import edu.berkeley.cs186.database.table.stats.TableStats;
 
+import javax.xml.crypto.Data;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
@@ -199,9 +200,7 @@ public class Table implements Iterable<Record>, Closeable {
 
         secondforloop:
         for (byte b : header) {
-            //System.out.println("after first for loop");
             for (int mask = 0x80; mask != 0x00; mask >>>= 1) {
-                //System.out.println("after second for loop");
                 if ((b & (byte) mask) == 0) {
                     break secondforloop;
                 }
@@ -219,7 +218,7 @@ public class Table implements Iterable<Record>, Closeable {
 
         RecordID returnable = new RecordID(pageNum, entryNum);
         this.numRecords += 1;
-        this.stats.addRecord(record);
+        this.stats.addRecord(record); //Why the hell did I do this
 
         if (!spaceOnPage(currPage)) {
             freePages.remove(pageNum);
@@ -241,7 +240,39 @@ public class Table implements Iterable<Record>, Closeable {
      */
     public Record deleteRecord(RecordID rid) throws DatabaseException {
         // TODO: implement me!
-        return null;
+        Record record;
+        try {
+            record = getRecord(rid);
+        } catch (DatabaseException ran) {
+            throw new DatabaseException("im to tired for your bs");
+        }
+
+//        List<DataBox> values = new ArrayList<DataBox>();
+//        updateRecord(values, rid);
+
+        int entryNum = rid.getEntryNumber();
+        int pageNum = rid.getPageNum();
+
+        Page currPage = this.allocator.fetchPage(pageNum);
+        byte bytw = 0;
+
+        this.writeBitToHeader(currPage, entryNum, bytw);
+
+//        byte[] recc = schema.encode(record);
+//        byte[] empty = new byte[schema.getEntrySize()];
+//        int pos = schema.getEntrySize() * entryNum + pageHeaderSize;
+//        currPage.writeBytes(pos, schema.getEntrySize(), empty);
+
+        this.numRecords -= 1;
+        this.stats.removeRecord(record);
+
+        if (!freePages.contains(pageNum)) {
+            freePages.add(pageNum);
+        }
+
+
+
+        return record;
     }
 
     /**
@@ -285,7 +316,30 @@ public class Table implements Iterable<Record>, Closeable {
      */
     public Record updateRecord(List<DataBox> values, RecordID rid) throws DatabaseException {
         // TODO: implement me!
-        return null;
+        Record record;
+        try {
+            record = getRecord(rid);
+        } catch (DatabaseException ran) {
+            throw new DatabaseException("im to tired for your bs");
+        }
+
+        int currPage = rid.getPageNum();
+        Page Page = this.allocator.fetchPage(currPage);
+        int entryNum = rid.getEntryNumber();
+        byte bytw = 1;
+        writeBitToHeader(Page, entryNum, bytw);
+
+        Record newRec = new Record(values);
+        byte[] recc = schema.encode(newRec);
+        int pos = schema.getEntrySize() * entryNum + pageHeaderSize;
+        Page.writeBytes(pos, schema.getEntrySize(), recc);
+
+        this.numRecords += 1;
+        this.stats.removeRecord(record);
+        this.stats.addRecord(newRec);
+
+        return record;
+//        return null;
     }
 
     public int getNumEntriesPerPage() {
@@ -524,9 +578,25 @@ public class Table implements Iterable<Record>, Closeable {
      * of the records in this table.
      */
     private class TableIterator implements Iterator<Record> {
+        private Page page; // readPageHeader(Page page) to get the byte[] if want it
+        RecordID rid;
+        int numRecord;
+        private Iterator<Page> pageIterator;
 
         public TableIterator() {
-            // TODO: implement me!
+            this.pageIterator = Table.this.allocator.iterator();
+            int pageNum = this.pageIterator.next().getPageNum();
+
+            int entryNum = 0;
+            if (pageNum != 0) {
+                return;
+            }
+            if (Table.this.allocator.iterator().hasNext()) {
+                Page page = Table.this.allocator.iterator().next();
+                byte[] header = Table.this.readPageHeader(page);
+//                pageNum = this.pageIterator.next().getPageNum()
+//                Page currPage = Table.this.allocator.fetchPage(pageNum);
+            }
         }
 
         /**
@@ -536,6 +606,9 @@ public class Table implements Iterable<Record>, Closeable {
          */
         public boolean hasNext() {
             // TODO: implement me!
+//            if (this.next != null) {
+//                return true;
+//            }
             return false;
         }
 
@@ -546,7 +619,14 @@ public class Table implements Iterable<Record>, Closeable {
          * @throws NoSuchElementException if there are no more Records to yield
          */
         public Record next() {
-            // TODO: implement me!
+            // TODO: implement me
+
+//            try {
+//                return getRecord(next);
+//            } catch (DatabaseException e) {
+//                throw new NoSuchElementException("hope im not messing everything up");
+//            }
+
             return null;
         }
 
