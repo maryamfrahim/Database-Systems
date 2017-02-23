@@ -85,7 +85,6 @@ public class TestTable {
     RecordID rid1 = table.addRecord(input1.getValues());
     RecordID rid2 = table.addRecord(input2.getValues());
 
-    // This is a new table, so it should be put into the first slot of the first page.
     assertEquals(1, rid1.getPageNum());
     assertEquals(0, rid1.getEntryNumber());
     assertFalse(0 == rid2.getEntryNumber());
