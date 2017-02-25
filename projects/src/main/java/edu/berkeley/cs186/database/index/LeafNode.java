@@ -90,9 +90,11 @@ public class LeafNode extends BPlusNode {
         second.overwriteBNodeEntries(current.subList(current.size()/2, current.size()));
         this.overwriteBNodeEntries(current.subList(current.size()/2, current.size()));
 
-        LeafEntry copyUp = new LeafEntry(newEntry.getKey(), newEntry.getRecordID()); //how make pointer to second
+        int pageSecond = second.getPageNum();
+        InnerEntry copyUp = new InnerEntry(newEntry.getKey(), pageSecond); //how make pointer to second
 
-        copyUp.pageNum = 7;
+        
+
 
         return middle;
     }
