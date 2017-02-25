@@ -2,11 +2,9 @@ package edu.berkeley.cs186.database.table;
 
 import edu.berkeley.cs186.database.databox.*;
 
-import javax.xml.crypto.Data;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -45,18 +43,24 @@ public class Schema {
    * @throws SchemaException if the values specified don't conform to this Schema
    */
   public Record verify(List<DataBox> values) throws SchemaException {
-    if (values.size() == this.fields.size()) {
-      for (int i = 0; i < values.size(); i++) {
-        if (values.get(i).type() == this.fieldTypes.get(i).type()) {
-          if (values.get(i).getSize() == this.fieldTypes.get(i).getSize()) {
-            return new Record(values);
-          }
-        }
+    if (values.size() != this.fieldTypes.size()) {
+      throw new SchemaException("Different numbers of fields specified.");
+    }
+
+    for (int i = 0; i < values.size(); i++) {
+      DataBox valueType = values.get(i);
+      DataBox fieldType = this.fieldTypes.get(i);
+
+      if (!(valueType.type().equals(fieldType.type()))) {
+        throw new SchemaException("Field " + i + " is " + valueType.type() + " instead of " + fieldType.type() + ".");
+      }
+
+      if (valueType.getSize() != fieldType.getSize()) {
+        throw new SchemaException("Field " + i + " is " + valueType.getSize() + " bytes instead of " + fieldType.getString() + " bytes.");
       }
     }
-    SchemaException exception = new SchemaException ("Dishonor on you. Dishonor on your cow. Also Values specified don't conform to this Schema");
-    throw exception;
-    //return null;
+
+    return new Record(values);
   }
 
   /**
@@ -69,13 +73,13 @@ public class Schema {
    * @return the encoded record as a byte[]
    */
   public byte[] encode(Record record) {
-    // TODO: implement me! use java.nio.ByteBuffer
-    ByteBuffer trial = ByteBuffer.allocate(this.size);
-    for (DataBox data : record.getValues()) {
-      byte[] item = data.getBytes();
-      trial.put(item);
+    ByteBuffer byteBuffer = ByteBuffer.allocate(this.size);
+
+    for (DataBox value : record.getValues()) {
+      byteBuffer.put(value.getBytes());
     }
-    return trial.array();
+
+    return byteBuffer.array();
   }
 
   /**
@@ -86,35 +90,30 @@ public class Schema {
    * @return the decoded Record
    */
   public Record decode(byte[] input) {
-    // TODO: implement me! use Arrays.copyOfRange which copies the specified range of the specified array into a new array
+    int offset = 0;
 
-    int counter = 0;
-    List<DataBox> returnable = new ArrayList<DataBox>();
-    for (DataBox item : this.fieldTypes) {  //fieldtypes
-      int lenn = item.getSize();
-      if(item.type().equals(DataBox.Types.BOOL)){
-        byte[] heyy1 = Arrays.copyOfRange(input, counter, counter+lenn);
-        BoolDataBox what = new BoolDataBox(heyy1);
-        returnable.add(what);
+    List<DataBox> values = new ArrayList<DataBox>();
+    for (DataBox field : fieldTypes) {
+      byte[] fieldBytes = Arrays.copyOfRange(input, offset, offset + field.getSize());
+      offset += field.getSize();
+
+      switch (field.type()) {
+        case STRING:
+          values.add(new StringDataBox(fieldBytes));
+          break;
+        case INT:
+          values.add(new IntDataBox(fieldBytes));
+          break;
+        case FLOAT:
+          values.add(new FloatDataBox(fieldBytes));
+          break;
+        case BOOL:
+          values.add(new BoolDataBox(fieldBytes));
+          break;
       }
-      if(item.type().equals(DataBox.Types.valueOf("FLOAT"))){
-        byte[] heyy2 = Arrays.copyOfRange(input, counter, counter+lenn);
-        FloatDataBox whatt = new FloatDataBox(heyy2);
-        returnable.add(whatt);
-      }
-      if(item.type().equals(DataBox.Types.valueOf("INT"))){
-        byte[] heyy3 = Arrays.copyOfRange(input, counter, counter+lenn);
-        IntDataBox whattt = new IntDataBox(heyy3);
-        returnable.add(whattt);
-      }
-      if(item.type().equals(DataBox.Types.valueOf("STRING"))){
-        byte[] heyy4 = Arrays.copyOfRange(input, counter, counter+lenn);
-        StringDataBox whatttt = new StringDataBox(heyy4);
-        returnable.add(whatttt);
-      }
-      counter += lenn;
     }
-    return new Record(returnable);
+
+    return new Record(values);
   }
 
   public int getEntrySize() {

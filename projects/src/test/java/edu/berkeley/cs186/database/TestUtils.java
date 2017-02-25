@@ -99,6 +99,7 @@ public class TestUtils {
       recordList.add(new Record(recordValues));
     }
 
+
     return new TestSourceOperator(recordList, schema);
   }
 
@@ -117,6 +118,7 @@ public class TestUtils {
       recordValues.add(new FloatDataBox(v));
       recordList.add(new Record(recordValues));
     }
+
 
     return new TestSourceOperator(recordList, schema);
   }
