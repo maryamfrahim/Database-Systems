@@ -136,7 +136,8 @@ public abstract class BPlusNode {
     }
 
     /**
-     * Write a BEentry into the entryNum specified.
+     * Write a BEentry into the entryNum specified.                if parent node has space
+
      *
      * @param entryNum the entry number to fill
      * @param ent the BEntry to write

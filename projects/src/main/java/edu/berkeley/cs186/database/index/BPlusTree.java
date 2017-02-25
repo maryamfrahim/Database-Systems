@@ -129,6 +129,24 @@ public class BPlusTree {
      */
     public void insertKey(DataBox key, RecordID rid) {
         // Implement me!
+        BPlusNode root = BPlusNode.getBPlusNode(this, rootPageNum);
+        LeafEntry input = new LeafEntry(key, rid);
+        InnerEntry outputInsertBEntry = root.insertBEntry(input);
+
+        if (outputInsertBEntry != null) {
+            //save root pointer as buffer
+            BPlusNode buffer = root;
+
+            //make IE into a IN
+            InnerNode newRoot = new InnerNode(this, outputInsertBEntry.getPageNum());
+
+            //make IN point to buffer
+            newRoot.setFirstChild(buffer.getPageNum());
+
+            //make root point to the IN
+            int newPageNum = newRoot.getPageNum();
+            this.rootPageNum = newPageNum;
+        }
     }
 
     /**

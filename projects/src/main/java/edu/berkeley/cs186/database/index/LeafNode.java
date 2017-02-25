@@ -47,6 +47,22 @@ public class LeafNode extends BPlusNode {
     @Override
     public InnerEntry insertBEntry(LeafEntry ent) {
         // Implement me!
+        DataBox key = ent.getKey();
+        InnerNode maybe = null;
+        int pageNum = maybe.findChildFromKey(key);
+        BPlusNode node = getBPlusNode(this.getTree(), pageNum);
+
+        while (!node.isLeaf()) {
+            insertBEntry(ent);
+        }
+
+        if (node.hasSpace()) {
+            List<BEntry> current = node.getAllValidEntries();
+            current.add(ent);
+            overwriteBNodeEntries(current);
+        } else {
+            return splitNode(ent);
+        }
         return null;
     }
 
@@ -63,7 +79,22 @@ public class LeafNode extends BPlusNode {
     @Override
     public InnerEntry splitNode(BEntry newEntry) {
         // Implement me!
-        return null;
+        List<BEntry> current = this.getAllValidEntries();
+
+        current.add(newEntry);
+        Collections.sort(current);
+        InnerEntry middle = (InnerEntry) current.get((current.size())/2);
+
+        LeafNode buffer = this;
+        LeafNode second = new LeafNode(this.getTree()); //allocate page
+        second.overwriteBNodeEntries(current.subList(current.size()/2, current.size()));
+        this.overwriteBNodeEntries(current.subList(current.size()/2, current.size()));
+
+        LeafEntry copyUp = new LeafEntry(newEntry.getKey(), newEntry.getRecordID()); //how make pointer to second
+
+        copyUp.pageNum = 7;
+
+        return middle;
     }
 
 

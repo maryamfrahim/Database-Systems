@@ -10,8 +10,8 @@ import java.util.List;
 /**
  * An inner node of a B+ tree. An InnerNode header contains an `isLeaf` flag
  * set to 0 and the page number of the first child node (or -1 if no child
- * exists). An InnerNode contains InnerEntries.
  *
+ * exists). An InnerNode contains InnerEntries.
  * Inherits all the properties of a BPlusNode.
  */
 public class InnerNode extends BPlusNode {
@@ -73,6 +73,8 @@ public class InnerNode extends BPlusNode {
      */
     public InnerEntry insertBEntry(LeafEntry ent) {
         // Implement me!
+        // if no spli    t, return null
+        // else, return the middle split leaf that is to be push
         return null;
     }
 
