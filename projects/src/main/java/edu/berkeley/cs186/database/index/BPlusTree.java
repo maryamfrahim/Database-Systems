@@ -2,6 +2,7 @@ package edu.berkeley.cs186.database.index;
 
 import edu.berkeley.cs186.database.io.Page;
 import edu.berkeley.cs186.database.io.PageAllocator;
+import edu.berkeley.cs186.database.table.Record;
 import edu.berkeley.cs186.database.table.RecordID;
 import edu.berkeley.cs186.database.databox.*;
 
@@ -91,9 +92,34 @@ public class BPlusTree {
      * @return Iterator of all RecordIDs in sorted order
      */
     public Iterator<RecordID> sortedScan() {
+//        for (BEntry le : validEntries) {
+//            if (startValue.compareTo(le.getKey()) < 1) {
+//                rids.add(le.getRecordID());
+//            }
+//        }
+
         BPlusNode rootNode = BPlusNode.getBPlusNode(this, rootPageNum);
-        return new BPlusIterator(rootNode);
+        List<BEntry> list = rootNode.getAllValidEntries();
+        List<> rids = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            int pos = 0;
+            for (BEntry kid : list) {
+//                if (kid.isLeaf()) {
+//                    for (BEntry kids : list) {
+//
+//                    }
+//                }
+                pos ++;
+                rids.add(rootNode.getAllValidEntries().get(i));
+                rids.add(kid);
+            }
+        }
+        rids.iterator();
+//        BPlusIterator returnable = new BPlusIterator(rootNode);
+//        return new BPlusIterator(rootNode);
+        return rids.iterator();
     }
+
 
     /**
      * Perform a range search beginning from a specified key.
@@ -146,6 +172,8 @@ public class BPlusTree {
             //make root point to the IN
             int newPageNum = newRoot.getPageNum();
             this.rootPageNum = newPageNum;
+
+            updateRoot(newRoot.getPageNum());
         }
     }
 
@@ -247,6 +275,7 @@ public class BPlusTree {
      */
     private class BPlusIterator implements Iterator<RecordID> {
         // Implement me!
+        private Stack<BPlusNode> stack;
 
         /**
          * Construct an iterator that performs a sorted scan on this BPlusTree
@@ -257,7 +286,27 @@ public class BPlusTree {
          * @param root the root node of this BPlusTree
          */
         public BPlusIterator(BPlusNode root) {
-            // Implement me!
+//            Yeah I think I tried using a while loop to check if the current node is a leaf or not. And I maintained
+//            a stack with all nodes visited. And if it's a leaf, I save it's iterator. But I guess I'm having trouble with the
+//            next() logic
+
+            this.stack = new Stack<>();
+            BPlusNode rootNode = BPlusNode.getBPlusNode(this, rootPageNum);
+            List<BEntry> list = rootNode.getAllValidEntries();
+            List<RecordID> rids = new ArrayList<>();
+
+            int numRecordinStack = 0;
+            while (numRecordinStack < numNodes) { //not true because include innernodes not just leaf nodes
+                while (curNode.isLeaf()) {
+                    for (int i = 0; i < list.size(); i++) {
+                        stack.add(curNode);
+                        numRecordinStack++;
+                    }
+                    rids.add(rootNode.getAllValidEntries().get(i));
+                }
+            }
+            rids.iterator();
+
         }
 
         /**
@@ -274,6 +323,12 @@ public class BPlusTree {
          */
         public BPlusIterator(BPlusNode root, DataBox key, boolean scan) {
             // Implement me!
+            this.stack = new Stack<>();
+            if (scan == true) {
+                sortedScanFrom(key);
+            } else {
+                lookupKey(key);
+            }
         }
 
         /**
@@ -284,7 +339,10 @@ public class BPlusTree {
          */
         public boolean hasNext() {
             // Implement me!
-            return false;
+            if (this.stack.empty()) {
+                return false;
+            }
+            return true;
         }
 
         /**
@@ -296,6 +354,7 @@ public class BPlusTree {
          */
         public RecordID next() {
             // Implement me!
+            int getRecordIDHere = this.stack.pop().getPageNum();
             return null;
         }
 

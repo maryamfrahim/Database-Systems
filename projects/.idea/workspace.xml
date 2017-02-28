@@ -2,6 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="32ad00fb-c14e-41d0-a5ab-2e07b6f4ed9a" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/BPlusNode.java" afterPath="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/BPlusNode.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/BPlusTree.java" afterPath="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/BPlusTree.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/InnerNode.java" afterPath="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/InnerNode.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/LeafNode.java" afterPath="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/LeafNode.java" />
     </list>
     <ignored path="projects.iws" />
@@ -26,21 +30,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="BPlusTree.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="BPlusTree.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/BPlusTree.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-18.724138">
-              <caret line="89" column="6" selection-start-line="89" selection-start-column="6" selection-end-line="89" selection-end-column="6" />
+            <state vertical-scroll-proportion="0.3180272">
+              <caret line="292" column="35" selection-start-line="292" selection-start-column="35" selection-end-line="292" selection-end-column="35" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LeafNode.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="LeafNode.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/LeafNode.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.63506263">
-              <caret line="95" column="8" selection-start-line="95" selection-start-column="8" selection-end-line="95" selection-end-column="8" />
+            <state vertical-scroll-proportion="-70.93104">
+              <caret line="130" column="26" selection-start-line="130" selection-start-column="16" selection-end-line="130" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -50,7 +54,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/InnerNode.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="73" column="22" selection-start-line="73" selection-start-column="22" selection-end-line="73" selection-end-column="22" />
+              <caret line="22" column="18" selection-start-line="22" selection-start-column="18" selection-end-line="22" selection-end-column="18" />
               <folding />
             </state>
           </provider>
@@ -60,7 +64,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/BPlusNode.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="164" column="66" selection-start-line="164" selection-start-column="66" selection-end-line="164" selection-end-column="66" />
+              <caret line="35" column="41" selection-start-line="35" selection-start-column="32" selection-end-line="35" selection-end-column="41" />
               <folding />
             </state>
           </provider>
@@ -70,7 +74,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/LeafEntry.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="50" column="0" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
+              <caret line="16" column="21" selection-start-line="16" selection-start-column="21" selection-end-line="16" selection-end-column="21" />
               <folding />
             </state>
           </provider>
@@ -97,7 +101,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/InnerEntry.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="17" column="46" selection-start-line="17" selection-start-column="39" selection-end-line="17" selection-end-column="46" />
+              <caret line="15" column="23" selection-start-line="15" selection-start-column="16" selection-end-line="15" selection-end-column="23" />
               <folding />
             </state>
           </provider>
@@ -107,28 +111,8 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/BEntry.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
-              <folding>
-                <element signature="imports" expanded="false" />
-                <element signature="e#344#345#0" expanded="false" />
-                <element signature="e#375#376#0" expanded="false" />
-                <element signature="e#428#429#0" expanded="false" />
-                <element signature="e#491#492#0" expanded="false" />
-                <element signature="e#523#524#0" expanded="false" />
-                <element signature="e#549#550#0" expanded="false" />
-                <element signature="e#580#581#0" expanded="false" />
-                <element signature="e#643#644#0" expanded="false" />
-                <element signature="e#680#681#0" expanded="false" />
-                <element signature="e#743#744#0" expanded="false" />
-                <element signature="e#775#776#0" expanded="false" />
-                <element signature="e#838#839#0" expanded="false" />
-                <element signature="e#895#896#0" expanded="false" />
-                <element signature="e#958#959#0" expanded="false" />
-                <element signature="e#1004#1005#0" expanded="false" />
-                <element signature="e#1067#1068#0" expanded="false" />
-                <element signature="e#1107#1108#0" expanded="false" />
-                <element signature="e#1170#1171#0" expanded="false" />
-              </folding>
+              <caret line="9" column="25" selection-start-line="9" selection-start-column="22" selection-end-line="9" selection-end-column="25" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -150,11 +134,11 @@
         <option value="$PROJECT_DIR$/src/test/java/edu/berkeley/cs186/database/TestUtils.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/table/Schema.java" />
         <option value="$PROJECT_DIR$/src/test/java/edu/berkeley/cs186/database/table/TestTable.java" />
-        <option value="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/BPlusNode.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/BEntry.java" />
-        <option value="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/BPlusTree.java" />
-        <option value="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/InnerNode.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/LeafNode.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/BPlusNode.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/InnerNode.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/BPlusTree.java" />
       </list>
     </option>
   </component>
@@ -800,12 +784,12 @@
       <workItem from="1487214163772" duration="31489000" />
       <workItem from="1487820039981" duration="244000" />
       <workItem from="1487820516600" duration="34953000" />
-      <workItem from="1487988100300" duration="3157000" />
+      <workItem from="1487988100300" duration="12543000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="150204000" />
+    <option name="totallyTimeSpent" value="159590000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="2" width="1364" height="726" extended-state="0" />
@@ -928,6 +912,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="14" column="27" selection-start-line="14" selection-start-column="27" selection-end-line="14" selection-end-column="27" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -977,6 +962,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="14" column="27" selection-start-line="14" selection-start-column="27" selection-end-line="14" selection-end-column="27" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1033,6 +1019,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="13" column="47" selection-start-line="13" selection-start-column="9" selection-end-line="13" selection-end-column="47" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1154,6 +1141,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.028052805">
           <caret line="14" column="27" selection-start-line="14" selection-start-column="27" selection-end-line="14" selection-end-column="27" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1185,42 +1173,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/InnerNode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="73" column="22" selection-start-line="73" selection-start-column="22" selection-end-line="73" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/BEntry.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#344#345#0" expanded="false" />
-            <element signature="e#375#376#0" expanded="false" />
-            <element signature="e#428#429#0" expanded="false" />
-            <element signature="e#491#492#0" expanded="false" />
-            <element signature="e#523#524#0" expanded="false" />
-            <element signature="e#549#550#0" expanded="false" />
-            <element signature="e#580#581#0" expanded="false" />
-            <element signature="e#643#644#0" expanded="false" />
-            <element signature="e#680#681#0" expanded="false" />
-            <element signature="e#743#744#0" expanded="false" />
-            <element signature="e#775#776#0" expanded="false" />
-            <element signature="e#838#839#0" expanded="false" />
-            <element signature="e#895#896#0" expanded="false" />
-            <element signature="e#958#959#0" expanded="false" />
-            <element signature="e#1004#1005#0" expanded="false" />
-            <element signature="e#1067#1068#0" expanded="false" />
-            <element signature="e#1107#1108#0" expanded="false" />
-            <element signature="e#1170#1171#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/BPlusTreeException.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1236,18 +1188,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/BPlusNode.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/LeafNode.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="164" column="66" selection-start-line="164" selection-start-column="66" selection-end-line="164" selection-end-column="66" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/LeafEntry.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="50" column="0" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
+        <state vertical-scroll-proportion="-70.93104">
+          <caret line="130" column="26" selection-start-line="130" selection-start-column="16" selection-end-line="130" selection-end-column="26" />
           <folding />
         </state>
       </provider>
@@ -1255,23 +1199,47 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/InnerEntry.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="17" column="46" selection-start-line="17" selection-start-column="39" selection-end-line="17" selection-end-column="46" />
+          <caret line="15" column="23" selection-start-line="15" selection-start-column="16" selection-end-line="15" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/BEntry.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="9" column="25" selection-start-line="9" selection-start-column="22" selection-end-line="9" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/LeafEntry.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="16" column="21" selection-start-line="16" selection-start-column="21" selection-end-line="16" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/BPlusNode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="35" column="41" selection-start-line="35" selection-start-column="32" selection-end-line="35" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/InnerNode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="22" column="18" selection-start-line="22" selection-start-column="18" selection-end-line="22" selection-end-column="18" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/BPlusTree.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-18.724138">
-          <caret line="89" column="6" selection-start-line="89" selection-start-column="6" selection-end-line="89" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/index/LeafNode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.63506263">
-          <caret line="95" column="8" selection-start-line="95" selection-start-column="8" selection-end-line="95" selection-end-column="8" />
+        <state vertical-scroll-proportion="0.3180272">
+          <caret line="292" column="35" selection-start-line="292" selection-start-column="35" selection-end-line="292" selection-end-column="35" />
           <folding />
         </state>
       </provider>

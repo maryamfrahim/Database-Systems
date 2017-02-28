@@ -98,6 +98,8 @@ public abstract class BPlusNode {
         return findFreeEntry() > -1;
     }
 
+//    public int getNumEntries() { return numEntries; } //CAN I DO THIS I ADDED THIS IS THAT OK OMG DONT SCREW UP EVERYTHING PLEASE THANK YOU
+
     /**
      * Retrieve the BPlusTree that this BPlusNode belongs to.
      *

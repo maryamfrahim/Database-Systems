@@ -93,7 +93,7 @@ public class LeafNode extends BPlusNode {
         int pageSecond = second.getPageNum();
         InnerEntry copyUp = new InnerEntry(newEntry.getKey(), pageSecond); //how make pointer to second
 
-        
+//        second.insertBEntry() = newEntry.getPageNum();
 
 
         return middle;

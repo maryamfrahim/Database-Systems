@@ -14,6 +14,7 @@ import java.util.List;
  * exists). An InnerNode contains InnerEntries.
  * Inherits all the properties of a BPlusNode.
  */
+
 public class InnerNode extends BPlusNode {
     public static int headerSize = 5;       // isLeaf + pageNum of first child
 
