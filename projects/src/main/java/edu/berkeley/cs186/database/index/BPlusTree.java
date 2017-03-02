@@ -286,27 +286,22 @@ public class BPlusTree {
          * @param root the root node of this BPlusTree
          */
         public BPlusIterator(BPlusNode root) {
-//            Yeah I think I tried using a while loop to check if the current node is a leaf or not. And I maintained
-//            a stack with all nodes visited. And if it's a leaf, I save it's iterator. But I guess I'm having trouble with the
-//            next() logic
-
-            this.stack = new Stack<>();
-            BPlusNode rootNode = BPlusNode.getBPlusNode(this, rootPageNum);
-            List<BEntry> list = rootNode.getAllValidEntries();
-            List<RecordID> rids = new ArrayList<>();
-
-            int numRecordinStack = 0;
-            while (numRecordinStack < numNodes) { //not true because include innernodes not just leaf nodes
-                while (curNode.isLeaf()) {
-                    for (int i = 0; i < list.size(); i++) {
-                        stack.add(curNode);
-                        numRecordinStack++;
+            BPlusNode currNode = root;
+            if (!root.isLeaf()) {
+                while (!currNode.isLeaf()) { //until pop off first leaf node.
+                    InnerNode currentNode = (InnerNode) currNode;
+                    List<BEntry> list = currentNode.getAllValidEntries();
+                    for (BEntry ent : list) { //reverse order the children pop
+                        BPlusNode curry = BPlusNode.getBPlusNode(root.getTree(), ent.getPageNum());
+                        stack.add(curry);
                     }
-                    rids.add(rootNode.getAllValidEntries().get(i));
+                    stack.add(BPlusNode.getBPlusNode(root.getTree(), currentNode.getFirstChild()));
+                    currNode = stack.pop();
                 }
             }
-            rids.iterator();
-
+            //scanning that leaf node to get the rid iterator.
+            LeafNode scannable = new LeafNode(root.getTree(), currNode.getPageNum());
+            Iterator<RecordID> returnable = scannable.scan();
         }
 
         /**
