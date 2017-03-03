@@ -99,25 +99,25 @@ public class BPlusTree {
 //        }
 
         BPlusNode rootNode = BPlusNode.getBPlusNode(this, rootPageNum);
-        List<BEntry> list = rootNode.getAllValidEntries();
-        List<> rids = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
-            int pos = 0;
-            for (BEntry kid : list) {
+//        List<BEntry> list = rootNode.getAllValidEntries();
+//        List<> rids = new ArrayList<>();
+//        for (int i = 0; i < list.size(); i++) {
+//            int pos = 0;
+//            for (BEntry kid : list) {
 //                if (kid.isLeaf()) {
 //                    for (BEntry kids : list) {
 //
 //                    }
 //                }
-                pos ++;
-                rids.add(rootNode.getAllValidEntries().get(i));
-                rids.add(kid);
-            }
-        }
-        rids.iterator();
-//        BPlusIterator returnable = new BPlusIterator(rootNode);
-//        return new BPlusIterator(rootNode);
-        return rids.iterator();
+//                pos ++;
+//                rids.add(rootNode.getAllValidEntries().get(i));
+//                rids.add(kid);
+//            }
+//        }
+//        rids.iterator();
+////        BPlusIterator returnable = new BPlusIterator(rootNode);
+        return new BPlusIterator(rootNode);
+//        return rids.iterator();
     }
 
 
@@ -170,10 +170,11 @@ public class BPlusTree {
             newRoot.setFirstChild(buffer.getPageNum());
 
             //make root point to the IN
-            int newPageNum = newRoot.getPageNum();
-            this.rootPageNum = newPageNum;
-
             updateRoot(newRoot.getPageNum());
+
+//            int newPageNum = newRoot.getPageNum();
+//            this.rootPageNum = newPageNum;
+
         }
     }
 
@@ -276,6 +277,8 @@ public class BPlusTree {
     private class BPlusIterator implements Iterator<RecordID> {
         // Implement me!
         private Stack<BPlusNode> stack;
+        private Iterator<RecordID> returnable;
+        private BPlusNode root;
 
         /**
          * Construct an iterator that performs a sorted scan on this BPlusTree
@@ -287,21 +290,11 @@ public class BPlusTree {
          */
         public BPlusIterator(BPlusNode root) {
             BPlusNode currNode = root;
-            if (!root.isLeaf()) {
-                while (!currNode.isLeaf()) { //until pop off first leaf node.
-                    InnerNode currentNode = (InnerNode) currNode;
-                    List<BEntry> list = currentNode.getAllValidEntries();
-                    for (BEntry ent : list) { //reverse order the children pop
-                        BPlusNode curry = BPlusNode.getBPlusNode(root.getTree(), ent.getPageNum());
-                        stack.add(curry);
-                    }
-                    stack.add(BPlusNode.getBPlusNode(root.getTree(), currentNode.getFirstChild()));
-                    currNode = stack.pop();
-                }
-            }
-            //scanning that leaf node to get the rid iterator.
-            LeafNode scannable = new LeafNode(root.getTree(), currNode.getPageNum());
-            Iterator<RecordID> returnable = scannable.scan();
+            this.root = root;
+
+            LeafNode scannable = nextLeaf(root);
+
+            returnable = scannable.scan();
         }
 
         /**
@@ -318,11 +311,12 @@ public class BPlusTree {
          */
         public BPlusIterator(BPlusNode root, DataBox key, boolean scan) {
             // Implement me!
-            this.stack = new Stack<>();
+            LeafNode scannable = nextLeaf(root);
+
             if (scan == true) {
-                sortedScanFrom(key);
+                Iterator<RecordID> returnable = scannable.scanFrom(key);
             } else {
-                lookupKey(key);
+                Iterator<RecordID> returnable = scannable.scanForKey(key);
             }
         }
 
@@ -334,10 +328,30 @@ public class BPlusTree {
          */
         public boolean hasNext() {
             // Implement me!
-            if (this.stack.empty()) {
+            if (this.stack.empty() || !returnable.hasNext()) {
                 return false;
             }
             return true;
+        }
+
+        public LeafNode nextLeaf(BPlusNode root) {
+            BPlusNode currNode = root;
+            if (!root.isLeaf()) {
+                while (!currNode.isLeaf()) { //until pop off first leaf node.
+                    InnerNode currentNode = (InnerNode) currNode;
+                    List<BEntry> list = currentNode.getAllValidEntries();
+                    Collections.reverse(list);
+                    for (BEntry ent : list) { //reverse order the children pop
+                        BPlusNode curry = BPlusNode.getBPlusNode(root.getTree(), ent.getPageNum());
+                        stack.add(curry);
+                    }
+                    stack.add(BPlusNode.getBPlusNode(root.getTree(), currentNode.getFirstChild()));
+                    currNode = stack.pop();
+                }
+            }
+            //scanning that leaf node to get the rid iterator.
+            LeafNode scannable = new LeafNode(root.getTree(), currNode.getPageNum());
+            return scannable;
         }
 
         /**
@@ -348,9 +362,17 @@ public class BPlusTree {
          * yield
          */
         public RecordID next() {
-            // Implement me!
-            int getRecordIDHere = this.stack.pop().getPageNum();
-            return null;
+
+            if (returnable.hasNext()) {
+                return this.returnable.next();
+            } else if (!this.stack.empty()) {
+                LeafNode scannable = nextLeaf(root); //from root?
+                returnable = scannable.scan();
+                return returnable.next();
+            } else {
+                throw new NoSuchElementException();
+            }
+
         }
 
         public void remove() {

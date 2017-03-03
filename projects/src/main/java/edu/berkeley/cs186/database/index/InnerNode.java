@@ -74,9 +74,25 @@ public class InnerNode extends BPlusNode {
      */
     public InnerEntry insertBEntry(LeafEntry ent) {
         // Implement me!
-        // if no spli    t, return null
+        // if no split, return null
         // else, return the middle split leaf that is to be push
+        DataBox key = ent.getKey();
+        int pageNum = this.findChildFromKey(key);
+        BPlusNode node = getBPlusNode(this.getTree(), pageNum);
+
+        InnerEntry ret = insertBEntry(ent);
+        if (ret == null) {
+            return null;
+        }
+        if (node.hasSpace()) {
+            List<BEntry> current = node.getAllValidEntries();
+            current.add(ent);
+            overwriteBNodeEntries(current);
+        } else {
+            return splitNode(ent);
+        }
         return null;
+//        return null;
     }
 
     /**
@@ -92,6 +108,24 @@ public class InnerNode extends BPlusNode {
     @Override
     public InnerEntry splitNode(BEntry newEntry) {
         // Implement me!
-        return null;
+
+        this.getTree().incrementNumNodes();
+
+        List<BEntry> current = this.getAllValidEntries();
+        current.add(newEntry);
+//        current.add(this.getFirstChild());
+        Collections.sort(current);
+
+        LeafNode second = new LeafNode(this.getTree()); //allocate page
+
+        second.overwriteBNodeEntries(current.subList(current.size()/2 +1, current.size()));
+        this.overwriteBNodeEntries(current.subList(0, current.size()/2));
+
+        int pageSecond = second.getPageNum();
+        BEntry middle = current.get(current.size()/2);
+        InnerEntry copyUp = new InnerEntry(middle.getKey(), pageSecond); //how make pointer to second
+        //set first child
+
+        return copyUp;
     }
 }

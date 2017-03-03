@@ -44,12 +44,18 @@ public class TestLargeBPlusTree {
             bp.insertKey(new IntDataBox(i), new RecordID(i,0));
         }
 
+        System.out.println("Youre at the test 0");
         Iterator<RecordID> rids = bp.sortedScan();
         int expectedPageNum = 0;
+
+        System.out.println("Youre at the test 1");
         while (rids.hasNext()) {
+            System.out.println("hello");
             assertEquals(expectedPageNum, rids.next().getPageNum());
             expectedPageNum++;
         }
+
+        System.out.println("Youre at the test2");
         assertEquals(1, this.bp.getNumNodes());
     }
 
@@ -104,6 +110,8 @@ public class TestLargeBPlusTree {
             assertEquals(expectedPageNum, rid.getPageNum());
             expectedPageNum++;
         }
+
+        System.out.println("Youre at the test 4");
         assertEquals(intLeafPageSize + 1, expectedPageNum);
         assertEquals(3, this.bp.getNumNodes());
     }
@@ -141,6 +149,8 @@ public class TestLargeBPlusTree {
         }
 
         assertEquals(5, this.bp.getNumNodes());
+        System.out.println(this.bp.getNumNodes());
+        System.out.println("Youre at the test");
 
         Iterator<RecordID> rids = bp.sortedScan();
         for (int i = 0; i < intLeafPageSize + 1; i++) {
