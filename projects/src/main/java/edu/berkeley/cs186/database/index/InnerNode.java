@@ -74,25 +74,30 @@ public class InnerNode extends BPlusNode {
      */
     public InnerEntry insertBEntry(LeafEntry ent) {
         // Implement me!
-        // if no split, return null
-        // else, return the middle split leaf that is to be push
-        DataBox key = ent.getKey();
-        int pageNum = this.findChildFromKey(key);
-        BPlusNode node = getBPlusNode(this.getTree(), pageNum);
+//        DataBox key = ent.getKey();
+//        int pageNum = this.findChildFromKey(key);
+//        BPlusNode node = getBPlusNode(this.getTree(), pageNum);
 
         InnerEntry ret = insertBEntry(ent);
         if (ret == null) {
             return null;
         }
-        if (node.hasSpace()) {
-            List<BEntry> current = node.getAllValidEntries();
+//        if (node.hasSpace()) { //THIS OR THE NODE
+        if (this.hasSpace()) {
+            List<BEntry> current = this.getAllValidEntries();
             current.add(ent);
             overwriteBNodeEntries(current);
+            return null;
         } else {
-            return splitNode(ent);
+            InnerEntry outputInsertBEntry = splitNode(ent);
+            if (outputInsertBEntry != null) {
+                BPlusNode buffer = this;
+                InnerNode newRoot = new InnerNode(this.getTree(), outputInsertBEntry.getPageNum());
+                newRoot.setFirstChild(buffer.getPageNum());
+//                this = new InnerNode(this.getTree(), newRoot.getPageNum()); //HOW DO I UPDATE THE LEAF NODE
+            }
+            return outputInsertBEntry;
         }
-        return null;
-//        return null;
     }
 
     /**
@@ -107,8 +112,6 @@ public class InnerNode extends BPlusNode {
      */
     @Override
     public InnerEntry splitNode(BEntry newEntry) {
-        // Implement me!
-
         this.getTree().incrementNumNodes();
 
         List<BEntry> current = this.getAllValidEntries();
@@ -116,15 +119,16 @@ public class InnerNode extends BPlusNode {
 //        current.add(this.getFirstChild());
         Collections.sort(current);
 
-        LeafNode second = new LeafNode(this.getTree()); //allocate page
+        int pageNum = this.getTree().allocator.allocPage();
+        InnerNode second = new InnerNode(this.getTree(), pageNum); //allocate pag
 
         second.overwriteBNodeEntries(current.subList(current.size()/2 +1, current.size()));
+        second.setFirstChild(newEntry.getPageNum()); ///settting first pointer to the new entries page num
         this.overwriteBNodeEntries(current.subList(0, current.size()/2));
 
         int pageSecond = second.getPageNum();
         BEntry middle = current.get(current.size()/2);
-        InnerEntry copyUp = new InnerEntry(middle.getKey(), pageSecond); //how make pointer to second
-        //set first child
+        InnerEntry copyUp = new InnerEntry(middle.getKey(), pageSecond);
 
         return copyUp;
     }

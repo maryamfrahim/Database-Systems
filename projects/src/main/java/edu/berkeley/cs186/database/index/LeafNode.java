@@ -67,7 +67,7 @@ public class LeafNode extends BPlusNode {
 
                 //make root point to the IN
                 int newPageNum = newRoot.getPageNum();
-//                this.rootPageNum = newPageNum;
+//                this = new LeafNode(this.getTree(), newPageNum); //HOW DO I UPDATE THE LEAF NODE
             }
             return outputInsertBEntry;
         }
@@ -94,14 +94,14 @@ public class LeafNode extends BPlusNode {
         Collections.sort(current);
 
         int pageNum = this.getTree().allocator.allocPage();
-        LeafNode second = new LeafNode(this.getTree()); //allocate page
+        LeafNode second = new LeafNode(this.getTree(), pageNum); //allocate page
 
         second.overwriteBNodeEntries(current.subList(current.size()/2, current.size()));
         this.overwriteBNodeEntries(current.subList(0, current.size()/2));
 
         int pageSecond = second.getPageNum();
         BEntry middle = current.get(current.size()/2);
-        InnerEntry copyUp = new InnerEntry(middle.getKey(), pageSecond); //how make pointer to second
+        InnerEntry copyUp = new InnerEntry(middle.getKey(), pageSecond);
 
         return copyUp;
     }
