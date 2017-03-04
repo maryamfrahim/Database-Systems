@@ -137,11 +137,14 @@ public class BPlusTree {
 
         if (outputInsertBEntry != null) {
             BPlusNode buffer = root;
-            InnerNode newRoot = new InnerNode(this, outputInsertBEntry.getPageNum());
+            InnerNode newRoot = new InnerNode(this); //no pagenum
+            List<BEntry> updated = newRoot.getAllValidEntries();
+            updated.add(outputInsertBEntry);
+            newRoot.overwriteBNodeEntries(updated);
+
             newRoot.setFirstChild(buffer.getPageNum());
             updateRoot(newRoot.getPageNum());
         }
-
     }
 
     /**

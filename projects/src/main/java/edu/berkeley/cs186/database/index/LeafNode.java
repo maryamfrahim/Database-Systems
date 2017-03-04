@@ -55,23 +55,7 @@ public class LeafNode extends BPlusNode {
             return null;
         } else {
             InnerEntry outputInsertBEntry = splitNode(ent);
-            if (outputInsertBEntry != null) {
-                //save root pointer as buffer
-                BPlusNode buffer = this;
 
-                //make IE into a IN
-                InnerNode newRoot = new InnerNode(this.getTree(), outputInsertBEntry.getPageNum());
-
-                //make IN point to buffer
-                newRoot.setFirstChild(buffer.getPageNum());
-
-                //make root point to the IN
-                int changed = 0; //HOW DO I KNOW WHICH ENTRY WAS CHANGED
-                BEntry updated = newRoot.getAllValidEntries().get(changed);
-                this.getAllValidEntries().add(changed, updated); //update the list
-                int newPageNum = newRoot.getPageNum();
-//                this = new LeafNode(this.getTree(), newPageNum); //HOW DO I UPDATE THE LEAF NODE
-            }
             return outputInsertBEntry;
         }
 
@@ -96,8 +80,7 @@ public class LeafNode extends BPlusNode {
         current.add(newEntry);
         Collections.sort(current);
 
-        int pageNum = this.getTree().allocator.allocPage();
-        LeafNode second = new LeafNode(this.getTree(), pageNum); //allocate page
+        LeafNode second = new LeafNode(this.getTree()); //allocate page
 
         second.overwriteBNodeEntries(current.subList(current.size()/2, current.size()));
         this.overwriteBNodeEntries(current.subList(0, current.size()/2));
