@@ -258,7 +258,7 @@ public class BPlusTree {
             BPlusNode currNode = root;
             this.root = root;
 
-            LeafNode scannable = nextLeaf(root);
+            LeafNode scannable = nextLeaf(currNode);
 
             this.returnable = scannable.scan();
         }
@@ -294,16 +294,24 @@ public class BPlusTree {
          */
         public boolean hasNext() {
             // Implement me!
-            if (this.stack.empty() || !this.returnable.hasNext()) {
+            if (!this.returnable.hasNext()) {
+                System.out.println("leaf empty");
                 return false;
             }
+            if (this.stack.empty()) {
+                System.out.println("stack empty");
+                return false;
+            }
+
             return true;
         }
 
         public LeafNode nextLeaf(BPlusNode root) {
             BPlusNode currNode = root;
             if (!root.isLeaf()) {
+                System.out.println("here if");
                 while (!currNode.isLeaf()) { //until pop off first leaf node.
+                    System.out.println("here while");
                     InnerNode currentNode = (InnerNode) currNode;
                     List<BEntry> list = currentNode.getAllValidEntries();
                     Collections.reverse(list);
@@ -311,11 +319,18 @@ public class BPlusTree {
                         BPlusNode curry = BPlusNode.getBPlusNode(root.getTree(), ent.getPageNum());
                         this.stack.add(curry);
                     }
+                    System.out.println("here for");
                     this.stack.add(BPlusNode.getBPlusNode(root.getTree(), currentNode.getFirstChild()));
+
                     currNode = this.stack.pop();
                 }
+            } else {
+                System.out.println("root is a leaf");
+                LeafNode gotcha = (LeafNode) root;
+                return gotcha;
             }
             //scanning that leaf node to get the rid iterator.
+            System.out.println("out of the ifs and while");
             LeafNode scannable = new LeafNode(root.getTree(), currNode.getPageNum());
             return scannable;
         }

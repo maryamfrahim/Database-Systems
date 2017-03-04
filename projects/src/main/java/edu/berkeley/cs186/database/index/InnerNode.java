@@ -74,16 +74,16 @@ public class InnerNode extends BPlusNode {
      */
     public InnerEntry insertBEntry(LeafEntry ent) {
         // Implement me!
-//        DataBox key = ent.getKey();
-//        int pageNum = this.findChildFromKey(key);
-//        BPlusNode node = getBPlusNode(this.getTree(), pageNum);
+        DataBox key = ent.getKey();
+        int pageNum = this.findChildFromKey(key);
+        BPlusNode node = getBPlusNode(this.getTree(), pageNum);
 
         InnerEntry ret = insertBEntry(ent);
-        if (ret == null) {
-            return null;
-        }
-//        if (node.hasSpace()) { //THIS OR THE NODE
-        if (this.hasSpace()) {
+//        if (ret == null) {
+//            return null;
+//        }
+        if (node.hasSpace()) { //THIS OR THE NODE
+//        if (this.hasSpace()) {
             List<BEntry> current = this.getAllValidEntries();
             current.add(ent);
             overwriteBNodeEntries(current);
@@ -94,7 +94,8 @@ public class InnerNode extends BPlusNode {
                 BPlusNode buffer = this;
                 InnerNode newRoot = new InnerNode(this.getTree(), outputInsertBEntry.getPageNum());
                 newRoot.setFirstChild(buffer.getPageNum());
-//                this = new InnerNode(this.getTree(), newRoot.getPageNum()); //HOW DO I UPDATE THE LEAF NODE
+//              node = new InnerNode(this.getTree(), newRoot.getPageNum()); //HOW DO I UPDATE THE LEAF NODE
+                this.setFirstChild(newRoot.getPageNum()); //but not the firch child, child affected
             }
             return outputInsertBEntry;
         }
