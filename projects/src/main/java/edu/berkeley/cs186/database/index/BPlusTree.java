@@ -137,6 +137,7 @@ public class BPlusTree {
 
         if (outputInsertBEntry != null) {
 //            BPlusNode buffer = root;
+
             InnerNode newRoot = new InnerNode(BPlusTree.this); //no pagenum
             List<BEntry> updated = new ArrayList<BEntry>();
             updated.add(outputInsertBEntry);
@@ -261,6 +262,7 @@ public class BPlusTree {
          */
         public BPlusIterator(BPlusNode root) {
             BPlusNode currNode = root;
+            this.stack.add(root);
             this.root = root;
 
             LeafNode scannable = nextLeaf(currNode);
@@ -283,6 +285,7 @@ public class BPlusTree {
         public BPlusIterator(BPlusNode root, DataBox key, boolean scan) {
             // Implement me!
             this.root = root;
+            this.stack.add(root);
             LeafNode scannable = nextLeaf(root);
             this.scan = scan;
             this.key = key;
@@ -327,8 +330,6 @@ public class BPlusTree {
                 System.out.println("here 4");
                 if(this.returnable.hasNext()) {
                     System.out.println("marco");
-                    RecordID gotua = this.returnable.next();
-                    System.out.println(gotua.getPageNum());
                     return true;
                 }
                 if (!this.returnable.hasNext()) {
@@ -341,7 +342,7 @@ public class BPlusTree {
         }
 
         public LeafNode nextLeaf(BPlusNode root) {
-            BPlusNode currNode = root;
+            BPlusNode currNode = stack.pop();
             System.out.println("Nextleaf 1");
             if (!root.isLeaf()) {
                 System.out.println("Nextleaf 2");
@@ -383,6 +384,7 @@ public class BPlusTree {
         public RecordID next() {
 
             if (this.returnable.hasNext()) {
+                System.out.println("Next over here");
                 return this.returnable.next();
             }
 //            else if (!this.stack.empty()) {

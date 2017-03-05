@@ -75,7 +75,7 @@ public class InnerNode extends BPlusNode {
     public InnerEntry insertBEntry(LeafEntry ent) {
         // Implement me!
         int addedToHere = this.findChildFromKey(ent.getKey());
-        BPlusNode here = this.getBPlusNode(this.getTree(), addedToHere); //this or BPlusNode
+        BPlusNode here = BPlusNode.getBPlusNode(this.getTree(), addedToHere); //this or BPlusNode
         InnerEntry ret = here.insertBEntry(ent);
         if (ret == null) {
             return null;
@@ -115,7 +115,7 @@ public class InnerNode extends BPlusNode {
 
         InnerNode second = new InnerNode(this.getTree()); //allocate pag
         second.overwriteBNodeEntries(current.subList(current.size()/2 + 1, current.size())); //flip order
-        second.setFirstChild(newEntry.getPageNum()); ///settting first pointer to the new entries page num CHANGED
+        second.setFirstChild(middle.getPageNum()); ///settting first pointer to the new entries page num CHANGED
 
         this.overwriteBNodeEntries(current.subList(0, current.size()/2));
 

@@ -72,20 +72,19 @@ public class LeafNode extends BPlusNode {
      */
     @Override
     public InnerEntry splitNode(BEntry newEntry) {
-        // Implement me!
-//        this.getTree().incrementNumNodes();
 
         List<BEntry> current = this.getAllValidEntries();
         current.add(newEntry);
         Collections.sort(current);
+        BEntry middle = current.get(current.size()/2);
 
-        LeafNode second = new LeafNode(this.getTree()); //allocate page
+        LeafNode second = new LeafNode(this.getTree());
 
         second.overwriteBNodeEntries(current.subList(current.size()/2, current.size()));
+
         this.overwriteBNodeEntries(current.subList(0, current.size()/2));
 
         int pageSecond = second.getPageNum();
-        BEntry middle = current.get(current.size()/2);
         InnerEntry copyUp = new InnerEntry(middle.getKey(), pageSecond); //PAGE NUM CHECK
 
         return copyUp;
