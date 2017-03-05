@@ -178,7 +178,7 @@ public class TestLargeBPlusTree {
             expectedPageNum++;
         }
         assertEquals(4*intLeafPageSize + 1, expectedPageNum);
-        System.out.println(this.bp.getNumNodes() + "surprise");
+//        System.out.println(this.bp.getNumNodes() + "surprise");
         assertEquals(9, this.bp.getNumNodes());
     }
 
@@ -197,14 +197,41 @@ public class TestLargeBPlusTree {
             expectedPageNum++;
         }
         assertEquals(4*intLeafPageSize + 50, expectedPageNum);
-        System.out.println(this.bp.getNumNodes() + "surprise");
+//        System.out.println(this.bp.getNumNodes() + "surprise");
         assertEquals(9, this.bp.getNumNodes());
     }
 
     @Test
     @Category(StudentTestP2.class)
-    public void test9() {
-        assertEquals(true, true); // Do not actually write a test like this!
+    public void test9wtharealtest() {
+        for (int i = 0; i < 300; i++) {
+            bp.insertKey(new IntDataBox(i), new RecordID(i,0));
+        }
+
+        Iterator<RecordID> rids = bp.sortedScan();
+
+        int expectedPageNum = 0;
+
+
+        while (rids.hasNext()) {
+            assertEquals(expectedPageNum, rids.next().getPageNum());
+            expectedPageNum++;
+        }
+
+        System.out.println(this.bp.getNumNodes());
+        assertEquals(1, this.bp.getNumNodes());
+
+        for (int i = 0; i < 300; i++) {
+            bp.insertKey(new IntDataBox(i), new RecordID(i,0));
+        }
+
+        while (rids.hasNext()) {
+            assertEquals(expectedPageNum, rids.next().getPageNum());
+            expectedPageNum++;
+        }
+
+        System.out.println(this.bp.getNumNodes());
+        assertEquals(3, this.bp.getNumNodes());
     }
 
     @Test
