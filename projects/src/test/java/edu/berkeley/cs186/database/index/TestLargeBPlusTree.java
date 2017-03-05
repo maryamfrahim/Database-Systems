@@ -48,32 +48,134 @@ public class TestLargeBPlusTree {
 
     @Test
     @Category(StudentTestP2.class)
-    public void test2() {
-        assertFalse(true);
-    }
-
-    @Test
-    @Category(StudentTestP2.class)
-    public void test1() {
-        assertEquals(true, true); // Do not actually write a test like this!
-        System.out.println("your own test");
+    public void test1updatesonenode() {
         for (int i = 0; i < 100; i++) {
-            System.out.println("hello");
             bp.insertKey(new IntDataBox(i), new RecordID(i,0));
         }
 
         Iterator<RecordID> rids = bp.sortedScan();
 
         int expectedPageNum = 0;
-        assertEquals(true, false);
 
         while (rids.hasNext()) {
             assertEquals(expectedPageNum, rids.next().getPageNum());
             expectedPageNum++;
         }
 
-        assertEquals(10, this.bp.getNumNodes());
+        assertEquals(1, this.bp.getNumNodes());
     }
+
+    @Test
+    @Category(StudentTestP2.class)
+    public void test2splitsintoThreeNodesOneRootTwoLeafs() {
+        assertEquals(true, true); // Do not actually write a test like this!
+        for (int i = 0; i < 600; i++) {
+            bp.insertKey(new IntDataBox(i), new RecordID(i,0));
+        }
+
+        Iterator<RecordID> rids = bp.sortedScan();
+
+        int expectedPageNum = 0;
+
+        while (rids.hasNext()) {
+            assertEquals(expectedPageNum, rids.next().getPageNum());
+            expectedPageNum++;
+        }
+//        System.out.println(this.bp.getNumNodes());
+        assertEquals(3, this.bp.getNumNodes());
+    }
+
+    @Test
+    @Category(StudentTestP2.class)
+    public void test3splitsleafIntoTwoSoFourNodes() {
+        assertEquals(true, true); // Do not actually write a test like this!
+        for (int i = 0; i < 700 ; i++) {
+            bp.insertKey(new IntDataBox(i), new RecordID(i,0));
+        }
+
+        Iterator<RecordID> rids = bp.sortedScan();
+
+        int expectedPageNum = 0;
+
+        while (rids.hasNext()) {
+            assertEquals(expectedPageNum, rids.next().getPageNum());
+            expectedPageNum++;
+        }
+//        System.out.println("hey" + this.bp.getNumNodes());
+        assertEquals(4, this.bp.getNumNodes());
+    }
+
+    @Test
+    @Category(StudentTestP2.class)
+    public void test4fillingupanode() {
+        for (int i = 0; i < intLeafPageSize + 20; i++) {
+            bp.insertKey(new IntDataBox(i), new RecordID(i,0));
+        }
+
+        Iterator<RecordID> rids = bp.sortedScan();
+        assertTrue(rids.hasNext());
+        int expectedPageNum = 0;
+        while (rids.hasNext()) {
+            RecordID rid = rids.next();
+            assertEquals(expectedPageNum, rid.getPageNum());
+
+            expectedPageNum++;
+        }
+        assertEquals(intLeafPageSize + 20, expectedPageNum);
+        assertEquals(3, this.bp.getNumNodes());
+    }
+
+    @Test
+    @Category(StudentTestP2.class)
+    public void test5() {
+        for (int i = 0; i < intLeafPageSize * 2; i++) {
+            bp.insertKey(new IntDataBox(i), new RecordID(i,0));
+        }
+
+        Iterator<RecordID> rids = bp.sortedScan();
+        assertTrue(rids.hasNext());
+        int expectedPageNum = 0;
+        while (rids.hasNext()) {
+            RecordID rid = rids.next();
+            assertEquals(expectedPageNum, rid.getPageNum());
+
+            expectedPageNum++;
+        }
+        assertEquals(intLeafPageSize * 2, expectedPageNum);
+        System.out.println(this.bp.getNumNodes() + "merry");
+        assertEquals(5, this.bp.getNumNodes());
+    }
+
+    @Test
+    @Category(StudentTestP2.class)
+    public void test6() {
+        assertEquals(true, true); // Do not actually write a test like this!
+    }
+
+    @Test
+    @Category(StudentTestP2.class)
+    public void test7() {
+        assertEquals(true, true); // Do not actually write a test like this!
+    }
+
+    @Test
+    @Category(StudentTestP2.class)
+    public void test8() {
+        assertEquals(true, true); // Do not actually write a test like this!
+    }
+
+    @Test
+    @Category(StudentTestP2.class)
+    public void test9() {
+        assertEquals(true, true); // Do not actually write a test like this!
+    }
+
+    @Test
+    @Category(StudentTestP2.class)
+    public void test10() {
+        assertEquals(true, true); // Do not actually write a test like this!
+    }
+
 //
 //    @Test
 //    public void testBPlusTreeInsert() {
