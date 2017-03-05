@@ -86,7 +86,7 @@ public class LeafNode extends BPlusNode {
 
         int pageSecond = second.getPageNum();
         BEntry middle = current.get(current.size()/2);
-        InnerEntry copyUp = new InnerEntry(middle.getKey(), pageSecond);
+        InnerEntry copyUp = new InnerEntry(middle.getKey(), pageSecond); //PAGE NUM CHECK
 
         return copyUp;
     }

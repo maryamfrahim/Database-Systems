@@ -88,7 +88,7 @@ public class InnerNode extends BPlusNode {
                 this.overwriteBNodeEntries(current);
                 return null;
             } else {
-                InnerEntry outputInsertBEntry = splitNode(ent);
+                InnerEntry outputInsertBEntry = splitNode(ret); //ret not entry
                 return outputInsertBEntry;
             }
         }
@@ -115,7 +115,7 @@ public class InnerNode extends BPlusNode {
 
         InnerNode second = new InnerNode(this.getTree()); //allocate pag
         second.overwriteBNodeEntries(current.subList(current.size()/2 + 1, current.size())); //flip order
-        second.setFirstChild(middle.getPageNum()); ///settting first pointer to the new entries page num
+        second.setFirstChild(newEntry.getPageNum()); ///settting first pointer to the new entries page num CHANGED
 
         this.overwriteBNodeEntries(current.subList(0, current.size()/2));
 
