@@ -142,26 +142,63 @@ public class TestLargeBPlusTree {
             expectedPageNum++;
         }
         assertEquals(intLeafPageSize * 2, expectedPageNum);
-        System.out.println(this.bp.getNumNodes() + "merry");
-        assertEquals(5, this.bp.getNumNodes());
+        assertEquals(4, this.bp.getNumNodes());
     }
 
     @Test
     @Category(StudentTestP2.class)
     public void test6() {
-        assertEquals(true, true); // Do not actually write a test like this!
+        for (int i = 0; i < 3*intLeafPageSize + 20; i++) {
+            bp.insertKey(new IntDataBox(i), new RecordID(i,0));
+        }
+
+        Iterator<RecordID> rids = bp.sortedScan();
+        int expectedPageNum = 0;
+        while (rids.hasNext()) {
+            RecordID rid = rids.next();
+            assertEquals(expectedPageNum, rid.getPageNum());
+            expectedPageNum++;
+        }
+        assertEquals(3*intLeafPageSize + 20, expectedPageNum);
+        assertEquals(7, this.bp.getNumNodes());
     }
 
     @Test
     @Category(StudentTestP2.class)
     public void test7() {
-        assertEquals(true, true); // Do not actually write a test like this!
+        for (int i = 0; i < 4*intLeafPageSize + 1; i++) {
+            bp.insertKey(new IntDataBox(i), new RecordID(i,0));
+        }
+
+        Iterator<RecordID> rids = bp.sortedScan();
+        int expectedPageNum = 0;
+        while (rids.hasNext()) {
+            RecordID rid = rids.next();
+            assertEquals(expectedPageNum, rid.getPageNum());
+            expectedPageNum++;
+        }
+        assertEquals(4*intLeafPageSize + 1, expectedPageNum);
+        System.out.println(this.bp.getNumNodes() + "surprise");
+        assertEquals(9, this.bp.getNumNodes());
     }
 
     @Test
     @Category(StudentTestP2.class)
     public void test8() {
-        assertEquals(true, true); // Do not actually write a test like this!
+        for (int i = 0; i < 4*intLeafPageSize + 50; i++) {
+            bp.insertKey(new IntDataBox(i), new RecordID(i,0));
+        }
+
+        Iterator<RecordID> rids = bp.sortedScan();
+        int expectedPageNum = 0;
+        while (rids.hasNext()) {
+            RecordID rid = rids.next();
+            assertEquals(expectedPageNum, rid.getPageNum());
+            expectedPageNum++;
+        }
+        assertEquals(4*intLeafPageSize + 50, expectedPageNum);
+        System.out.println(this.bp.getNumNodes() + "surprise");
+        assertEquals(9, this.bp.getNumNodes());
     }
 
     @Test
