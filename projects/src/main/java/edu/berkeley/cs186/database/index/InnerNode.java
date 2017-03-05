@@ -109,13 +109,14 @@ public class InnerNode extends BPlusNode {
     @Override
     public InnerEntry splitNode(BEntry newEntry) {
         List<BEntry> current = this.getAllValidEntries();
+        BEntry oldmiddle = current.get(current.size()/2);
         current.add(newEntry);
         Collections.sort(current);
         BEntry middle = current.get(current.size()/2);
 
         InnerNode second = new InnerNode(this.getTree()); //allocate pag
         second.overwriteBNodeEntries(current.subList(current.size()/2 + 1, current.size())); //flip order
-        second.setFirstChild(middle.getPageNum()); ///settting first pointer to the new entries page num CHANGED
+        second.setFirstChild(oldmiddle.getPageNum()); ///settting first pointer to the new entries page num CHANGED
 
         this.overwriteBNodeEntries(current.subList(0, current.size()/2));
 

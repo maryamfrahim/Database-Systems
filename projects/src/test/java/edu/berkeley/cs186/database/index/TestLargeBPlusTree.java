@@ -89,7 +89,6 @@ public class TestLargeBPlusTree {
             assertEquals(expectedPageNum, rid.getPageNum());
             expectedPageNum++;
         }
-        System.out.println("In FullLeafNode " + 1 + " FullLeafNode actual 3 " + this.bp.getNumNodes());
         assertEquals(intLeafPageSize, expectedPageNum);
         assertEquals(1, this.bp.getNumNodes());
     }
@@ -102,21 +101,14 @@ public class TestLargeBPlusTree {
         }
 
         Iterator<RecordID> rids = bp.sortedScan();
-        System.out.println("this is the one"   + rids.hasNext());
         assertTrue(rids.hasNext());
         int expectedPageNum = 0;
         while (rids.hasNext()) {
             RecordID rid = rids.next();
-            System.out.println(expectedPageNum + " verses " + rid.getPageNum());
             assertEquals(expectedPageNum, rid.getPageNum());
 
-            System.out.println("here");
             expectedPageNum++;
-            System.out.println(expectedPageNum + " verses " + rid.getPageNum());
         }
-//        System.out.println("hello");
-//        System.out.println(intLeafPageSize + 1 + " and verses " + expectedPageNum);
-//        System.out.println(3 + " lastly verses " + this.bp.getNumNodes());
         assertEquals(intLeafPageSize + 1, expectedPageNum);
         assertEquals(3, this.bp.getNumNodes());
     }
@@ -213,7 +205,6 @@ public class TestLargeBPlusTree {
             bp.insertKey(new IntDataBox(i % 4), new RecordID(i % 4, i));
         }
 
-        System.out.println(15 + " hello " +  this.bp.getNumNodes());
         assertEquals(15, this.bp.getNumNodes());
 
         Iterator<RecordID> rids;
@@ -269,7 +260,6 @@ public class TestLargeBPlusTree {
         for (int i = 0; i < 10*intLeafPageSize; i++) {
             bp.insertKey(new IntDataBox(i % 5), new RecordID(i % 5, i));
         }
-        System.out.println(19 + " hello " + this.bp.getNumNodes());
         assertEquals(19, this.bp.getNumNodes());
 
         Iterator<RecordID> rids = bp.sortedScan();
@@ -316,10 +306,10 @@ public class TestLargeBPlusTree {
         /**
          * Insert enough keys to cause an InnerNode split.
          */
+        assertTrue(true);
         for (int i = 0; i < (intInnPageSize/2 + 1)*(intLeafPageSize); i++) {
             bp.insertKey(new IntDataBox(i), new RecordID(i, 0));
         }
-
         assertEquals(498, this.bp.getNumNodes());
 
         Iterator<RecordID> rids = bp.sortedScan();
@@ -346,7 +336,6 @@ public class TestLargeBPlusTree {
             }
         }
 
-        System.out.println(865 + " compared to " + this.bp.getNumNodes());
         assertEquals(865, this.bp.getNumNodes());
 
 

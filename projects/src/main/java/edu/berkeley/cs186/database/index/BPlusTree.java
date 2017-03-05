@@ -305,35 +305,26 @@ public class BPlusTree {
          */
         public boolean hasNext() {
             // Implement me!
-            System.out.println("In hasnext");
-            System.out.println(this.returnable.hasNext() + " leaf iterator");
-            System.out.println(!this.stack.empty() + " stack");
             if (this.returnable.hasNext()) {
                 return true;
             }
             if (!this.stack.empty()) {
-                System.out.println("in second if statement");
-                System.out.println(this.scan);
                 LeafNode scannable = nextLeaf(root);
-                System.out.println("past helper fun");
                 if (Boolean.TRUE.equals(this.scan)) {
-                    System.out.println("here1");
                     this.returnable = scannable.scanFrom(this.key);
                 } if (Boolean.FALSE.equals(this.scan)) {
-                    System.out.println("here2");
                     this.returnable = scannable.scanForKey(this.key);
                 }
                 if (this.scan == null) {
-                    System.out.println("here3");
                     this.returnable = scannable.scan();
                 }
-                System.out.println("here 4");
+//                System.out.println(" hasnext here 4");
                 if(this.returnable.hasNext()) {
-                    System.out.println("marco");
+//                    System.out.println("marco");
                     return true;
                 }
                 if (!this.returnable.hasNext()) {
-                    System.out.println("polo");
+//                    System.out.println("polo");
                     return this.hasNext();
                 }
 //                return this.returnable.hasNext();
@@ -343,11 +334,8 @@ public class BPlusTree {
 
         public LeafNode nextLeaf(BPlusNode root) {
             BPlusNode currNode = stack.pop();
-            System.out.println("Nextleaf 1");
             if (!root.isLeaf()) {
-                System.out.println("Nextleaf 2");
                 while (!currNode.isLeaf()) { //until pop off first leaf node.
-                    System.out.println("Nextleaf 3");
                     BPlusNode currentNode = currNode;
                     List<BEntry> list = currentNode.getAllValidEntries();
                     Collections.reverse(list);
@@ -355,7 +343,6 @@ public class BPlusTree {
                         BPlusNode curry = BPlusNode.getBPlusNode(root.getTree(), ent.getPageNum());
                         this.stack.add(curry);
                     }
-                    System.out.println("Nextleaf 4");
                     if (!currentNode.isLeaf()) {
                         InnerNode innerrr = (InnerNode) currentNode;
                         this.stack.add(BPlusNode.getBPlusNode(root.getTree(), innerrr.getFirstChild()));
@@ -363,13 +350,10 @@ public class BPlusTree {
                     currNode = this.stack.pop();
                 }
             } else {
-                System.out.println("Nextleaf 5");
                 LeafNode gotcha = (LeafNode) root;
                 return gotcha;
             }
             //scanning that leaf node to get the rid iterator.
-//            System.out.println("out of the ifs and while helper funk");
-            System.out.println("Nextleaf 6" + currNode.getPageNum());
             LeafNode scannable = new LeafNode(root.getTree(), currNode.getPageNum());
             return scannable;
         }
@@ -384,7 +368,6 @@ public class BPlusTree {
         public RecordID next() {
 
             if (this.returnable.hasNext()) {
-                System.out.println("Next over here");
                 return this.returnable.next();
             }
 //            else if (!this.stack.empty()) {
