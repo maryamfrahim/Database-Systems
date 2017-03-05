@@ -45,6 +45,7 @@ public class TestLargeBPlusTree {
         }
 
         Iterator<RecordID> rids = bp.sortedScan();
+
         int expectedPageNum = 0;
 
         while (rids.hasNext()) {
@@ -206,8 +207,10 @@ public class TestLargeBPlusTree {
          */
         for (int i = 0; i < 8*intLeafPageSize; i++) {
             bp.insertKey(new IntDataBox(i % 4), new RecordID(i % 4, i));
+            System.out.println(" in for " +  this.bp.getNumNodes());
         }
 
+        System.out.println(15 + " hello " +  this.bp.getNumNodes());
         assertEquals(15, this.bp.getNumNodes());
 
         Iterator<RecordID> rids;
@@ -264,7 +267,7 @@ public class TestLargeBPlusTree {
         for (int i = 0; i < 10*intLeafPageSize; i++) {
             bp.insertKey(new IntDataBox(i % 5), new RecordID(i % 5, i));
         }
-
+        System.out.println(19 + " hello " + this.bp.getNumNodes());
         assertEquals(19, this.bp.getNumNodes());
 
         Iterator<RecordID> rids = bp.sortedScan();
@@ -287,10 +290,12 @@ public class TestLargeBPlusTree {
          * Ensure that sortedScanFrom works when a value spans more than one
          * page.
          */
+        //System.out.println("this is before the for loop " + this.bp.getNumNodes());
         for (int i = 0; i < 10*intLeafPageSize; i++) {
+            //System.out.println(i + " i in the for loop " + this.bp.getNumNodes());
             bp.insertKey(new IntDataBox(i % 5), new RecordID(i % 5, i));
         }
-
+        //System.out.println(19 + " this is what you came for " + this.bp.getNumNodes());
         assertEquals(19, this.bp.getNumNodes());
 
         for (int k = 0; k < 5; k++) {
@@ -342,7 +347,9 @@ public class TestLargeBPlusTree {
             }
         }
 
+        System.out.println(865 + " compared to " + this.bp.getNumNodes());
         assertEquals(865, this.bp.getNumNodes());
+
 
         for (int k = 0; k < 250; k++) {
             Iterator<RecordID> rids = bp.lookupKey(new IntDataBox(k));

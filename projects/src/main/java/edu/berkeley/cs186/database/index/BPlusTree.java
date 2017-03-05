@@ -136,13 +136,13 @@ public class BPlusTree {
         InnerEntry outputInsertBEntry = root.insertBEntry(input);
 
         if (outputInsertBEntry != null) {
-            BPlusNode buffer = root;
-            InnerNode newRoot = new InnerNode(this); //no pagenum
-            List<BEntry> updated = newRoot.getAllValidEntries();
+//            BPlusNode buffer = root;
+            InnerNode newRoot = new InnerNode(BPlusTree.this); //no pagenum
+            List<BEntry> updated = new ArrayList<BEntry>();
             updated.add(outputInsertBEntry);
             newRoot.overwriteBNodeEntries(updated);
 
-            newRoot.setFirstChild(buffer.getPageNum());
+            newRoot.setFirstChild(root.getPageNum());
             updateRoot(newRoot.getPageNum());
         }
     }
@@ -248,6 +248,8 @@ public class BPlusTree {
         private Stack<BPlusNode> stack = new Stack<BPlusNode>();
         private Iterator<RecordID> returnable;
         private BPlusNode root;
+        private DataBox key = null;
+        private Boolean scan = null;
 
         /**
          * Construct an iterator that performs a sorted scan on this BPlusTree

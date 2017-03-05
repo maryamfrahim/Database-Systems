@@ -75,22 +75,25 @@ public class InnerNode extends BPlusNode {
     public InnerEntry insertBEntry(LeafEntry ent) {
         // Implement me!
         int addedToHere = this.findChildFromKey(ent.getKey());
-        BPlusNode here = this.getBPlusNode(this.getTree(), addedToHere);
+        BPlusNode here = this.getBPlusNode(this.getTree(), addedToHere); //this or BPlusNode
         InnerEntry ret = here.insertBEntry(ent);
-
         if (ret == null) {
             return null;
-        }
-        if (this.hasSpace()) {
-            List<BEntry> current = this.getAllValidEntries();
-            current.add(ret); //adding ret not ent omggg
-            Collections.sort(current);
-            overwriteBNodeEntries(current);
-            return null;
         } else {
-            InnerEntry outputInsertBEntry = splitNode(ent);
-            return outputInsertBEntry;
+            if (this.hasSpace()) {
+//                this.getAllValidEntries().add(addedToHere, ret);
+                List<BEntry> current = this.getAllValidEntries();
+                current.add(ret); //adding ret not ent omggg
+                Collections.sort(current);
+                this.overwriteBNodeEntries(current);
+                return null;
+            } else {
+                InnerEntry outputInsertBEntry = splitNode(ent);
+                return outputInsertBEntry;
+            }
         }
+
+
     }
 
     /**
@@ -105,21 +108,18 @@ public class InnerNode extends BPlusNode {
      */
     @Override
     public InnerEntry splitNode(BEntry newEntry) {
-        this.getTree().incrementNumNodes();
-
         List<BEntry> current = this.getAllValidEntries();
         current.add(newEntry);
-//        current.add(this.getFirstChild());
         Collections.sort(current);
         BEntry middle = current.get(current.size()/2);
-        InnerNode second = new InnerNode(this.getTree()); //allocate pag
 
-        second.overwriteBNodeEntries(current.subList(current.size()/2 +1, current.size()));
+        InnerNode second = new InnerNode(this.getTree()); //allocate pag
+        second.overwriteBNodeEntries(current.subList(current.size()/2 + 1, current.size())); //flip order
         second.setFirstChild(middle.getPageNum()); ///settting first pointer to the new entries page num
+
         this.overwriteBNodeEntries(current.subList(0, current.size()/2));
 
         int pageSecond = second.getPageNum();
-
         InnerEntry copyUp = new InnerEntry(middle.getKey(), pageSecond);
 
         return copyUp;

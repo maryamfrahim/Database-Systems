@@ -55,7 +55,6 @@ public class LeafNode extends BPlusNode {
             return null;
         } else {
             InnerEntry outputInsertBEntry = splitNode(ent);
-
             return outputInsertBEntry;
         }
 
@@ -74,7 +73,7 @@ public class LeafNode extends BPlusNode {
     @Override
     public InnerEntry splitNode(BEntry newEntry) {
         // Implement me!
-        this.getTree().incrementNumNodes();
+//        this.getTree().incrementNumNodes();
 
         List<BEntry> current = this.getAllValidEntries();
         current.add(newEntry);
