@@ -37,6 +37,15 @@ public class TestLargeBPlusTree {
         this.bp = new BPlusTree(new IntDataBox(), testFile, tempFolderPath);
     }
 
+    /**     
+    * Test sample, do not modify.        
+    */
+    @Test
+    @Category(StudentTestP2.class)
+    public void testSample() {
+        assertEquals(true, true); // Do not actually write a test like this!
+    }
+
     @Test
     @Category(StudentTestP2.class)
     public void test2() {
