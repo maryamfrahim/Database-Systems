@@ -16,20 +16,23 @@ import java.util.Set;
 
 import edu.berkeley.cs186.database.Database;
 import edu.berkeley.cs186.database.DatabaseException;
+import edu.berkeley.cs186.database.StudentTest;
+import edu.berkeley.cs186.database.StudentTestP3;
 import edu.berkeley.cs186.database.TestUtils;
 import edu.berkeley.cs186.database.StudentTest;
 import edu.berkeley.cs186.database.table.MarkerRecord;
 import edu.berkeley.cs186.database.table.Record;
 
+
 import static org.junit.Assert.*;
 
-public class GroupByOperatorTest {
+public class TestGroupByOperator {
 
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
 
   @Test
-  public void testOperatorSchema() throws QueryPlanException {
+  public void testGroupByOperatorSchema() throws QueryPlanException {
     TestSourceOperator sourceOperator = new TestSourceOperator();
     GroupByOperator groupByOperator = new GroupByOperator(sourceOperator, null, "int");
 
