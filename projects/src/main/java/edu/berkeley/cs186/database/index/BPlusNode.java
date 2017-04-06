@@ -36,7 +36,7 @@ public abstract class BPlusNode {
      * Abstract constructor for BPlusNode for existing nodes.
      *
      * @param tree the BPlusTree this Node belongs to
-     * @param pageNum the pageNum where to open this node on
+     * @param pageNum the pageNum select to open this node on
      * @param isLeaf is this node a leaf
      */
 
@@ -71,7 +71,7 @@ public abstract class BPlusNode {
      * Return an existing Node from a BPlusTree and pageNum.
      *
      * @param tree the BPlusTree this Node belongs to
-     * @param pageNum the page number on where this node exists on
+     * @param pageNum the page number on select this node exists on
      * @return BPlusNode object that exists on this Page
      */
     public static BPlusNode getBPlusNode(BPlusTree tree, int pageNum) {
@@ -97,8 +97,6 @@ public abstract class BPlusNode {
     public boolean hasSpace() {
         return findFreeEntry() > -1;
     }
-
-//    public int getNumEntries() { return numEntries; } //CAN I DO THIS I ADDED THIS IS THAT OK OMG DONT SCREW UP EVERYTHING PLEASE THANK YOU
 
     /**
      * Retrieve the BPlusTree that this BPlusNode belongs to.
@@ -138,8 +136,7 @@ public abstract class BPlusNode {
     }
 
     /**
-     * Write a BEentry into the entryNum specified.                if parent node has space
-
+     * Write a BEentry into the entryNum specified.
      *
      * @param entryNum the entry number to fill
      * @param ent the BEntry to write

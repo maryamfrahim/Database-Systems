@@ -46,18 +46,15 @@ public class LeafNode extends BPlusNode {
      */
     @Override
     public InnerEntry insertBEntry(LeafEntry ent) {
-
-        if (this.hasSpace()) {
-            List<BEntry> current = this.getAllValidEntries();
-            current.add(ent);
-            Collections.sort(current);
-            overwriteBNodeEntries(current);
+        if (hasSpace()) {
+            List<BEntry> validEntries = getAllValidEntries();
+            validEntries.add(ent);
+            Collections.sort(validEntries);
+            overwriteBNodeEntries(validEntries);
             return null;
         } else {
-            InnerEntry outputInsertBEntry = splitNode(ent);
-            return outputInsertBEntry;
+            return splitNode(ent);
         }
-
     }
 
     /**
@@ -72,22 +69,22 @@ public class LeafNode extends BPlusNode {
      */
     @Override
     public InnerEntry splitNode(BEntry newEntry) {
+        List<BEntry> validEntries = getAllValidEntries();
+        validEntries.add(newEntry);
+        Collections.sort(validEntries);
 
-        List<BEntry> current = this.getAllValidEntries();
-        current.add(newEntry);
-        Collections.sort(current);
-        BEntry middle = current.get(current.size()/2);
+        List<BEntry> leftNodeEntries = validEntries.subList(0, validEntries.size()/2);
+        BEntry middleEntry = validEntries.get(validEntries.size()/2);
+        List<BEntry> rightNodeEntries = validEntries.subList(validEntries.size()/2, validEntries.size());
 
-        LeafNode second = new LeafNode(this.getTree());
+        overwriteBNodeEntries(leftNodeEntries);
 
-        second.overwriteBNodeEntries(current.subList(current.size()/2, current.size()));
+        LeafNode rightNode = new LeafNode(getTree());
+        rightNode.overwriteBNodeEntries(rightNodeEntries);
 
-        this.overwriteBNodeEntries(current.subList(0, current.size()/2));
+        InnerEntry newMiddleEntry = new InnerEntry(middleEntry.getKey(), rightNode.getPageNum());
 
-        int pageSecond = second.getPageNum();
-        InnerEntry copyUp = new InnerEntry(middle.getKey(), pageSecond); //PAGE NUM CHECK
-
-        return copyUp;
+        return newMiddleEntry;
     }
 
 

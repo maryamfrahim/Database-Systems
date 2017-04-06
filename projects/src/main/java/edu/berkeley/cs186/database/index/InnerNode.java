@@ -10,11 +10,10 @@ import java.util.List;
 /**
  * An inner node of a B+ tree. An InnerNode header contains an `isLeaf` flag
  * set to 0 and the page number of the first child node (or -1 if no child
- *
  * exists). An InnerNode contains InnerEntries.
+ *
  * Inherits all the properties of a BPlusNode.
  */
-
 public class InnerNode extends BPlusNode {
     public static int headerSize = 5;       // isLeaf + pageNum of first child
 
@@ -54,15 +53,16 @@ public class InnerNode extends BPlusNode {
      * contains the given key
      */
     public int findChildFromKey(DataBox key) {
-        int keyPage = getFirstChild();  // Default keyPage
-        List<BEntry> entries = getAllValidEntries();
-        for (BEntry ent : entries) {
-            if (key.compareTo(ent.getKey()) < 0) {
+        int childToTraverse = getFirstChild();
+        List<BEntry> validEntries = getAllValidEntries();
+        for (BEntry entry : validEntries) {
+            if (key.compareTo(entry.getKey()) < 0) {
                 break;
+            } else {
+                childToTraverse = entry.getPageNum();
             }
-            keyPage = ent.getPageNum();
         }
-        return keyPage;
+        return childToTraverse;
     }
 
     /**
@@ -73,27 +73,23 @@ public class InnerNode extends BPlusNode {
      * as a result of this InnerNode being split, null otherwise
      */
     public InnerEntry insertBEntry(LeafEntry ent) {
-        // Implement me!
-        int addedToHere = this.findChildFromKey(ent.getKey());
-        BPlusNode here = BPlusNode.getBPlusNode(this.getTree(), addedToHere); //this or BPlusNode
-        InnerEntry ret = here.insertBEntry(ent);
-        if (ret == null) {
-            return null;
-        } else {
-            if (this.hasSpace()) {
-//                this.getAllValidEntries().add(addedToHere, ret);
-                List<BEntry> current = this.getAllValidEntries();
-                current.add(ret); //adding ret not ent omggg
-                Collections.sort(current);
-                this.overwriteBNodeEntries(current);
+        int childPageNum = findChildFromKey(ent.getKey());
+        BPlusNode childNode = getBPlusNode(getTree(), childPageNum);
+        InnerEntry pushedEntry = childNode.insertBEntry(ent);
+
+        if (pushedEntry != null) {
+            if (hasSpace()) {
+                List<BEntry> validEntries = getAllValidEntries();
+                validEntries.add(pushedEntry);
+                Collections.sort(validEntries);
+                overwriteBNodeEntries(validEntries);
                 return null;
             } else {
-                InnerEntry outputInsertBEntry = splitNode(ret); //ret not entry
-                return outputInsertBEntry;
+                return splitNode(pushedEntry);
             }
+        } else {
+            return null;
         }
-
-
     }
 
     /**
@@ -108,21 +104,22 @@ public class InnerNode extends BPlusNode {
      */
     @Override
     public InnerEntry splitNode(BEntry newEntry) {
-        List<BEntry> current = this.getAllValidEntries();
-        BEntry oldmiddle = current.get(current.size()/2);
-        current.add(newEntry);
-        Collections.sort(current);
-        BEntry middle = current.get(current.size()/2);
+        List<BEntry> validEntries = getAllValidEntries();
+        validEntries.add(newEntry);
+        Collections.sort(validEntries);
 
-        InnerNode second = new InnerNode(this.getTree()); //allocate pag
-        second.overwriteBNodeEntries(current.subList(current.size()/2 + 1, current.size())); //flip order
-        second.setFirstChild(oldmiddle.getPageNum()); ///settting first pointer to the new entries page num CHANGED
+        List<BEntry> leftNodeEntries = validEntries.subList(0, validEntries.size()/2);
+        BEntry middleEntry = validEntries.get(validEntries.size()/2);
+        List<BEntry> rightNodeEntries = validEntries.subList(validEntries.size()/2 + 1, validEntries.size());
 
-        this.overwriteBNodeEntries(current.subList(0, current.size()/2));
+        overwriteBNodeEntries(leftNodeEntries);
 
-        int pageSecond = second.getPageNum();
-        InnerEntry copyUp = new InnerEntry(middle.getKey(), pageSecond);
+        InnerNode rightNode = new InnerNode(getTree());
+        rightNode.setFirstChild(middleEntry.getPageNum());
+        rightNode.overwriteBNodeEntries(rightNodeEntries);
 
-        return copyUp;
+        InnerEntry newMiddleEntry = new InnerEntry(middleEntry.getKey(), rightNode.getPageNum());
+
+        return newMiddleEntry;
     }
 }

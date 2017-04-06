@@ -2,7 +2,6 @@ package edu.berkeley.cs186.database.index;
 
 import edu.berkeley.cs186.database.io.Page;
 import edu.berkeley.cs186.database.io.PageAllocator;
-import edu.berkeley.cs186.database.table.Record;
 import edu.berkeley.cs186.database.table.RecordID;
 import edu.berkeley.cs186.database.databox.*;
 
@@ -38,7 +37,7 @@ public class BPlusTree {
      * This constructor is used for creating an empty BPlusTree.
      *
      * @param keySchema the schema of the index key
-     * @param fName the filename of where the index will be built
+     * @param fName the filename of select the index will be built
      */
     public BPlusTree(DataBox keySchema, String fName) {
         this(keySchema, fName, FILENAME_PREFIX);
@@ -96,7 +95,6 @@ public class BPlusTree {
         return new BPlusIterator(rootNode);
     }
 
-
     /**
      * Perform a range search beginning from a specified key.
      * The iterator should return all RecordIDs, starting from the specified
@@ -130,21 +128,19 @@ public class BPlusTree {
      * @param rid the RecordID of the given key
      */
     public void insertKey(DataBox key, RecordID rid) {
-        //Implement me
-        BPlusNode root = BPlusNode.getBPlusNode(this, this.rootPageNum);
-        LeafEntry input = new LeafEntry(key, rid);
-        InnerEntry outputInsertBEntry = root.insertBEntry(input);
+        LeafEntry leafEntryToInsert = new LeafEntry(key, rid);
+        BPlusNode rootNode = BPlusNode.getBPlusNode(this, rootPageNum);
+        InnerEntry pushedEntry = rootNode.insertBEntry(leafEntryToInsert);
 
-        if (outputInsertBEntry != null) {
-//            BPlusNode buffer = root;
-
-            InnerNode newRoot = new InnerNode(BPlusTree.this); //no pagenum
-            List<BEntry> updated = new ArrayList<BEntry>();
-            updated.add(outputInsertBEntry);
-            newRoot.overwriteBNodeEntries(updated);
-
-            newRoot.setFirstChild(root.getPageNum());
+        if (pushedEntry != null) {
+            InnerNode newRoot = new InnerNode(this);
+            newRoot.setFirstChild(rootPageNum);
+            List<BEntry> newRootEntries = new ArrayList<BEntry>();
+            newRootEntries.add(pushedEntry);
+            newRoot.overwriteBNodeEntries(newRootEntries);
             updateRoot(newRoot.getPageNum());
+        } else {
+            // do nothing
         }
     }
 
@@ -240,17 +236,20 @@ public class BPlusTree {
         }
     }
 
+    private enum TypeOfScan {SORTED_SCAN, SORTED_SCAN_FROM, LOOKUP_KEY};
+
     /**
      * A BPlusIterator provides several ways of iterating over RecordIDs stored
      * in a BPlusTree.
      */
     private class BPlusIterator implements Iterator<RecordID> {
-        // Implement me!
-        private Stack<BPlusNode> stack = new Stack<BPlusNode>();
-        private Iterator<RecordID> returnable;
-        private BPlusNode root;
-        private DataBox key = null;
-        private Boolean scan = null;
+
+        private TypeOfScan typeOfScan;
+        private BPlusNode rootNode;
+        private DataBox searchKey;
+        private Stack<BPlusNode> nodeStack = new Stack<BPlusNode>();
+        private BPlusNode currentNode;
+        private Iterator<RecordID> currLeafIterator;
 
         /**
          * Construct an iterator that performs a sorted scan on this BPlusTree
@@ -261,13 +260,22 @@ public class BPlusTree {
          * @param root the root node of this BPlusTree
          */
         public BPlusIterator(BPlusNode root) {
-            BPlusNode currNode = root;
-            this.stack.add(root);
-            this.root = root;
-
-            LeafNode scannable = nextLeaf(currNode);
-
-            this.returnable = scannable.scan();
+            typeOfScan = TypeOfScan.SORTED_SCAN;
+            rootNode = root;
+            currentNode = root;
+            while (!currentNode.isLeaf()) {
+                List<BEntry> validEntries = currentNode.getAllValidEntries();
+                Collections.reverse(validEntries);
+                for (BEntry entry : validEntries) {
+                    int childPageNum = entry.getPageNum();
+                    BPlusNode childNode = BPlusNode.getBPlusNode(this.rootNode.getTree(), childPageNum);
+                    nodeStack.add(childNode);
+                }
+                int firstChildPageNum = ((InnerNode) currentNode).getFirstChild();
+                BPlusNode firstChildNode = BPlusNode.getBPlusNode(this.rootNode.getTree(), firstChildPageNum);
+                currentNode = firstChildNode;
+            }
+            currLeafIterator = ((LeafNode) currentNode).scan();
         }
 
         /**
@@ -283,17 +291,44 @@ public class BPlusTree {
          * @param scan if true, do a range search; else, equality search
          */
         public BPlusIterator(BPlusNode root, DataBox key, boolean scan) {
-            // Implement me!
-            this.root = root;
-            this.stack.add(root);
-            LeafNode scannable = nextLeaf(root);
-            this.scan = scan;
-            this.key = key;
-
-            if (Boolean.TRUE.equals(scan)) {
-                this.returnable = scannable.scanFrom(key);
+            searchKey = key;
+            rootNode = root;
+            currentNode = root;
+            if (scan) {
+                typeOfScan = TypeOfScan.SORTED_SCAN_FROM;
             } else {
-                this.returnable = scannable.scanForKey(key);
+                typeOfScan = TypeOfScan.LOOKUP_KEY;
+            }
+            while (!currentNode.isLeaf()) {
+                List<BEntry> validEntries = currentNode.getAllValidEntries();
+                Collections.reverse(validEntries);
+                boolean addFirstChild = true;
+                for (BEntry entry : validEntries) {
+                    if (typeOfScan == TypeOfScan.LOOKUP_KEY && entry.getKey().compareTo(searchKey) > 0) {
+                        continue;
+                    }
+                    int childPageNum = entry.getPageNum();
+                    BPlusNode childNode = BPlusNode.getBPlusNode(this.rootNode.getTree(), childPageNum);
+                    nodeStack.add(childNode);
+                    if (entry.getKey().compareTo(searchKey) < 0) {
+                        addFirstChild = false;
+                        break;
+                    }
+                }
+                if (addFirstChild) {
+                    int firstChildPageNum = ((InnerNode) currentNode).getFirstChild();
+                    BPlusNode firstChildNode = BPlusNode.getBPlusNode(this.rootNode.getTree(), firstChildPageNum);
+                    nodeStack.add(firstChildNode);
+                }
+                currentNode = nodeStack.pop();
+            }
+            switch (typeOfScan) {
+                case SORTED_SCAN_FROM:
+                    currLeafIterator = ((LeafNode) currentNode).scanFrom(searchKey);
+                    break;
+                case LOOKUP_KEY:
+                    currLeafIterator = ((LeafNode) currentNode).scanForKey(searchKey);
+                    break;
             }
         }
 
@@ -304,58 +339,53 @@ public class BPlusTree {
          * otherwise
          */
         public boolean hasNext() {
-            // Implement me!
-            if (this.returnable.hasNext()) {
+            if (currLeafIterator.hasNext()) {
                 return true;
-            }
-            if (!this.stack.empty()) {
-                LeafNode scannable = nextLeaf(root);
-                if (Boolean.TRUE.equals(this.scan)) {
-                    this.returnable = scannable.scanFrom(this.key);
-                } if (Boolean.FALSE.equals(this.scan)) {
-                    this.returnable = scannable.scanForKey(this.key);
-                }
-                if (this.scan == null) {
-                    this.returnable = scannable.scan();
-                }
-//                System.out.println(" hasnext here 4");
-                if(this.returnable.hasNext()) {
-//                    System.out.println("marco");
-                    return true;
-                }
-                if (!this.returnable.hasNext()) {
-//                    System.out.println("polo");
-                    return this.hasNext();
-                }
-//                return this.returnable.hasNext();
-            }
-            return false;
-        }
-
-        public LeafNode nextLeaf(BPlusNode root) {
-            BPlusNode currNode = stack.pop();
-            if (!root.isLeaf()) {
-                while (!currNode.isLeaf()) { //until pop off first leaf node.
-                    BPlusNode currentNode = currNode;
-                    List<BEntry> list = currentNode.getAllValidEntries();
-                    Collections.reverse(list);
-                    for (BEntry ent : list) { //reverse order the children pop
-                        BPlusNode curry = BPlusNode.getBPlusNode(root.getTree(), ent.getPageNum());
-                        this.stack.add(curry);
-                    }
-                    if (!currentNode.isLeaf()) {
-                        InnerNode innerrr = (InnerNode) currentNode;
-                        this.stack.add(BPlusNode.getBPlusNode(root.getTree(), innerrr.getFirstChild()));
-                    }
-                    currNode = this.stack.pop();
-                }
+            } else if (nodeStack.isEmpty()) {
+                return false;
             } else {
-                LeafNode gotcha = (LeafNode) root;
-                return gotcha;
+                currentNode = nodeStack.pop();
+                while (!currentNode.isLeaf()) {
+                    List<BEntry> validEntries = currentNode.getAllValidEntries();
+                    Collections.reverse(validEntries);
+                    boolean addFirstChild = true;
+                    for (BEntry entry : validEntries) {
+                        if (typeOfScan == TypeOfScan.LOOKUP_KEY && entry.getKey().compareTo(searchKey) > 0) {
+                            continue;
+                        }
+                        int childPageNum = entry.getPageNum();
+                        BPlusNode childNode = BPlusNode.getBPlusNode(this.rootNode.getTree(), childPageNum);
+                        nodeStack.add(childNode);
+                        if ((typeOfScan == TypeOfScan.SORTED_SCAN_FROM || typeOfScan == TypeOfScan.LOOKUP_KEY)
+                                && entry.getKey().compareTo(searchKey) < 0) {
+                            addFirstChild = false;
+                            break;
+                        }
+                    }
+                    if (addFirstChild) {
+                        int firstChildPageNum = ((InnerNode) currentNode).getFirstChild();
+                        BPlusNode firstChildNode = BPlusNode.getBPlusNode(this.rootNode.getTree(), firstChildPageNum);
+                        nodeStack.add(firstChildNode);
+                    }
+                    currentNode = nodeStack.pop();
+                }
+                switch (typeOfScan) {
+                    case SORTED_SCAN:
+                        currLeafIterator = ((LeafNode) currentNode).scan();
+                        break;
+                    case SORTED_SCAN_FROM:
+                        currLeafIterator = ((LeafNode) currentNode).scanFrom(searchKey);
+                        break;
+                    case LOOKUP_KEY:
+                        currLeafIterator = ((LeafNode) currentNode).scanForKey(searchKey);
+                        break;
+                }
+                if (currLeafIterator.hasNext()) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
-            //scanning that leaf node to get the rid iterator.
-            LeafNode scannable = new LeafNode(root.getTree(), currNode.getPageNum());
-            return scannable;
         }
 
         /**
@@ -366,19 +396,11 @@ public class BPlusTree {
          * yield
          */
         public RecordID next() {
-
-            if (this.returnable.hasNext()) {
-                return this.returnable.next();
+            if (hasNext()) {
+                return currLeafIterator.next();
+            } else {
+                throw new NoSuchElementException("No more valid Records.");
             }
-//            else if (!this.stack.empty()) {
-//                LeafNode scannable = nextLeaf(root); //from root?
-//                this.returnable = scannable.scan();
-//                return this.returnable.next();
-//            }
-            else {
-                throw new NoSuchElementException();
-            }
-
         }
 
         public void remove() {
