@@ -5,6 +5,8 @@ import edu.berkeley.cs186.database.DatabaseException;
 import edu.berkeley.cs186.database.databox.DataBox;
 import edu.berkeley.cs186.database.io.Page;
 import edu.berkeley.cs186.database.table.Record;
+import edu.berkeley.cs186.database.table.RecordID;
+import edu.berkeley.cs186.database.table.Schema;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -72,21 +74,17 @@ public class PNLJOperator extends JoinOperator {
           PNLJOperator.this.addRecord(rightTableName, rightIter.next().getValues());
         }
       }
-      /* TODO */
     }
 
     public boolean hasNext() {
-      /* TODO */
-      return false;
+     return false;
     }
 
     private Record getNextLeftRecordInPage() {
-      /* TODO */
       return null;
     }
 
     private Record getNextRightRecordInPage() {
-      /* TODO */
       return null;
     }
 
@@ -97,7 +95,11 @@ public class PNLJOperator extends JoinOperator {
      * @throws NoSuchElementException if there are no more Records to yield
      */
     public Record next() {
-      /* TODO */
+      if (this.hasNext()) {
+        Record r = this.nextRecord;
+        this.nextRecord = null;
+        return r;
+      }
       throw new NoSuchElementException();
     }
 
