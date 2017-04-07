@@ -74,47 +74,74 @@ public class PNLJOperator extends JoinOperator {
                 }
             }
           /* TODO */
+//            leftTableName = get;
+//            rightTableName = ;
+            this.leftIterator = getPageIterator(leftTableName);
+            this.rightIterator = getPageIterator(rightTableName);
+            this.leftRecord = getNextLeftRecordInPage();
+            this.nextRecord = null;
+            this.rightRecord = getNextRightRecordInPage();
+            this.leftPage = leftIterator.next(); //hmm edge case is if the empty table is passed in
+            this.rightPage = rightIterator.next();//hmm
+            this.leftHeader = getPageHeader(leftTableName, leftPage);
+            this.rightHeader = getPageHeader(rightTableName, rightPage);
+            this.leftEntryNum = 0; //hmm
+            this.rightEntryNum = 0; //my bet on this
+
         }
 
         public boolean hasNext() {
-            if (leftPage == null) {
-                leftPage = leftIterator.next();
-                rightIterator = rightIterator; //lool how reset
+            if (this.nextRecord != null) {
+                return true;
             }
-            if (leftPage != null) {
-                //if there is right record
-            }
-            if (rightPage == null) {
-                leftRecord = leftIterator.next();
-                //reset the right page
-            }
-            if (rightPage != null) {
-                rightRecord = leftIterator.next();
-            }
-            if (leftRecord == null) {
-                //reset left record, go to the next right page
-            }
-            if (leftRecord != null) {
-                if (rightRecord == leftRecord) {
-                    return true;
+            while (true) {
+                try {
+                    //Out of the left side
+                    if (leftPage == null) {
+                        return false;
+                    }
+
+                    if (rightRecord == null) {
+                        if (leftRecord != null) {
+
+                            leftRecord = getNextLeftRecordInPage();
+                            rightRecord; //reset rightRec
+                        }
+                        if (rightPage != null) {
+
+                            rightPage = rightIterator.next();
+                            leftRecord; //reset leftRec
+                        }
+                        if (leftPage != null){
+                            leftPage = leftIterator.next();
+                            rightPage = getPageIterator(rightTableName).next();
+                        }
+                        else {
+                            return false;
+                        }
+                    } else {
+                        //Situation 1 - Normal nothing is null
+                        while (this.rightIterator.hasNext()) {
+                            //Record rightRecord = this.rightIterator.next();
+                            Record rightRecord = getNextRightRecordInPage();
+                            DataBox leftJoinValue = this.leftRecord.getValues().get(PNLJOperator.this.getLeftColumnIndex());
+                            DataBox rightJoinValue = rightRecord.getValues().get(PNLJOperator.this.getRightColumnIndex());
+                            if (leftJoinValue.equals(rightJoinValue)) {
+                                List<DataBox> leftValues = new ArrayList<DataBox>(this.leftRecord.getValues());
+                                List<DataBox> rightValues = new ArrayList<DataBox>(rightRecord.getValues());
+                                leftValues.addAll(rightValues);
+                                this.nextRecord = new Record(leftValues);
+                                return true;
+                            }
+                        }
+                        this.rightRecord = getNextRightRecordInPage(); //advance the right pointer
+                    }
+
+                } catch (DatabaseException arresting) {
+                    System.out.println("Caught an exception");
                 }
+                return false;
             }
-            if (rightRecord == null) {
-                if (leftRecord != null) {
-                    leftRecord = leftIterator.next();
-                    //reset right page
-                }
-                if (leftRecord == null) {
-                    rightPage = rightIterator.next();
-                    //reset left page
-                }
-            }
-            if (rightRecord != null) {
-                if (rightRecord == leftRecord) {
-                    return true;
-                }
-            }
-            return false;
         }
 
         private Record getNextLeftRecordInPage() throws DatabaseException {
