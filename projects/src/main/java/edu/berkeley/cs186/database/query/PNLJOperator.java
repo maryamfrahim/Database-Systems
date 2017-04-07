@@ -5,6 +5,7 @@ import edu.berkeley.cs186.database.DatabaseException;
 import edu.berkeley.cs186.database.databox.DataBox;
 import edu.berkeley.cs186.database.io.Page;
 import edu.berkeley.cs186.database.table.Record;
+import edu.berkeley.cs186.database.table.Table;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,96 +14,186 @@ import java.util.NoSuchElementException;
 
 public class PNLJOperator extends JoinOperator {
 
-  public PNLJOperator(QueryOperator leftSource,
-                      QueryOperator rightSource,
-                      String leftColumnName,
-                      String rightColumnName,
-                      Database.Transaction transaction) throws QueryPlanException, DatabaseException {
-    super(leftSource,
-          rightSource,
-          leftColumnName,
-          rightColumnName,
-          transaction,
-          JoinType.PNLJ);
-  }
-
-  public Iterator<Record> iterator() throws QueryPlanException, DatabaseException {
-    return new PNLJIterator();
-  }
-
-  /**
-   * An implementation of Iterator that provides an iterator interface for this operator.
-   */
-  private class PNLJIterator implements Iterator<Record> {
-    /* TODO: Implement the PNLJIterator */
-    /* Suggested Fields */
-    private String leftTableName;
-    private String rightTableName;
-    private Iterator<Page> leftIterator;
-    private Iterator<Page> rightIterator;
-    private Record leftRecord;
-    private Record nextRecord;
-    private Record rightRecord;
-    private Page leftPage;
-    private Page rightPage;
-    private byte[] leftHeader;
-    private byte[] rightHeader;
-    private int leftEntryNum;
-    private int rightEntryNum;
-
-    public PNLJIterator() throws QueryPlanException, DatabaseException {
-      /* Suggested Starter Code: get table names. */
-      if (PNLJOperator.this.getLeftSource().isSequentialScan()) {
-        this.leftTableName = ((SequentialScanOperator) PNLJOperator.this.getLeftSource()).getTableName();
-      } else {
-        this.leftTableName = "Temp" + PNLJOperator.this.getJoinType().toString() + "Operator" + PNLJOperator.this.getLeftColumnName() + "Left";
-        PNLJOperator.this.createTempTable(PNLJOperator.this.getLeftSource().getOutputSchema(), leftTableName);
-        Iterator<Record> leftIter = PNLJOperator.this.getLeftSource().iterator();
-        while (leftIter.hasNext()) {
-          PNLJOperator.this.addRecord(leftTableName, leftIter.next().getValues());
-        }
-      }
-      if (PNLJOperator.this.getRightSource().isSequentialScan()) {
-        this.rightTableName = ((SequentialScanOperator) PNLJOperator.this.getRightSource()).getTableName();
-      } else {
-        this.rightTableName = "Temp" + PNLJOperator.this.getJoinType().toString() + "Operator" + PNLJOperator.this.getRightColumnName() + "Right";
-        PNLJOperator.this.createTempTable(PNLJOperator.this.getRightSource().getOutputSchema(), rightTableName);
-        Iterator<Record> rightIter = PNLJOperator.this.getRightSource().iterator();
-        while (rightIter.hasNext()) {
-          PNLJOperator.this.addRecord(rightTableName, rightIter.next().getValues());
-        }
-      }
-      /* TODO */
+    public PNLJOperator(QueryOperator leftSource,
+                        QueryOperator rightSource,
+                        String leftColumnName,
+                        String rightColumnName,
+                        Database.Transaction transaction) throws QueryPlanException, DatabaseException {
+        super(leftSource,
+                rightSource,
+                leftColumnName,
+                rightColumnName,
+                transaction,
+                JoinType.PNLJ);
     }
 
-    public boolean hasNext() {
-      /* TODO */
-      return false;
-    }
-
-    private Record getNextLeftRecordInPage() {
-      /* TODO */
-      return null;
-    }
-
-    private Record getNextRightRecordInPage() {
-      /* TODO */
-      return null;
+    public Iterator<Record> iterator() throws QueryPlanException, DatabaseException {
+        return new PNLJIterator();
     }
 
     /**
-     * Yields the next record of this iterator.
-     *
-     * @return the next Record
-     * @throws NoSuchElementException if there are no more Records to yield
+     * An implementation of Iterator that provides an iterator interface for this operator.
      */
-    public Record next() {
-      /* TODO */
-      throw new NoSuchElementException();
-    }
+    private class PNLJIterator implements Iterator<Record> {
+        /* TODO: Implement the PNLJIterator */
+        /* Suggested Fields */
+        private String leftTableName;
+        private String rightTableName;
+        private Iterator<Page> leftIterator;
+        private Iterator<Page> rightIterator;
+        private Record leftRecord;
+        private Record nextRecord;
+        private Record rightRecord;
+        private Page leftPage;
+        private Page rightPage;
+        private byte[] leftHeader;
+        private byte[] rightHeader;
+        private int leftEntryNum;
+        private int rightEntryNum;
 
-    public void remove() {
-      throw new UnsupportedOperationException();
+        public PNLJIterator() throws QueryPlanException, DatabaseException {
+          /* Suggested Starter Code: get table names. */
+            if (PNLJOperator.this.getLeftSource().isSequentialScan()) {
+                this.leftTableName = ((SequentialScanOperator) PNLJOperator.this.getLeftSource()).getTableName();
+            } else {
+                this.leftTableName = "Temp" + PNLJOperator.this.getJoinType().toString() + "Operator" + PNLJOperator.this.getLeftColumnName() + "Left";
+                PNLJOperator.this.createTempTable(PNLJOperator.this.getLeftSource().getOutputSchema(), leftTableName);
+                Iterator<Record> leftIter = PNLJOperator.this.getLeftSource().iterator();
+                while (leftIter.hasNext()) {
+                    PNLJOperator.this.addRecord(leftTableName, leftIter.next().getValues());
+                }
+            }
+            if (PNLJOperator.this.getRightSource().isSequentialScan()) {
+                this.rightTableName = ((SequentialScanOperator) PNLJOperator.this.getRightSource()).getTableName();
+            } else {
+                this.rightTableName = "Temp" + PNLJOperator.this.getJoinType().toString() + "Operator" + PNLJOperator.this.getRightColumnName() + "Right";
+                PNLJOperator.this.createTempTable(PNLJOperator.this.getRightSource().getOutputSchema(), rightTableName);
+                Iterator<Record> rightIter = PNLJOperator.this.getRightSource().iterator();
+                while (rightIter.hasNext()) {
+                    PNLJOperator.this.addRecord(rightTableName, rightIter.next().getValues());
+                }
+            }
+          /* TODO */
+        }
+
+        public boolean hasNext() {
+            if (leftPage == null) {
+                leftPage = leftIterator.next();
+                rightIterator = rightIterator; //lool how reset
+            }
+            if (leftPage != null) {
+                //if there is right record
+            }
+            if (rightPage == null) {
+                leftRecord = leftIterator.next();
+                //reset the right page
+            }
+            if (rightPage != null) {
+                rightRecord = leftIterator.next();
+            }
+            if (leftRecord == null) {
+                //reset left record, go to the next right page
+            }
+            if (leftRecord != null) {
+                if (rightRecord == leftRecord) {
+                    return true;
+                }
+            }
+            if (rightRecord == null) {
+                if (leftRecord != null) {
+                    leftRecord = leftIterator.next();
+                    //reset right page
+                }
+                if (leftRecord == null) {
+                    rightPage = rightIterator.next();
+                    //reset left page
+                }
+            }
+            if (rightRecord != null) {
+                if (rightRecord == leftRecord) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private Record getNextLeftRecordInPage() throws DatabaseException {
+            while (this.leftEntryNum < getNumEntriesPerPage(leftTableName)) {
+                byte b = leftHeader[this.leftEntryNum/8];
+                int bitOffset = 7 - (this.leftEntryNum % 8);
+                byte mask = (byte) (1 << bitOffset);
+
+                byte value = (byte) (b & mask);
+                if (value != 0) {
+                    int entrySize = getSchema(leftTableName).getEntrySize();
+
+                    int offset = getHeaderSize(leftTableName) + (entrySize * leftEntryNum);
+                    byte[] bytes = this.leftPage.readBytes(offset, entrySize);
+
+                    Record toRtn = getSchema(leftTableName).decode(bytes);
+                    //          this.recordCount++;
+                    this.leftEntryNum++;
+                    return toRtn;
+                }
+
+                this.leftEntryNum++;
+            }
+
+            if (this.hasNext()) {
+                this.leftEntryNum = 0;
+                this.leftPage = this.leftIterator.next();
+                leftHeader = getPageHeader(leftTableName, this.leftPage);
+            }
+            return null;
+        }
+
+        private Record getNextRightRecordInPage() throws DatabaseException {
+            while (this.rightEntryNum < getNumEntriesPerPage(rightTableName)) {
+                byte b = rightHeader[this.rightEntryNum/8];
+                int bitOffset = 7 - (this.rightEntryNum % 8);
+                byte mask = (byte) (1 << bitOffset);
+
+                byte value = (byte) (b & mask);
+                if (value != 0) {
+                    int entrySize = getEntrySize(rightTableName);
+
+                    int offset = getHeaderSize(rightTableName) + (entrySize * rightEntryNum);
+                    byte[] bytes = this.rightPage.readBytes(offset, entrySize);
+
+                    Record toRtn = getSchema(rightTableName).decode(bytes);
+                    //          this.recordCount++;
+                    this.rightEntryNum++;
+                    return toRtn;
+                }
+
+                this.rightEntryNum++;
+            }
+
+            if (this.hasNext()) {
+                this.rightEntryNum = 0;
+                this.rightPage = this.rightIterator.next();
+                rightHeader = getPageHeader(rightTableName, this.rightPage);
+            }
+            return null;
+        }
+
+        /**
+         * Yields the next record of this iterator.
+         *
+         * @return the next Record
+         * @throws NoSuchElementException if there are no more Records to yield
+         */
+        public Record next() {
+            if (this.hasNext()) {
+                Record r = this.nextRecord;
+                this.nextRecord = null;
+                return r;
+            }
+            throw new NoSuchElementException();
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
     }
-  }
 }
