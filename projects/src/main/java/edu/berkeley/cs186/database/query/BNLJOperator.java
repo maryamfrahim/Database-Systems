@@ -35,7 +35,6 @@ public class BNLJOperator extends JoinOperator {
   private class BNLJIterator implements Iterator<Record> {
     /* TODO: Implement the BNLJIterator */
 
-
     public BNLJIterator() throws QueryPlanException, DatabaseException {
       /* TODO */
     }
