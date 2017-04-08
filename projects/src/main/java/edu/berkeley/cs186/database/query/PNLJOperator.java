@@ -112,45 +112,98 @@ public class PNLJOperator extends JoinOperator {
             this.leftEntryNum = 0;
             this.rightEntryNum = 0;
 
-
             this.nextRecord = null;
         }
 
         public boolean hasNext() {
             if (this.nextRecord != null) {
                 return true;
-            }
-            while (true) {
-                try {
-                    //Out of the left side
-                    if (this.rightRecord == null) {
-                        if (this.leftRecord != null) {
-                            this.leftRecord = this.getNextLeftRecordInPage();
-                            this.rightEntryNum = 0; //LOL
-                            this.rightRecord = this.getNextRightRecordInPage();
+            } else {
+                while (true) {
+                    try {
+                        //Out of the left side
+                        if (this.rightRecord == null) {
+                            if (this.leftRecord != null) {
+                                this.leftRecord = this.getNextLeftRecordInPage();
+                                this.rightEntryNum = 0; //LOL
+                                this.rightRecord = this.getNextRightRecordInPage();
+                            } else if (this.rightPage != null) {
+                                if (!this.rightIterator.hasNext()) {
+                                    this.rightPage = null;
+                                } else {
+                                    this.rightPage = this.rightIterator.next(); //we in a new page DO WE NEED TO CALL NEXT TWICE
+
+                                    this.rightHeader = PNLJOperator.this.getPageHeader(rightTableName, rightPage);
+
+                                    this.rightEntryNum = 0;
+                                    this.rightRecord = this.getNextRightRecordInPage();
+                                    //reset leftRec all the way to the top of first left page. offset 0
+                                    this.leftEntryNum = 0;
+                                    this.leftRecord = this.getNextLeftRecordInPage();
+                                }
+                            } else if (this.leftPage != null) {
+                                if (!this.leftIterator.hasNext()) {
+                                    this.leftPage = null;
+                                } else {
+                                    this.leftPage = this.leftIterator.next();
+                                    this.leftHeader = PNLJOperator.this.getPageHeader(leftTableName, leftPage);
+                                    this.leftEntryNum = 0;
+                                    this.leftRecord = this.getNextLeftRecordInPage();
+
+                                    this.rightIterator = PNLJOperator.this.getPageIterator(this.rightTableName);
+                                    this.rightIterator.next();
+                                    this.rightPage = this.rightIterator.next();
+                                    this.rightEntryNum = 0;
+                                    this.rightHeader = PNLJOperator.this.getPageHeader(this.rightTableName, this.rightPage);
+                                    this.rightRecord = this.getNextRightRecordInPage();
+                                }
+                            } else {
+                                return false;
+                            }
+                        } else if (this.leftRecord != null) {
+                            //Situation 1 - Normal nothing is null DO I USE THE WHILE LOOP THINK
+                            while (this.rightEntryNum < PNLJOperator.this.getNumEntriesPerPage(this.rightTableName)) {
+//                            this.rightRecord = getNextRightRecordInPage();
+                                DataBox leftJoinValue = this.leftRecord.getValues().get(PNLJOperator.this.getLeftColumnIndex());
+                                DataBox rightJoinValue = this.rightRecord.getValues().get(PNLJOperator.this.getRightColumnIndex());
+                                if (leftJoinValue.equals(rightJoinValue)) {
+                                    List<DataBox> leftValues = new ArrayList<DataBox>(this.leftRecord.getValues());
+                                    List<DataBox> rightValues = new ArrayList<DataBox>(this.rightRecord.getValues());
+                                    leftValues.addAll(rightValues);
+                                    this.nextRecord = new Record(leftValues);
+                                    this.rightRecord = this.getNextRightRecordInPage(); //advance the right pointer
+                                    return true;
+                                } else {
+                                    this.rightRecord = this.getNextRightRecordInPage(); //advance the right pointer
+                                }
+                            }
+
                         }
-                        else if (this.rightPage != null) {
+//                    else {
+//                        this.rightRecord = null;
+//                    }
+
+                        if (this.leftRecord == null) { //if left record is null, but right record is not
+                            //this.rightRecord = null;
                             if (!this.rightIterator.hasNext()) {
                                 this.rightPage = null;
                             } else {
                                 this.rightPage = this.rightIterator.next(); //we in a new page DO WE NEED TO CALL NEXT TWICE
-
-                                this.rightHeader = PNLJOperator.this.getPageHeader(rightTableName, rightPage);
-
                                 this.rightEntryNum = 0;
+                                this.rightHeader = PNLJOperator.this.getPageHeader(rightTableName, rightPage);
                                 this.rightRecord = this.getNextRightRecordInPage();
                                 //reset leftRec all the way to the top of first left page. offset 0
                                 this.leftEntryNum = 0;
                                 this.leftRecord = this.getNextLeftRecordInPage();
                             }
                         }
-                        else if (this.leftPage != null){
+                        if (this.rightPage == null) {
                             if (!this.leftIterator.hasNext()) {
                                 this.leftPage = null;
                             } else {
                                 this.leftPage = this.leftIterator.next();
-                                this.leftHeader = PNLJOperator.this.getPageHeader(leftTableName, leftPage);
-                                this.leftEntryNum = 0;
+                                this.leftEntryNum = 0;//DOES HEADER and en
+                                this.leftHeader = PNLJOperator.this.getPageHeader(this.leftTableName, this.leftPage);
                                 this.leftRecord = this.getNextLeftRecordInPage();
 
                                 this.rightIterator = PNLJOperator.this.getPageIterator(this.rightTableName);
@@ -161,68 +214,16 @@ public class PNLJOperator extends JoinOperator {
                                 this.rightRecord = this.getNextRightRecordInPage();
                             }
                         }
-                        else {
+                        if (this.leftPage == null) {
                             return false;
                         }
-                    } else if (this.leftRecord != null) {
-                        //Situation 1 - Normal nothing is null DO I USE THE WHILE LOOP THINK
-//                        while (this.rightEntryNum < PNLJOperator.this.getNumEntriesPerPage(this.rightTableName)){
-//                            this.rightRecord = getNextRightRecordInPage();
-                            DataBox leftJoinValue = this.leftRecord.getValues().get(PNLJOperator.this.getLeftColumnIndex());
-                            DataBox rightJoinValue = this.rightRecord.getValues().get(PNLJOperator.this.getRightColumnIndex());
-                            if (leftJoinValue.equals(rightJoinValue)) {
-                                List<DataBox> leftValues = new ArrayList<DataBox>(this.leftRecord.getValues());
-                                List<DataBox> rightValues = new ArrayList<DataBox>(this.rightRecord.getValues());
-                                leftValues.addAll(rightValues);
-                                this.nextRecord = new Record(leftValues);
-                                this.rightRecord = this.getNextRightRecordInPage(); //advance the right pointer
-                                return true;
-                            } else {
-                                this.rightRecord = this.getNextRightRecordInPage(); //advance the right pointer
-                            }
-//                        }
 
-                    } else {
-                        this.rightRecord = null;
+                    } catch (DatabaseException arresting) {
+                        System.out.println("Caught an exception");
+                        return false;
                     }
-
-//                    else if (this.leftRecord == null) { //if left record is null, but right record is not
-//                        //this.rightRecord = null;
-//                        if (!this.rightIterator.hasNext()) {
-//                            this.rightPage = null;
-//                        } else {
-//                            this.rightPage = this.rightIterator.next(); //we in a new page DO WE NEED TO CALL NEXT TWICE
-//                            this.rightEntryNum = 0;
-//                            this.rightHeader = PNLJOperator.this.getPageHeader(rightTableName, rightPage);
-//                            this.rightRecord = this.getNextRightRecordInPage();
-//                            //reset leftRec all the way to the top of first left page. offset 0
-//                            this.leftEntryNum = 0;
-//                            this.leftRecord = this.getNextLeftRecordInPage();
-//                        }
-//                    } else if(this.rightPage == null) {
-//                        if (!this.leftIterator.hasNext()) {
-//                            this.leftPage = null;
-//                        } else {
-//                            this.leftPage = this.leftIterator.next();
-//                            this.leftEntryNum = 0;//DOES HEADER and en
-//                            this.leftRecord = this.getNextLeftRecordInPage();
-//
-//                            this.rightIterator = PNLJOperator.this.getPageIterator(this.rightTableName);
-//                            this.rightIterator.next();
-//                            this.rightPage = this.rightIterator.next();
-//                            this.rightEntryNum = 0;
-//                            this.rightHeader = PNLJOperator.this.getPageHeader(this.rightTableName, this.rightPage);
-//                            this.rightRecord = this.getNextRightRecordInPage();
-//                        }
-//                    } else if (this.leftPage == null) {
-//                        return false;
-//                    }
-
-                } catch (DatabaseException arresting) {
-                    System.out.println("Caught an exception");
-                    return false;
-                }
 //                System.out.println("got through one iter of while");
+                }
             }
         }
 

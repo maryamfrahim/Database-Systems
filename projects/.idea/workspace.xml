@@ -4,7 +4,6 @@
     <list default="true" id="64426eef-a4b1-4311-8fa3-d76d958eaa43" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/PNLJOperator.java" afterPath="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/PNLJOperator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/edu/berkeley/cs186/database/query/TestJoinOperator.java" afterPath="$PROJECT_DIR$/src/test/java/edu/berkeley/cs186/database/query/TestJoinOperator.java" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -36,13 +35,13 @@
       <file leaf-file-name="PNLJOperator.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/PNLJOperator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="2.2135417">
-              <caret line="157" column="75" selection-start-line="157" selection-start-column="75" selection-end-line="157" selection-end-column="75" />
+            <state vertical-scroll-proportion="0.16897507">
+              <caret line="125" column="47" selection-start-line="125" selection-start-column="47" selection-end-line="125" selection-end-column="47" />
               <folding>
-                <element signature="e#8417#8426#0" expanded="true" />
-                <element signature="e#8530#8539#0" expanded="true" />
-                <element signature="e#14029#14030#0" expanded="true" />
-                <element signature="e#14094#14095#0" expanded="true" />
+                <element signature="e#8531#8540#0" expanded="true" />
+                <element signature="e#8648#8657#0" expanded="true" />
+                <element signature="e#14451#14452#0" expanded="true" />
+                <element signature="e#14516#14517#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -230,10 +229,9 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1382" />
-    <option name="height" value="744" />
+    <option name="x" value="-7" />
+    <option name="width" value="697" />
+    <option name="height" value="735" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -947,7 +945,7 @@
       <workItem from="1488420510565" duration="48970000" />
       <workItem from="1491534644911" duration="1931000" />
       <workItem from="1491539747421" duration="15378000" />
-      <workItem from="1491566048841" duration="28187000" />
+      <workItem from="1491566048841" duration="30602000" />
     </task>
     <task id="LOCAL-00001" summary="&quot;Initial Runthrough of Part 1&quot;">
       <created>1488428220029</created>
@@ -989,12 +987,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestJoinOperator_testSimpleJoinPNLJ - 2017.04.07 at 18h 22m 11s.xml">
-      <configuration name="TestJoinOperator.testSimpleJoinPNLJ" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestJoinOperator_testSimpleJoinPNLJ - 2017.04.07 at 19h 12m 28s.xml">
-      <configuration name="TestJoinOperator.testSimpleJoinPNLJ" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="TestJoinOperator_testSimpleJoinPNLJ - 2017.04.07 at 19h 43m 52s.xml">
       <configuration name="TestJoinOperator.testSimpleJoinPNLJ" configurationId="JUnit" />
     </history-entry>
@@ -1004,24 +996,30 @@
     <history-entry file="TestJoinOperator_testSimpleJoinPNLJ - 2017.04.07 at 19h 58m 06s.xml">
       <configuration name="TestJoinOperator.testSimpleJoinPNLJ" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestJoinOperator_testSimplePNLJOutputOrder - 2017.04.07 at 19h 27m 13s.xml">
-      <configuration name="TestJoinOperator.testSimplePNLJOutputOrder" configurationId="JUnit" />
+    <history-entry file="TestJoinOperator_testSimpleJoinPNLJ - 2017.04.07 at 20h 23m 42s.xml">
+      <configuration name="TestJoinOperator.testSimpleJoinPNLJ" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestJoinOperator_testSimplePNLJOutputOrder - 2017.04.07 at 19h 28m 52s.xml">
-      <configuration name="TestJoinOperator.testSimplePNLJOutputOrder" configurationId="JUnit" />
+    <history-entry file="TestJoinOperator_testSimpleJoinPNLJ - 2017.04.07 at 20h 24m 27s.xml">
+      <configuration name="TestJoinOperator.testSimpleJoinPNLJ" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestJoinOperator_testSimplePNLJOutputOrder - 2017.04.07 at 19h 29m 53s.xml">
-      <configuration name="TestJoinOperator.testSimplePNLJOutputOrder" configurationId="JUnit" />
+    <history-entry file="TestJoinOperator_testSimpleJoinPNLJ - 2017.04.07 at 20h 26m 42s.xml">
+      <configuration name="TestJoinOperator.testSimpleJoinPNLJ" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestJoinOperator_testSimplePNLJOutputOrder - 2017.04.07 at 19h 30m 41s.xml">
-      <configuration name="TestJoinOperator.testSimplePNLJOutputOrder" configurationId="JUnit" />
+    <history-entry file="TestJoinOperator_testSimpleJoinPNLJ - 2017.04.07 at 20h 27m 47s.xml">
+      <configuration name="TestJoinOperator.testSimpleJoinPNLJ" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestJoinOperator_testSimplePNLJOutputOrder - 2017.04.07 at 19h 31m 33s.xml">
-      <configuration name="TestJoinOperator.testSimplePNLJOutputOrder" configurationId="JUnit" />
+    <history-entry file="TestJoinOperator_testSimpleJoinPNLJ - 2017.04.07 at 20h 29m 55s.xml">
+      <configuration name="TestJoinOperator.testSimpleJoinPNLJ" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestJoinOperator_testSimpleJoinPNLJ - 2017.04.07 at 20h 31m 04s.xml">
+      <configuration name="TestJoinOperator.testSimpleJoinPNLJ" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestJoinOperator_testSimpleJoinPNLJ - 2017.04.07 at 20h 39m 19s.xml">
+      <configuration name="TestJoinOperator.testSimpleJoinPNLJ" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="122377000" />
+    <option name="totallyTimeSpent" value="124792000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1033,7 +1031,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <frame x="-7" y="0" width="697" height="735" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -1043,7 +1041,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18683812" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32891566" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2782324" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30564785" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28555554" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31467474" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -1514,13 +1512,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/PNLJOperator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.2135417">
-          <caret line="157" column="75" selection-start-line="157" selection-start-column="75" selection-end-line="157" selection-end-column="75" />
+        <state vertical-scroll-proportion="0.16897507">
+          <caret line="125" column="47" selection-start-line="125" selection-start-column="47" selection-end-line="125" selection-end-column="47" />
           <folding>
-            <element signature="e#8417#8426#0" expanded="true" />
-            <element signature="e#8530#8539#0" expanded="true" />
-            <element signature="e#14029#14030#0" expanded="true" />
-            <element signature="e#14094#14095#0" expanded="true" />
+            <element signature="e#8531#8540#0" expanded="true" />
+            <element signature="e#8648#8657#0" expanded="true" />
+            <element signature="e#14451#14452#0" expanded="true" />
+            <element signature="e#14516#14517#0" expanded="true" />
           </folding>
         </state>
       </provider>
