@@ -67,6 +67,24 @@ public class GraceHashOperator extends JoinOperator {
      */
     public boolean hasNext() {
       /* TODO */
+      while (this.leftIterator.hasNext()) {
+        Record current = leftIterator.next();
+//        leftPartitions[current.getValues().get(SNLJOperator.this.getLeftColumnIndex()).hashCode()] = current.toString(); //hashmap
+      }
+      while (this.rightIterator.hasNext()) {
+        Record current = rightIterator.next();
+        rightPartitions[current.getValues().hashCode()] = current.toString();
+      }
+
+//      for each j bucket,
+//      for each record r in Rj
+//        insert into hash table mm
+//      for each record s in Sj
+//      for each item in hash table
+//        if r = s
+//          probe the hash table and put in output
+
+
       return false;
     }
 

@@ -120,16 +120,18 @@ public class TestJoinOperator {
         assertFalse(outputIterator.hasNext());
     }
 
-    @Test(timeout=5000)
+    @Test(timeout=5000000)
     public void testSimpleJoinPNLJ() throws QueryPlanException, DatabaseException, IOException {
         TestSourceOperator sourceOperator = new TestSourceOperator();
         File tempDir = tempFolder.newFolder("joinTest");
         Database.Transaction transaction = new Database(tempDir.getAbsolutePath()).beginTransaction();
         JoinOperator joinOperator = new PNLJOperator(sourceOperator, sourceOperator, "int", "int", transaction);
 
+        System.out.println("Before iter making");
         Iterator<Record> outputIterator = joinOperator.iterator();
         int numRecords = 0;
 
+        System.out.println("Before Record making");
         List<DataBox> expectedRecordValues = new ArrayList<DataBox>();
         expectedRecordValues.add(new BoolDataBox(true));
         expectedRecordValues.add(new IntDataBox(1));
@@ -141,12 +143,15 @@ public class TestJoinOperator {
         expectedRecordValues.add(new FloatDataBox(1.2f));
         Record expectedRecord = new Record(expectedRecordValues);
 
-
+        System.out.println("Before while loop");
         while (outputIterator.hasNext()) {
+            System.out.println("In while");
             assertEquals(expectedRecord, outputIterator.next());
             numRecords++;
+            System.out.println(numRecords);
         }
 
+        System.out.println(numRecords);
         assertEquals(100*100, numRecords);
     }
 
