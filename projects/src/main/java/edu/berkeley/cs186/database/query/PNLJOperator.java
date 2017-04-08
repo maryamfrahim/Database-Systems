@@ -74,10 +74,9 @@ public class PNLJOperator extends JoinOperator {
                 }
             }
           /* TODO */
-//            leftTableName = get;
-//            rightTableName = ;
             this.leftIterator = PNLJOperator.this.getPageIterator(this.leftTableName);
             this.rightIterator = PNLJOperator.this.getPageIterator(this.rightTableName);
+
             if (this.leftIterator.hasNext()) {
                 this.leftIterator.next();
             } else {
@@ -115,8 +114,6 @@ public class PNLJOperator extends JoinOperator {
 
 
             this.nextRecord = null;
-
-
         }
 
         public boolean hasNext() {
@@ -137,8 +134,10 @@ public class PNLJOperator extends JoinOperator {
                                 this.rightPage = null;
                             } else {
                                 this.rightPage = this.rightIterator.next(); //we in a new page DO WE NEED TO CALL NEXT TWICE
+
+                                this.rightHeader = PNLJOperator.this.getPageHeader(rightTableName, rightPage);
+
                                 this.rightEntryNum = 0;
-                                this.rightHeader = getPageHeader(rightTableName, rightPage);
                                 this.rightRecord = this.getNextRightRecordInPage();
                                 //reset leftRec all the way to the top of first left page. offset 0
                                 this.leftEntryNum = 0;
@@ -150,7 +149,8 @@ public class PNLJOperator extends JoinOperator {
                                 this.leftPage = null;
                             } else {
                                 this.leftPage = this.leftIterator.next();
-                                this.leftEntryNum = 0;//DOES HEADER and en
+                                this.leftHeader = PNLJOperator.this.getPageHeader(leftTableName, leftPage);
+                                this.leftEntryNum = 0;
                                 this.leftRecord = this.getNextLeftRecordInPage();
 
                                 this.rightIterator = PNLJOperator.this.getPageIterator(this.rightTableName);
@@ -165,8 +165,8 @@ public class PNLJOperator extends JoinOperator {
                             return false;
                         }
                     } else if (this.leftRecord != null) {
-                        //Situation 1 - Normal nothing is null
-                        while (this.rightEntryNum < PNLJOperator.this.getNumEntriesPerPage(this.rightTableName)){
+                        //Situation 1 - Normal nothing is null DO I USE THE WHILE LOOP THINK
+//                        while (this.rightEntryNum < PNLJOperator.this.getNumEntriesPerPage(this.rightTableName)){
 //                            this.rightRecord = getNextRightRecordInPage();
                             DataBox leftJoinValue = this.leftRecord.getValues().get(PNLJOperator.this.getLeftColumnIndex());
                             DataBox rightJoinValue = this.rightRecord.getValues().get(PNLJOperator.this.getRightColumnIndex());
@@ -175,44 +175,48 @@ public class PNLJOperator extends JoinOperator {
                                 List<DataBox> rightValues = new ArrayList<DataBox>(this.rightRecord.getValues());
                                 leftValues.addAll(rightValues);
                                 this.nextRecord = new Record(leftValues);
-                                this.rightRecord = getNextRightRecordInPage(); //advance the right pointer
+                                this.rightRecord = this.getNextRightRecordInPage(); //advance the right pointer
                                 return true;
                             } else {
-                                this.rightRecord = getNextRightRecordInPage(); //advance the right pointer
+                                this.rightRecord = this.getNextRightRecordInPage(); //advance the right pointer
                             }
-                        }
+//                        }
 
-                    } else if (this.leftRecord == null) { //if left record is null, but right record is not
-                        //this.rightRecord = null;
-                        if (!this.rightIterator.hasNext()) {
-                            this.rightPage = null;
-                        } else {
-                            this.rightPage = this.rightIterator.next(); //we in a new page DO WE NEED TO CALL NEXT TWICE
-                            this.rightEntryNum = 0;
-                            this.rightHeader = getPageHeader(rightTableName, rightPage);
-                            this.rightRecord = this.getNextRightRecordInPage();
-                            //reset leftRec all the way to the top of first left page. offset 0
-                            this.leftEntryNum = 0;
-                            this.leftRecord = this.getNextLeftRecordInPage();
-                        }
-                    } else if(this.rightPage == null) {
-                        if (!this.leftIterator.hasNext()) {
-                            this.leftPage = null;
-                        } else {
-                            this.leftPage = this.leftIterator.next();
-                            this.leftEntryNum = 0;//DOES HEADER and en
-                            this.leftRecord = this.getNextLeftRecordInPage();
-
-                            this.rightIterator = PNLJOperator.this.getPageIterator(this.rightTableName);
-                            this.rightIterator.next();
-                            this.rightPage = this.rightIterator.next();
-                            this.rightEntryNum = 0;
-                            this.rightHeader = PNLJOperator.this.getPageHeader(this.rightTableName, this.rightPage);
-                            this.rightRecord = this.getNextRightRecordInPage();
-                        }
-                    } else if (this.leftPage == null) {
-                        return false;
+                    } else {
+                        this.rightRecord = null;
                     }
+
+//                    else if (this.leftRecord == null) { //if left record is null, but right record is not
+//                        //this.rightRecord = null;
+//                        if (!this.rightIterator.hasNext()) {
+//                            this.rightPage = null;
+//                        } else {
+//                            this.rightPage = this.rightIterator.next(); //we in a new page DO WE NEED TO CALL NEXT TWICE
+//                            this.rightEntryNum = 0;
+//                            this.rightHeader = PNLJOperator.this.getPageHeader(rightTableName, rightPage);
+//                            this.rightRecord = this.getNextRightRecordInPage();
+//                            //reset leftRec all the way to the top of first left page. offset 0
+//                            this.leftEntryNum = 0;
+//                            this.leftRecord = this.getNextLeftRecordInPage();
+//                        }
+//                    } else if(this.rightPage == null) {
+//                        if (!this.leftIterator.hasNext()) {
+//                            this.leftPage = null;
+//                        } else {
+//                            this.leftPage = this.leftIterator.next();
+//                            this.leftEntryNum = 0;//DOES HEADER and en
+//                            this.leftRecord = this.getNextLeftRecordInPage();
+//
+//                            this.rightIterator = PNLJOperator.this.getPageIterator(this.rightTableName);
+//                            this.rightIterator.next();
+//                            this.rightPage = this.rightIterator.next();
+//                            this.rightEntryNum = 0;
+//                            this.rightHeader = PNLJOperator.this.getPageHeader(this.rightTableName, this.rightPage);
+//                            this.rightRecord = this.getNextRightRecordInPage();
+//                        }
+//                    } else if (this.leftPage == null) {
+//                        return false;
+//                    }
 
                 } catch (DatabaseException arresting) {
                     System.out.println("Caught an exception");
@@ -223,19 +227,19 @@ public class PNLJOperator extends JoinOperator {
         }
 
         private Record getNextLeftRecordInPage() throws DatabaseException {
-            while (this.leftEntryNum < getNumEntriesPerPage(this.leftTableName)) {
+            while (this.leftEntryNum < PNLJOperator.this.getNumEntriesPerPage(this.leftTableName)) {
                 byte b = this.leftHeader[this.leftEntryNum / 8];
                 int bitOffset = 7 - (this.leftEntryNum % 8);
                 byte mask = (byte) (1 << bitOffset);
 
                 byte value = (byte) (b & mask);
                 if (value != 0) {
-                    int entrySize = getSchema(this.leftTableName).getEntrySize();
+                    int entrySize = PNLJOperator.this.getSchema(this.leftTableName).getEntrySize();
 
-                    int offset = getHeaderSize(this.leftTableName) + (entrySize * this.leftEntryNum);
+                    int offset = PNLJOperator.this.getHeaderSize(this.leftTableName) + (entrySize * this.leftEntryNum);
                     byte[] bytes = this.leftPage.readBytes(offset, entrySize);
 
-                    Record toRtn = getSchema(this.leftTableName).decode(bytes);
+                    Record toRtn = PNLJOperator.this.getSchema(this.leftTableName).decode(bytes);
                     //          this.recordCount++;
                     this.leftEntryNum++;
                     return toRtn;
@@ -243,34 +247,28 @@ public class PNLJOperator extends JoinOperator {
 
                 this.leftEntryNum++;
             }
-
-
-//            throw new NoSuchElementException();
             return null;
         }
 
         private Record getNextRightRecordInPage() throws DatabaseException {
-            while (this.rightEntryNum < getNumEntriesPerPage(this.rightTableName)) {
+            while (this.rightEntryNum < PNLJOperator.this.getNumEntriesPerPage(this.rightTableName)) {
                 byte b = this.rightHeader[this.rightEntryNum / 8];
                 int bitOffset = 7 - (this.rightEntryNum % 8);
                 byte mask = (byte) (1 << bitOffset);
 
                 byte value = (byte) (b & mask);
                 if (value != 0) {
-                    int entrySize = getEntrySize(this.rightTableName);
+                    int entrySize = PNLJOperator.this.getEntrySize(this.rightTableName);
 
-                    int offset = getHeaderSize(this.rightTableName) + (entrySize * this.rightEntryNum);
+                    int offset = PNLJOperator.this.getHeaderSize(this.rightTableName) + (entrySize * this.rightEntryNum);
                     byte[] bytes = this.rightPage.readBytes(offset, entrySize);
 
-                    Record toRtn = getSchema(this.rightTableName).decode(bytes);
-                    //          this.recordCount++;
+                    Record toRtn = PNLJOperator.this.getSchema(this.rightTableName).decode(bytes);
                     this.rightEntryNum++;
                     return toRtn;
                 }
-
                 this.rightEntryNum++;
             }
-//            throw new NoSuchElementException();
             return null;
         }
 
