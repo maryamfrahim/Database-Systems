@@ -120,7 +120,7 @@ public class TestJoinOperator {
         assertFalse(outputIterator.hasNext());
     }
 
-    @Test(timeout=5000000)
+    @Test(timeout=90000)
     public void testSimpleJoinPNLJ() throws QueryPlanException, DatabaseException, IOException {
         TestSourceOperator sourceOperator = new TestSourceOperator();
         File tempDir = tempFolder.newFolder("joinTest");
@@ -145,7 +145,7 @@ public class TestJoinOperator {
 
         System.out.println("Before while loop");
         while (outputIterator.hasNext()) {
-            System.out.println("In while");
+//            System.out.println("In while");
             assertEquals(expectedRecord, outputIterator.next());
             numRecords++;
             System.out.println(numRecords);
