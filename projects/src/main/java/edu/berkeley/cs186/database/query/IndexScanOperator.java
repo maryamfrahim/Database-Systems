@@ -7,10 +7,7 @@ import edu.berkeley.cs186.database.table.Record;
 import edu.berkeley.cs186.database.table.Schema;
 import edu.berkeley.cs186.database.table.stats.TableStats;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public class IndexScanOperator extends QueryOperator {
   private Database.Transaction transaction;
@@ -20,6 +17,9 @@ public class IndexScanOperator extends QueryOperator {
   private DataBox value;
 
   private int columnIndex;
+
+
+
 
   /**
    * An index scan operator.
@@ -56,6 +56,7 @@ public class IndexScanOperator extends QueryOperator {
 
   public Iterator<Record> iterator() throws QueryPlanException, DatabaseException {
     return new IndexScanIterator();
+
   }
 
   public Schema computeSchema() throws QueryPlanException {
@@ -71,9 +72,13 @@ public class IndexScanOperator extends QueryOperator {
    */
   private class IndexScanIterator implements Iterator<Record> {
     /* TODO: Implement the IndexScanIterator */
+    private Record nextRecord;
+    private Iterator<Record> recIter;
 
     public IndexScanIterator() throws QueryPlanException, DatabaseException {
       /* TODO */
+      nextRecord = null;
+      recIter = null;
     }
 
     /**
@@ -83,7 +88,95 @@ public class IndexScanOperator extends QueryOperator {
      */
     public boolean hasNext() {
       /* TODO */
-      return false;
+      try {
+        if (IndexScanOperator.this.transaction.indexExists(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName)) {
+          Iterator<Record> later = IndexScanOperator.this.transaction.getRecordIterator(IndexScanOperator.this.tableName);
+
+          if (later.hasNext()) {
+            Record now  = later.next();
+            List<DataBox> yolo = now.getValues();
+
+            DataBox compare = yolo.get(IndexScanOperator.this.columnIndex);
+            if (compare.compareTo(IndexScanOperator.this.value) >= 0) {
+              recIter = IndexScanOperator.this.transaction.sortedScanFrom(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName, IndexScanOperator.this.value);
+              if (recIter.hasNext()) {
+                this.nextRecord = this.recIter.next();
+                return true;
+              } else {
+                return false;
+              }
+            }
+            if (compare.compareTo(IndexScanOperator.this.value) > 0) {
+              recIter = IndexScanOperator.this.transaction.sortedScanFrom(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName, IndexScanOperator.this.value);
+              if (recIter.hasNext()) {
+                this.recIter.next();
+                this.nextRecord = this.recIter.next();
+                return true;
+              } else {
+                return false;
+              }
+            }
+
+
+            if (compare.compareTo(IndexScanOperator.this.value) == 0) {
+              recIter = IndexScanOperator.this.transaction.lookupKey(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName, IndexScanOperator.this.value);
+              if (recIter.hasNext()) {
+                this.nextRecord = this.recIter.next();
+                return true;
+              } else {
+                return false;
+              }
+            }
+
+            if (compare.compareTo(IndexScanOperator.this.value) <= 0) {
+              Iterator<Record> FullRecIter = IndexScanOperator.this.transaction.sortedScan(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName);
+              Iterator<Record> HalfRecIter = IndexScanOperator.this.transaction.sortedScanFrom(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName, IndexScanOperator.this.value);
+              while (FullRecIter.hasNext()) {
+                while(FullRecIter.next()  == HalfRecIter.next()) {
+                  FullRecIter.remove();
+                }
+              }
+              recIter = FullRecIter;
+              if (recIter.hasNext()) {
+                this.nextRecord = this.recIter.next();
+                return true;
+              } else {
+                return false;
+              }
+            }
+
+            if (compare.compareTo(IndexScanOperator.this.value) < 0) {
+              Iterator<Record> FullRecIter  = IndexScanOperator.this.transaction.sortedScan(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName);
+              Iterator<Record> HalfRecIter = IndexScanOperator.this.transaction.sortedScanFrom(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName, IndexScanOperator.this.value);
+              while (FullRecIter.hasNext()) {
+                while(FullRecIter.next()  == HalfRecIter.next()) {
+                  FullRecIter.remove();
+                }
+              }
+              recIter = FullRecIter;
+              if (recIter.hasNext()) {
+                this.recIter.next();
+                this.nextRecord = this.recIter.next();
+                return true;
+              } else {
+                return false;
+              }
+            }
+
+
+
+
+          }
+
+
+
+
+        }
+        return false;
+      } catch (DatabaseException hey) {
+        return false;
+      }
+
     }
 
     /**
@@ -93,7 +186,11 @@ public class IndexScanOperator extends QueryOperator {
      * @throws NoSuchElementException if there are no more Records to yield
      */
     public Record next() {
-      /* TODO */
+      if (this.hasNext()) {
+        Record r = this.nextRecord;
+        this.nextRecord = null;
+        return r;
+      }
       throw new NoSuchElementException();
     }
 
