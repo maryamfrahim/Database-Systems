@@ -88,8 +88,25 @@ public class IndexScanOperator extends QueryOperator {
      */
     public boolean hasNext() {
       /* TODO */
+      if (this.nextRecord != null) {
+        return true;
+      }
+
+      if (recIter != null && recIter.hasNext()) {
+        nextRecord = recIter.next();
+        return true;
+      }
+      if (recIter != null && !recIter.hasNext()) {
+//        nextRecord = null;
+        recIter = null;
+        return false;
+      }
+//      else {
+//        return false;
+//      }
       try {
         if (IndexScanOperator.this.transaction.indexExists(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName)) {
+
           Iterator<Record> later = IndexScanOperator.this.transaction.getRecordIterator(IndexScanOperator.this.tableName);
 
           if (later.hasNext()) {
@@ -132,7 +149,7 @@ public class IndexScanOperator extends QueryOperator {
               Iterator<Record> FullRecIter = IndexScanOperator.this.transaction.sortedScan(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName);
               Iterator<Record> HalfRecIter = IndexScanOperator.this.transaction.sortedScanFrom(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName, IndexScanOperator.this.value);
               while (FullRecIter.hasNext()) {
-                while(FullRecIter.next()  == HalfRecIter.next()) {
+                if (FullRecIter.next().equals(HalfRecIter.next())) {
                   FullRecIter.remove();
                 }
               }
@@ -149,7 +166,7 @@ public class IndexScanOperator extends QueryOperator {
               Iterator<Record> FullRecIter  = IndexScanOperator.this.transaction.sortedScan(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName);
               Iterator<Record> HalfRecIter = IndexScanOperator.this.transaction.sortedScanFrom(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName, IndexScanOperator.this.value);
               while (FullRecIter.hasNext()) {
-                while(FullRecIter.next()  == HalfRecIter.next()) {
+                if (FullRecIter.next().equals(HalfRecIter.next())) {
                   FullRecIter.remove();
                 }
               }
