@@ -363,6 +363,138 @@ public class TestJoinOperator {
         assertEquals(100*100, numRecords2);
     }
 
+    /**
+     * Test sample, do not modify.
+     */
+    @Test
+    @Category(StudentTestP3.class)
+    public void testSample6() throws QueryPlanException, DatabaseException, IOException {
+        TestSourceOperator leftSourceOperator = new TestSourceOperator();
+
+        List<Integer> values = new ArrayList<Integer>();
+        TestSourceOperator rightSourceOperator = TestUtils.createTestSourceOperatorWithInts(values);
+        File tempDir = tempFolder.newFolder("joinTest");
+        Database.Transaction transaction = new Database(tempDir.getAbsolutePath()).beginTransaction();
+        JoinOperator joinOperator = new SNLJOperator(leftSourceOperator, rightSourceOperator, "int", "int", transaction);
+        Iterator<Record> outputIterator = joinOperator.iterator();
+
+        assertFalse(outputIterator.hasNext());
+
+        TestSourceOperator sourceOperator2 = new TestSourceOperator();
+        File tempDir2 = tempFolder.newFolder("joinTes2t");
+        Database.Transaction transaction2 = new Database(tempDir2.getAbsolutePath()).beginTransaction();
+        JoinOperator joinOperator2 = new PNLJOperator(sourceOperator2, sourceOperator2, "int", "int", transaction2);
+
+        Iterator<Record> outputIterator2 = joinOperator2.iterator();
+        int numRecords2 = 0;
+
+        List<DataBox> expectedRecordValues2 = new ArrayList<DataBox>();
+        expectedRecordValues2.add(new BoolDataBox(true));
+        expectedRecordValues2.add(new IntDataBox(1));
+        expectedRecordValues2.add(new StringDataBox("abcde", 5));
+        expectedRecordValues2.add(new FloatDataBox(1.2f));
+        expectedRecordValues2.add(new BoolDataBox(true));
+        expectedRecordValues2.add(new IntDataBox(1));
+        expectedRecordValues2.add(new StringDataBox("abcde", 5));
+        expectedRecordValues2.add(new FloatDataBox(1.2f));
+        Record expectedRecord2 = new Record(expectedRecordValues2);
+
+        while (outputIterator2.hasNext()) {
+            assertEquals(expectedRecord2, outputIterator2.next());
+            numRecords2++;
+        }
+
+        assertEquals(100*100, numRecords2);
+    }
+
+    /**
+     * Test sample, do not modify.
+     */
+    @Test
+    @Category(StudentTestP3.class)
+    public void testSample7() throws QueryPlanException, DatabaseException, IOException {
+
+        TestSourceOperator sourceOperator2 = new TestSourceOperator();
+        File tempDir2 = tempFolder.newFolder("joinTes2t");
+        Database.Transaction transaction2 = new Database(tempDir2.getAbsolutePath()).beginTransaction();
+        JoinOperator joinOperator2 = new PNLJOperator(sourceOperator2, sourceOperator2, "int", "int", transaction2);
+
+        Iterator<Record> outputIterator2 = joinOperator2.iterator();
+        int numRecords2 = 0;
+
+        List<DataBox> expectedRecordValues2 = new ArrayList<DataBox>();
+        expectedRecordValues2.add(new BoolDataBox(true));
+        expectedRecordValues2.add(new IntDataBox(1));
+        expectedRecordValues2.add(new StringDataBox("abcde", 5));
+        expectedRecordValues2.add(new FloatDataBox(1.2f));
+        expectedRecordValues2.add(new BoolDataBox(true));
+        expectedRecordValues2.add(new IntDataBox(1));
+        expectedRecordValues2.add(new StringDataBox("abcde", 5));
+        expectedRecordValues2.add(new FloatDataBox(1.2f));
+        Record expectedRecord2 = new Record(expectedRecordValues2);
+
+        while (outputIterator2.hasNext()) {
+            assertEquals(expectedRecord2, outputIterator2.next());
+            numRecords2++;
+        }
+
+        assertEquals(100*100, numRecords2);
+
+        TestSourceOperator sourceOperator = new TestSourceOperator();
+        File tempDir = tempFolder.newFolder("joinTest");
+        Database.Transaction transaction = new Database(tempDir.getAbsolutePath()).beginTransaction();
+        JoinOperator joinOperator = new BNLJOperator(sourceOperator, sourceOperator, "int", "int", transaction);
+
+        Iterator<Record> outputIterator = joinOperator.iterator();
+        int numRecords = 0;
+
+        List<DataBox> expectedRecordValues = new ArrayList<DataBox>();
+        expectedRecordValues.add(new BoolDataBox(true));
+        expectedRecordValues.add(new IntDataBox(1));
+        expectedRecordValues.add(new StringDataBox("abcde", 5));
+        expectedRecordValues.add(new FloatDataBox(1.2f));
+        expectedRecordValues.add(new BoolDataBox(true));
+        expectedRecordValues.add(new IntDataBox(1));
+        expectedRecordValues.add(new StringDataBox("abcde", 5));
+        expectedRecordValues.add(new FloatDataBox(1.2f));
+        Record expectedRecord = new Record(expectedRecordValues);
+
+        while (outputIterator.hasNext()) {
+            assertEquals(expectedRecord, outputIterator.next());
+            numRecords++;
+        }
+
+        assertEquals(100*100, numRecords);
+
+    }
+
+    /**
+     * Test sample, do not modify.
+     */
+    @Test
+    @Category(StudentTestP3.class)
+    public void testSample8() throws QueryPlanException, DatabaseException, IOException {
+        
+    }
+
+    /**
+     * Test sample, do not modify.
+     */
+    @Test
+    @Category(StudentTestP3.class)
+    public void testSample9() throws QueryPlanException, DatabaseException, IOException {
+
+    }
+
+    /**
+     * Test sample, do not modify.
+     */
+    @Test
+    @Category(StudentTestP3.class)
+    public void testSample10() throws QueryPlanException, DatabaseException, IOException {
+
+    }
+
     @Test(timeout=5000)
     public void testOperatorSchema() throws QueryPlanException, DatabaseException, IOException {
         TestSourceOperator sourceOperator = new TestSourceOperator();
