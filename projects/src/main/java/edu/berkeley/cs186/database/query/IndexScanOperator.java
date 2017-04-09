@@ -116,6 +116,17 @@ public class IndexScanOperator extends QueryOperator {
             List<DataBox> yolo = now.getValues();
 
             DataBox compare = yolo.get(IndexScanOperator.this.columnIndex);
+
+            if (compare.compareTo(IndexScanOperator.this.value) == 0) {
+              this.recIter = IndexScanOperator.this.transaction.lookupKey(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName, IndexScanOperator.this.value);
+              if (this.recIter.hasNext()) {
+                this.nextRecord = this.recIter.next();
+                return true;
+              } else {
+                return false;
+              }
+            }
+
             if (compare.compareTo(IndexScanOperator.this.value) >= 0) {
               this.recIter = IndexScanOperator.this.transaction.sortedScanFrom(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName, IndexScanOperator.this.value);
               if (this.recIter.hasNext()) {
@@ -137,15 +148,6 @@ public class IndexScanOperator extends QueryOperator {
             }
 
 
-            if (compare.compareTo(IndexScanOperator.this.value) == 0) {
-              this.recIter = IndexScanOperator.this.transaction.lookupKey(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName, IndexScanOperator.this.value);
-              if (this.recIter.hasNext()) {
-                this.nextRecord = this.recIter.next();
-                return true;
-              } else {
-                return false;
-              }
-            }
 
             if (compare.compareTo(IndexScanOperator.this.value) <= 0) {
               Iterator<Record> FullRecIter = IndexScanOperator.this.transaction.sortedScan(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName);
@@ -163,7 +165,7 @@ public class IndexScanOperator extends QueryOperator {
                 return false;
               }
             }
-
+//
             if (compare.compareTo(IndexScanOperator.this.value) < 0) {
               Iterator<Record> FullRecIter  = IndexScanOperator.this.transaction.sortedScan(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName);
               Iterator<Record> HalfRecIter = IndexScanOperator.this.transaction.sortedScanFrom(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName, IndexScanOperator.this.value);
