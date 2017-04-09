@@ -75,8 +75,8 @@ public class SortMergeOperator extends JoinOperator {
       }
       //Sorting the tables and putting them in temp tables.
       //temp table and then sort....
-      this.leftIterator = BNLJOperator.this.getPageIterator(this.leftTableName);
-      this.rightIterator = BNLJOperator.this.getPageIterator(this.rightTableName);
+      this.leftIterator = SortMergeOperator.this.getPageIterator(this.leftTableName);
+      this.rightIterator = SortMergeOperator.this.getPageIterator(this.rightTableName);
 
 
       if (this.leftIterator.hasNext()) {
@@ -94,7 +94,7 @@ public class SortMergeOperator extends JoinOperator {
       if (this.leftIterator.hasNext() ) {
         this.leftPage = this.leftIterator.next(); //hmm edge case is if the empty table is passed in
         this.pageCurrent = this.leftPage.getPageNum();
-        this.leftHeader = BNLJOperator.this.getPageHeader(this.leftTableName, this.leftPage);
+        this.leftHeader = SortMergeOperator.this.getPageHeader(this.leftTableName, this.leftPage);
         this.leftEntryNum = 0;
         this.leftRecord = this.getNextLeftRecordInPage();
 
@@ -102,7 +102,7 @@ public class SortMergeOperator extends JoinOperator {
       }
       if (this.rightIterator.hasNext()) {
         this.rightPage = this.rightIterator.next();
-        this.rightHeader = BNLJOperator.this.getPageHeader(this.rightTableName, this.rightPage);
+        this.rightHeader = SortMergeOperator.this.getPageHeader(this.rightTableName, this.rightPage);
         this.rightEntryNum = 0;
         this.rightRecord = this.getNextRightRecordInPage();
 
@@ -141,65 +141,67 @@ public class SortMergeOperator extends JoinOperator {
         Page leftPage = leftIterator.next();
         Page rightpage = rightIterator.next();
 
-        DataBox leftKey = leftPage.getValues().get(SortMergeOperator.this.getLeftColumnIndex());
-
-        while (leftKey < rightKey) {
-          advanceLeftTable();
+//        DataBox leftKey = leftPage.getValues().get(SortMergeOperator.this.getLeftColumnIndex());
+//
+//        while (leftKey < rightKey) {
+//          advanceLeftTable();
+//        }
+//        while (leftKey > rightKey) {
+//          rightIterator.next();
+//          rightKey = ;
+//        }
+//
+//        //mark s. save the entry number
+//        while (leftKey == rightKey) {
+//          //Outer loop over r
+//          while (leftKey == rightKey) {
+//            //inner loop over s
+//            return leftKey, rightKey;
+//            rightKey.next();
+//
+//          }
+//          using pages, rightKey to mark.
+//          leftKey.next
         }
-        while (leftKey > rightKey) {
-          rightIterator.next();
-          rightKey = ;
-        }
-
-        //mark s. save the entry number
-        while (leftKey == rightKey) {
-          //Outer loop over r
-          while (leftKey == rightKey) {
-            //inner loop over s
-            return leftKey, rightKey;
-            rightKey.next();
-
-          }
-          using pages, rightKey to mark.
-          leftKey.next
-        }
-      }
+//      }
       return false;
     }
 
     private boolean advanceLeftTable() {
       /* TODO */
-      while (leftKey < rightKey) {
-        leftIterator.next();
-        leftKey =;
-      }
-      return leftTable.next();
+//      while (leftKey < rightKey) {
+//        leftIterator.next();
+//        leftKey =;
+//      }
+//      return leftTable.next();
+      return false;
     }
 
     private boolean advanceRightTable() {
       /* TODO */
 //      rightTable.next();
-      return rightTable.next();
-      while (leftKey > rightKey) {
-        rightIterator.next();
-        rightKey = ;
-      }
+//      return rightTable.next();
+//      while (leftKey > rightKey) {
+//        rightIterator.next();
+//        rightKey = ;
+//      }
+      return true;
     }
 
-    private Record getNextLeftRecordInPage() {
-      while (this.leftEntryNum < PNLJOperator.this.getNumEntriesPerPage(this.leftTableName)) {
+    private Record getNextLeftRecordInPage() throws DatabaseException {
+      while (this.leftEntryNum < SortMergeOperator.this.getNumEntriesPerPage(this.leftTableName)) {
         byte b = this.leftHeader[this.leftEntryNum / 8];
         int bitOffset = 7 - (this.leftEntryNum % 8);
         byte mask = (byte) (1 << bitOffset);
 
         byte value = (byte) (b & mask);
         if (value != 0) {
-          int entrySize = PNLJOperator.this.getSchema(this.leftTableName).getEntrySize();
+          int entrySize = SortMergeOperator.this.getSchema(this.leftTableName).getEntrySize();
 
-          int offset = PNLJOperator.this.getHeaderSize(this.leftTableName) + (entrySize * this.leftEntryNum);
+          int offset = SortMergeOperator.this.getHeaderSize(this.leftTableName) + (entrySize * this.leftEntryNum);
           byte[] bytes = this.leftPage.readBytes(offset, entrySize);
 
-          Record toRtn = PNLJOperator.this.getSchema(this.leftTableName).decode(bytes);
+          Record toRtn = SortMergeOperator.this.getSchema(this.leftTableName).decode(bytes);
           this.leftEntryNum++;
           return toRtn;
         }
@@ -208,20 +210,20 @@ public class SortMergeOperator extends JoinOperator {
       return null;
     }
 
-    private Record getNextRightRecordInPage() {
-      while (this.rightEntryNum < PNLJOperator.this.getNumEntriesPerPage(this.rightTableName)) {
+    private Record getNextRightRecordInPage() throws DatabaseException {
+      while (this.rightEntryNum < SortMergeOperator.this.getNumEntriesPerPage(this.rightTableName)) {
         byte b = this.rightHeader[this.rightEntryNum / 8];
         int bitOffset = 7 - (this.rightEntryNum % 8);
         byte mask = (byte) (1 << bitOffset);
 
         byte value = (byte) (b & mask);
         if (value != 0) {
-          int entrySize = PNLJOperator.this.getEntrySize(this.rightTableName);
+          int entrySize = SortMergeOperator.this.getEntrySize(this.rightTableName);
 
-          int offset = PNLJOperator.this.getHeaderSize(this.rightTableName) + (entrySize * this.rightEntryNum);
+          int offset = SortMergeOperator.this.getHeaderSize(this.rightTableName) + (entrySize * this.rightEntryNum);
           byte[] bytes = this.rightPage.readBytes(offset, entrySize);
 
-          Record toRtn = PNLJOperator.this.getSchema(this.rightTableName).decode(bytes);
+          Record toRtn = SortMergeOperator.this.getSchema(this.rightTableName).decode(bytes);
           this.rightEntryNum++;
           return toRtn;
         }

@@ -50,6 +50,7 @@ public class BNLJOperator extends JoinOperator {
     private int rightEntryNum;
     private int pageCurrent;
     private int pageBlock;
+    private int numBlocks;
 
     public BNLJIterator() throws QueryPlanException, DatabaseException {
       /* TODO */
@@ -78,8 +79,6 @@ public class BNLJOperator extends JoinOperator {
           /* TODO */
       this.leftIterator = BNLJOperator.this.getPageIterator(this.leftTableName);
       this.rightIterator = BNLJOperator.this.getPageIterator(this.rightTableName);
-//            this.leftIterator.next();
-//            this.rightIterator.next();
 
       if (this.leftIterator.hasNext()) {
         this.leftIterator.next();
@@ -99,8 +98,7 @@ public class BNLJOperator extends JoinOperator {
         this.leftHeader = BNLJOperator.this.getPageHeader(this.leftTableName, this.leftPage);
         this.leftEntryNum = 0;
         this.leftRecord = this.getNextLeftRecordInBlock();
-
-        this.pageBlock = 0;
+        this.pageBlock = this.leftPage.getPageNum();
       }
       if (this.rightIterator.hasNext()) {
         this.rightPage = this.rightIterator.next();
@@ -125,7 +123,9 @@ public class BNLJOperator extends JoinOperator {
         this.nextRecord = null;
       }
 
+      this.numBlocks = 0;
       this.nextRecord = null;
+
     }
 
     /**
@@ -149,30 +149,36 @@ public class BNLJOperator extends JoinOperator {
             } else if (this.rightPage != null) {
               if (!this.rightIterator.hasNext()) {
                 this.rightPage = null;
-                if (this.pageCurrent - this.pageBlock == numBuffers - 2) { //block done so reset the block MAYBEEE HEREREEER
-                  this.leftRecord = null;
+/*                if (this.pageCurrent - this.pageBlock == numBuffers - 2) { //block done so next the block MAYBEEE HEREREEER
+                  this.leftRecord = this.getNextLeftRecordInBlock();
                   this.pageBlock = this.pageCurrent;
-                }
+                }*/
               } else {
                 this.rightPage = this.rightIterator.next(); //we in a new page DO WE NEED TO CALL NEXT TWICE
-
                 this.rightHeader = BNLJOperator.this.getPageHeader(this.rightTableName, this.rightPage);
-
                 this.rightEntryNum = 0;
                 this.rightRecord = this.getNextRightRecordInPage();
-                //reset leftRec all the way to the top of first left page. offset 0
+                //reset leftRec all the way to the top of first left page. offset 0 OVER HERE NOT TOP OF PAGE TOP OF BLOCKkk
+                this.leftIterator = BNLJOperator.this.getPageIterator(leftTableName);
+                this.leftIterator.next();
+                for (int i = 0; i < (numBlocks * (numBuffers - 2)); i++) {
+                  this.leftIterator.next();
+                }
+
+                this.leftPage = this.leftIterator.next();
                 this.leftEntryNum = 0;
                 this.leftRecord = this.getNextLeftRecordInBlock();
               }
-            } else if (this.leftPage != null) {
-              if (this.pageCurrent - this.pageBlock == numBuffers - 2) { //block done so reset the block MAYBEEE HEREREEER
-                this.leftRecord = null;
+            } else if (this.leftPage != null) { //implied rightpage == null, so go to the next block.
+/*              if (this.pageCurrent - this.pageBlock == numBuffers - 2) { //block done so reset the block MAYBEEE HEREREEER
+                this.leftRecord = this.getNextLeftRecordInBlock();
                 this.pageBlock = this.pageCurrent;
-              }
+              }*/
               if (!this.leftIterator.hasNext()) {
                 this.leftPage = null;
                 this.pageCurrent = 0;
               } else {
+                this.numBlocks++;
                 this.leftPage = this.leftIterator.next();
                 this.pageCurrent = this.leftPage.getPageNum();
                 this.leftHeader = BNLJOperator.this.getPageHeader(this.leftTableName, this.leftPage);
@@ -192,7 +198,6 @@ public class BNLJOperator extends JoinOperator {
           } else
           if (this.leftRecord != null && this.rightRecord != null) {
             //Situation 1 - Normal nothing is null
-//                            this.rightRecord = getNextRightRecordInPage();
             DataBox leftJoinValue = this.leftRecord.getValues().get(BNLJOperator.this.getLeftColumnIndex());
             DataBox rightJoinValue = this.rightRecord.getValues().get(BNLJOperator.this.getRightColumnIndex());
             if (leftJoinValue.equals(rightJoinValue)) {
@@ -210,13 +215,6 @@ public class BNLJOperator extends JoinOperator {
           else {
             this.rightRecord = null;
           }
-
-
-
-
-
-
-
 
 
         } catch (DatabaseException arresting) {
@@ -250,25 +248,21 @@ public class BNLJOperator extends JoinOperator {
         }
         this.leftEntryNum++;
       }
-
-      if (this.pageCurrent >= this.pageBlock && this.pageCurrent < this.pageBlock + numBuffers - 2) { //block is not done
+      if (this.pageCurrent >= this.pageBlock && this.pageCurrent < (this.pageBlock + (numBuffers - 2))) { //block is not done
 //          return  getNextLeftRecordInBlock();
         if (this.leftIterator.hasNext()) {
           this.leftPage = this.leftIterator.next(); ///////////////HMMMM
+          this.leftEntryNum = 0;
+          this.leftHeader = BNLJOperator.this.getPageHeader(this.leftTableName, this.leftPage);
           this.pageCurrent = this.leftPage.getPageNum();
-          System.out.println("in here");
+          this.leftRecord = this.getNextLeftRecordInBlock();
+          return this.leftRecord;
         }
         else {
-          this.leftPage = null;
-          this.pageCurrent = 0;
-          System.out.println("polo");
           this.leftRecord = null;
           return null;
         }
-        this.leftRecord = this.getNextLeftRecordInBlock();
-        return this.leftRecord;
       }
-//    }
 
       this.leftRecord = null;
       return this.leftRecord;

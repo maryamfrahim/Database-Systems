@@ -41,9 +41,14 @@ public class GraceHashOperator extends JoinOperator {
     private Iterator<Record> rightIterator;
     private String[] leftPartitions;
     private String[] rightPartitions;
-    private List<Record> output_buffer;
+    private Record leftRecord;
+    private Record rightRecord;
     private Record nextRecord;
     private int currPartition;
+    private HashMap<DataBox, ArrayList<Record>> solution_buffer;
+    private Iterator<Record> rightRecordListIter;
+    private DataBox rightJoinValue;
+    private List<Record> output_buffer;
     /* TODO: Implement the GraceHashOperator */
 
     public GraceHashIterator() throws QueryPlanException, DatabaseException {
@@ -62,8 +67,6 @@ public class GraceHashOperator extends JoinOperator {
         rightPartitions[i] = rightTableName;
       }
       /* TODO */
-      this.output_buffer = new ArrayList<Record>();
-      this.currPartition = 0;
       //Build the two partitions
       while (this.leftIterator.hasNext()) {
         Record current = this.leftIterator.next();
@@ -77,6 +80,24 @@ public class GraceHashOperator extends JoinOperator {
         int index = key.hashCode() % (numBuffers -1);
         GraceHashOperator.this.addRecord(this.rightPartitions[index], current.getValues());
       }
+
+      this.output_buffer = new ArrayList<Record>();
+      this.currPartition = 0;
+      this.leftIterator = null;
+      this.rightIterator = null;
+      this.solution_buffer = new HashMap<DataBox, ArrayList<Record>>();
+
+      String[] leftPartitions;
+       String[] rightPartitions;
+       Record leftRecord;
+      Record rightRecord;
+       Record nextRecord;
+      int currPartition;
+      HashMap<DataBox, ArrayList<Record>> hashTable;
+      Iterator<Record> rightRecordListIter;
+      DataBox rightJoinValue;
+       List<Record> output_buffer;
+
     }
 
     /**
@@ -121,7 +142,6 @@ public class GraceHashOperator extends JoinOperator {
       //right partition find corresponding key and the list of left.
       try {
         for (; this.currPartition < this.leftPartitions.length; this.currPartition++) {
-          Hashtable<DataBox, List<Record>> solution_buffer = new Hashtable<DataBox, List<Record>>();
           Iterator<Record> currTable = GraceHashOperator.this.getTableIterator(this.leftPartitions[currPartition]);
           int checking = 0;
           int checkingTwo = 0;
@@ -134,11 +154,11 @@ public class GraceHashOperator extends JoinOperator {
             if (solution_buffer.containsKey(key)) {
               List<Record> temp = solution_buffer.get(key);
               temp.add(currRecord);
-              solution_buffer.put(key, temp);
+//              solution_buffer.put(key, temp);
             } else {
               List<Record> temp = new ArrayList<Record>();
               temp.add(currRecord);
-              solution_buffer.put(key, temp);
+//              solution_buffer.put(key, temp);
             }
           }
           checkingTwo++;
