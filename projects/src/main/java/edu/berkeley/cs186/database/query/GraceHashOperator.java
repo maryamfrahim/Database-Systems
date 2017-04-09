@@ -1,5 +1,6 @@
 package edu.berkeley.cs186.database.query;
 
+import java.awt.font.NumericShaper;
 import java.util.*;
 
 import edu.berkeley.cs186.database.DatabaseException;
@@ -40,6 +41,9 @@ public class GraceHashOperator extends JoinOperator {
     private Iterator<Record> rightIterator;
     private String[] leftPartitions;
     private String[] rightPartitions;
+    private List<Record> output_buffer;
+    private Record nextRecord;
+    private int currPartition;
     /* TODO: Implement the GraceHashOperator */
 
     public GraceHashIterator() throws QueryPlanException, DatabaseException {
@@ -58,33 +62,112 @@ public class GraceHashOperator extends JoinOperator {
         rightPartitions[i] = rightTableName;
       }
       /* TODO */
+      this.output_buffer = new ArrayList<Record>();
+      this.currPartition = 0;
+      //Build the two partitions
+      while (this.leftIterator.hasNext()) {
+        Record current = this.leftIterator.next();
+        DataBox key = current.getValues().get(GraceHashOperator.this.getLeftColumnIndex());
+        int index = key.hashCode() % (numBuffers-1);
+        GraceHashOperator.this.addRecord(this.leftPartitions[index], current.getValues());
+      }
+      while (this.rightIterator.hasNext()) {
+        Record current = this.rightIterator.next();
+        DataBox key = current.getValues().get(GraceHashOperator.this.getLeftColumnIndex());
+        int index = key.hashCode() % (numBuffers -1);
+        GraceHashOperator.this.addRecord(this.rightPartitions[index], current.getValues());
+      }
     }
+
+    /**
+     * Makes the Hash Table from the Partitions we made.
+     *
+     * @return the Hash Table
+     */
+//    public Hashtable HashTableCreater() throws DatabaseException {
+//      Hashtable<DataBox, List<Record>> solution_buffer = new Hashtable<DataBox, List<Record>>();
+//
+////      go through left partiiton and go through all and get databox and put in hash map. thats your key. array listof record. in the end, all key and have same key.
+//
+//      for (String partition : leftPartitions) {
+//        Iterator<Record> currTable = GraceHashOperator.this.getTableIterator(partition);
+//        while (currTable.hasNext()) {
+//          Record currRecord = currTable.next();
+//          DataBox key = currRecord.getValues().get(GraceHashOperator.this.getLeftColumnIndex());
+//          if (solution_buffer.containsKey(key)) {
+//            List<Record> temp = solution_buffer.get(key);
+//            temp.add(currRecord);
+//            solution_buffer.put(key, temp);
+//          } else {
+//            List<Record> temp = new ArrayList<Record>();
+//            temp.add(currRecord);
+//            solution_buffer.put(key, temp);
+//          }
+//        }
+//        ////right partiition find corresponding key and the list of left.
+//      }
+//      return null;
+//    }
+
 
     /**
      * Checks if there are more record(s) to yield
      *
      * @return true if this iterator has another record to yield, otherwise false
      */
-    public boolean hasNext() {
+    public boolean hasNext() { //ONE WHILE
       /* TODO */
-      while (this.leftIterator.hasNext()) {
-        Record current = leftIterator.next();
-//        leftPartitions[current.getValues().get(SNLJOperator.this.getLeftColumnIndex()).hashCode()] = current.toString(); //hashmap
+      //go through left partiton and go through all and get databox and put in hash map. thats your key. array listof record. in the end, all key and have same key.
+      //right partition find corresponding key and the list of left.
+      try {
+        for (; this.currPartition < this.leftPartitions.length; this.currPartition++) {
+          Hashtable<DataBox, List<Record>> solution_buffer = new Hashtable<DataBox, List<Record>>();
+          Iterator<Record> currTable = GraceHashOperator.this.getTableIterator(this.leftPartitions[currPartition]);
+          int checking = 0;
+          int checkingTwo = 0;
+          while (currTable.hasNext()) {
+            checking++;
+            System.out.println(checking);
+//          for ( ; currTable.hasNext() ;) {
+            Record currRecord = currTable.next();
+            DataBox key = currRecord.getValues().get(GraceHashOperator.this.getLeftColumnIndex());
+            if (solution_buffer.containsKey(key)) {
+              List<Record> temp = solution_buffer.get(key);
+              temp.add(currRecord);
+              solution_buffer.put(key, temp);
+            } else {
+              List<Record> temp = new ArrayList<Record>();
+              temp.add(currRecord);
+              solution_buffer.put(key, temp);
+            }
+          }
+          checkingTwo++;
+          System.out.println("overall" + checkingTwo);
+          Iterator<Record> currRTable = GraceHashOperator.this.getTableIterator(this.rightPartitions[currPartition]);
+          while (currRTable.hasNext()) {
+            Record rightRecord = currRTable.next();
+            DataBox key = rightRecord.getValues().get(GraceHashOperator.this.getLeftColumnIndex());
+            if (solution_buffer.containsKey(key)) { //s == hash
+              List<Record> listing = solution_buffer.get(key);
+              for (Record leftRecord : listing) {
+                DataBox leftJoinValue = leftRecord.getValues().get(GraceHashOperator.this.getLeftColumnIndex());
+                DataBox rightJoinValue = rightRecord.getValues().get(GraceHashOperator.this.getRightColumnIndex());
+                if (leftJoinValue.equals(rightJoinValue)) {
+                  List<DataBox> leftValues = new ArrayList<DataBox>(leftRecord.getValues());
+                  List<DataBox> rightValues = new ArrayList<DataBox>(rightRecord.getValues());
+                  leftValues.addAll(rightValues);
+                  Record joined = new Record(leftValues);
+                  this.output_buffer.add(joined);
+                }
+              }
+              this.nextRecord = this.output_buffer.get(0);
+              return true;
+            }
+          }
+        }
+      } catch (DatabaseException database) {
+        System.out.println("Opps");
       }
-      while (this.rightIterator.hasNext()) {
-        Record current = rightIterator.next();
-        rightPartitions[current.getValues().hashCode()] = current.toString();
-      }
-
-//      for each j bucket,
-//      for each record r in Rj
-//        insert into hash table mm
-//      for each record s in Sj
-//      for each item in hash table
-//        if r = s
-//          probe the hash table and put in output
-
-
       return false;
     }
 
@@ -95,7 +178,11 @@ public class GraceHashOperator extends JoinOperator {
      * @throws NoSuchElementException if there are no more Records to yield
      */
     public Record next() {
-      /* TODO */
+      if (this.hasNext()) {
+        Record r = this.nextRecord;
+        this.nextRecord = null;
+        return r;
+      }
       throw new NoSuchElementException();
     }
 

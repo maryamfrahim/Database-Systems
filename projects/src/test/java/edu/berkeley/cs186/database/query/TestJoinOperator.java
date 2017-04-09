@@ -143,12 +143,11 @@ public class TestJoinOperator {
         expectedRecordValues.add(new FloatDataBox(1.2f));
         Record expectedRecord = new Record(expectedRecordValues);
 
-        System.out.println("Before while loop");
         while (outputIterator.hasNext()) {
-//            System.out.println("In while");
+//            System.out.println(expectedRecord);
+//            System.out.println(outputIterator.next());
             assertEquals(expectedRecord, outputIterator.next());
             numRecords++;
-            System.out.println(numRecords);
         }
 
         System.out.println(numRecords);
@@ -184,7 +183,7 @@ public class TestJoinOperator {
         assertEquals(100*100, numRecords);
     }
 
-    @Test(timeout=5000)
+    @Test
     public void testSimpleJoinGHJ() throws QueryPlanException, DatabaseException, IOException {
         TestSourceOperator sourceOperator = new TestSourceOperator();
         File tempDir = tempFolder.newFolder("joinTest");
@@ -209,7 +208,7 @@ public class TestJoinOperator {
             assertEquals(expectedRecord, outputIterator.next());
             numRecords++;
         }
-
+        System.out.println(numRecords);
         assertEquals(100*100, numRecords);
     }
 
@@ -296,10 +295,10 @@ public class TestJoinOperator {
 
         int count = 0;
         Iterator<Record> outputIterator = joinOperator.iterator();
-        int testing = 0;
+//        int testing = 0;
         while (outputIterator.hasNext()) {
-            testing++;
-            System.out.println(testing);
+//            testing++;
+//            System.out.println(testing);
           if (count < 20736) {
             assertEquals(expectedRecord1, outputIterator.next());
           } else if (count < 20736*2) {
@@ -394,6 +393,7 @@ public class TestJoinOperator {
           }
           count++;
         }
+        System.out.println(count);
         assertTrue(count == 82944);
     }
 
