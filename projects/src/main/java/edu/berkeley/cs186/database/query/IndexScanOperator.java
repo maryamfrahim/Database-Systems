@@ -92,14 +92,16 @@ public class IndexScanOperator extends QueryOperator {
         return true;
       }
 
-      if (recIter != null && recIter.hasNext()) {
-        nextRecord = recIter.next();
-        return true;
-      }
-      if (recIter != null && !recIter.hasNext()) {
+      if (this.recIter != null) {
+        if (this.recIter.hasNext()) {
+          this.nextRecord = this.recIter.next();
+          return true;
+
+        } else if (!this.recIter.hasNext()) {
 //        nextRecord = null;
-        recIter = null;
-        return false;
+          this.recIter = null;
+          return false;
+        }
       }
 //      else {
 //        return false;
@@ -115,8 +117,8 @@ public class IndexScanOperator extends QueryOperator {
 
             DataBox compare = yolo.get(IndexScanOperator.this.columnIndex);
             if (compare.compareTo(IndexScanOperator.this.value) >= 0) {
-              recIter = IndexScanOperator.this.transaction.sortedScanFrom(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName, IndexScanOperator.this.value);
-              if (recIter.hasNext()) {
+              this.recIter = IndexScanOperator.this.transaction.sortedScanFrom(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName, IndexScanOperator.this.value);
+              if (this.recIter.hasNext()) {
                 this.nextRecord = this.recIter.next();
                 return true;
               } else {
@@ -124,7 +126,7 @@ public class IndexScanOperator extends QueryOperator {
               }
             }
             if (compare.compareTo(IndexScanOperator.this.value) > 0) {
-              recIter = IndexScanOperator.this.transaction.sortedScanFrom(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName, IndexScanOperator.this.value);
+              this.recIter = IndexScanOperator.this.transaction.sortedScanFrom(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName, IndexScanOperator.this.value);
               if (recIter.hasNext()) {
                 this.recIter.next();
                 this.nextRecord = this.recIter.next();
@@ -136,8 +138,8 @@ public class IndexScanOperator extends QueryOperator {
 
 
             if (compare.compareTo(IndexScanOperator.this.value) == 0) {
-              recIter = IndexScanOperator.this.transaction.lookupKey(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName, IndexScanOperator.this.value);
-              if (recIter.hasNext()) {
+              this.recIter = IndexScanOperator.this.transaction.lookupKey(IndexScanOperator.this.tableName, IndexScanOperator.this.columnName, IndexScanOperator.this.value);
+              if (this.recIter.hasNext()) {
                 this.nextRecord = this.recIter.next();
                 return true;
               } else {
@@ -153,8 +155,8 @@ public class IndexScanOperator extends QueryOperator {
                   FullRecIter.remove();
                 }
               }
-              recIter = FullRecIter;
-              if (recIter.hasNext()) {
+              this.recIter = FullRecIter;
+              if (this.recIter.hasNext()) {
                 this.nextRecord = this.recIter.next();
                 return true;
               } else {
@@ -170,7 +172,7 @@ public class IndexScanOperator extends QueryOperator {
                   FullRecIter.remove();
                 }
               }
-              recIter = FullRecIter;
+              this.recIter = FullRecIter;
               if (recIter.hasNext()) {
                 this.recIter.next();
                 this.nextRecord = this.recIter.next();
