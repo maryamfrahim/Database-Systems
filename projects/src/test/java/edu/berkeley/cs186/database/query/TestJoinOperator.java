@@ -183,7 +183,7 @@ public class TestJoinOperator {
         assertEquals(100*100, numRecords);
     }
 
-    @Test
+    @Test (timeout=5000)
     public void testSimpleJoinGHJ() throws QueryPlanException, DatabaseException, IOException {
         TestSourceOperator sourceOperator = new TestSourceOperator();
         File tempDir = tempFolder.newFolder("joinTest");

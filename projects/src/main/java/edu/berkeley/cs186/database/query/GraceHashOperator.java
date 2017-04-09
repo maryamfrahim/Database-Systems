@@ -46,8 +46,8 @@ public class GraceHashOperator extends JoinOperator {
     private Record nextRecord;
     private int currPartition;
     private HashMap<DataBox, ArrayList<Record>> solution_buffer;
-    private Iterator<Record> rightRecordListIter;
-    private DataBox rightJoinValue;
+    private Iterator<Record> rightPartitionIterater;
+//    private Record returnable;
     private List<Record> output_buffer;
     /* TODO: Implement the GraceHashOperator */
 
@@ -69,35 +69,25 @@ public class GraceHashOperator extends JoinOperator {
       /* TODO */
       //Build the two partitions
       while (this.leftIterator.hasNext()) {
-        Record current = this.leftIterator.next();
-        DataBox key = current.getValues().get(GraceHashOperator.this.getLeftColumnIndex());
+        this.leftRecord = this.leftIterator.next();
+        DataBox key = this.leftRecord.getValues().get(GraceHashOperator.this.getLeftColumnIndex());
         int index = key.hashCode() % (numBuffers-1);
-        GraceHashOperator.this.addRecord(this.leftPartitions[index], current.getValues());
+        GraceHashOperator.this.addRecord(this.leftPartitions[index], this.leftRecord.getValues());
       }
       while (this.rightIterator.hasNext()) {
-        Record current = this.rightIterator.next();
-        DataBox key = current.getValues().get(GraceHashOperator.this.getLeftColumnIndex());
+        this.rightRecord = this.rightIterator.next();
+        DataBox key = this.rightRecord.getValues().get(GraceHashOperator.this.getRightColumnIndex());
         int index = key.hashCode() % (numBuffers -1);
-        GraceHashOperator.this.addRecord(this.rightPartitions[index], current.getValues());
+        GraceHashOperator.this.addRecord(this.rightPartitions[index], this.rightRecord.getValues());
       }
 
-      this.output_buffer = new ArrayList<Record>();
+      this.output_buffer = new ArrayList<Record>(); //RECORD THAT WE ARE RETURNING
       this.currPartition = 0;
       this.leftIterator = null;
       this.rightIterator = null;
       this.solution_buffer = new HashMap<DataBox, ArrayList<Record>>();
-
-      String[] leftPartitions;
-       String[] rightPartitions;
-       Record leftRecord;
-      Record rightRecord;
-       Record nextRecord;
-      int currPartition;
-      HashMap<DataBox, ArrayList<Record>> hashTable;
-      Iterator<Record> rightRecordListIter;
-      DataBox rightJoinValue;
-       List<Record> output_buffer;
-
+      this.nextRecord = null;
+      this.rightPartitionIterater = null;
     }
 
     /**
@@ -140,32 +130,42 @@ public class GraceHashOperator extends JoinOperator {
       /* TODO */
       //go through left partiton and go through all and get databox and put in hash map. thats your key. array listof record. in the end, all key and have same key.
       //right partition find corresponding key and the list of left.
+      if (this.nextRecord != null) {
+        return true;
+      }
       try {
         for (; this.currPartition < this.leftPartitions.length; this.currPartition++) {
-          Iterator<Record> currTable = GraceHashOperator.this.getTableIterator(this.leftPartitions[currPartition]);
-          int checking = 0;
-          int checkingTwo = 0;
-          while (currTable.hasNext()) {
-            checking++;
-            System.out.println(checking);
+          this.leftIterator = GraceHashOperator.this.getTableIterator(this.leftPartitions[currPartition]);
+          while (this.leftIterator.hasNext()) {
 //          for ( ; currTable.hasNext() ;) {
-            Record currRecord = currTable.next();
-            DataBox key = currRecord.getValues().get(GraceHashOperator.this.getLeftColumnIndex());
-            if (solution_buffer.containsKey(key)) {
+            this.leftRecord = this.leftIterator.next();
+            DataBox key = this.leftRecord.getValues().get(GraceHashOperator.this.getLeftColumnIndex());
+            if (this.solution_buffer.containsKey(key)) {
               List<Record> temp = solution_buffer.get(key);
-              temp.add(currRecord);
+              temp.add(this.leftRecord);
 //              solution_buffer.put(key, temp);
             } else {
               List<Record> temp = new ArrayList<Record>();
-              temp.add(currRecord);
+              temp.add(this.leftRecord);
 //              solution_buffer.put(key, temp);
             }
           }
-          checkingTwo++;
-          System.out.println("overall" + checkingTwo);
-          Iterator<Record> currRTable = GraceHashOperator.this.getTableIterator(this.rightPartitions[currPartition]);
-          while (currRTable.hasNext()) {
-            Record rightRecord = currRTable.next();
+
+          this.rightIterator = GraceHashOperator.this.getTableIterator(this.rightPartitions[currPartition]);
+
+          if (this.rightPartitionIterater == null && this.rightIterator.hasNext()) {
+            if (this.rightRecord == null) {
+              this.rightRecord = this.rightIterator.next();
+            }
+            DataBox key = this.rightRecord.getValues().get(GraceHashOperator.this.getRightColumnIndex());
+            if (solution_buffer.containsKey(key)) { //s == hash
+              List<Record> listing = solution_buffer.get(key);
+            } else {
+              this.rightRecord = null;
+            }
+          }
+          if (this.rightIterator.hasNext() && this.rightPartitionIterater != null) {
+            Record rightRecord = this.rightIterator.next();
             DataBox key = rightRecord.getValues().get(GraceHashOperator.this.getLeftColumnIndex());
             if (solution_buffer.containsKey(key)) { //s == hash
               List<Record> listing = solution_buffer.get(key);
@@ -185,6 +185,7 @@ public class GraceHashOperator extends JoinOperator {
             }
           }
         }
+        return false;
       } catch (DatabaseException database) {
         System.out.println("Opps");
       }
