@@ -44,6 +44,17 @@ public class TestJoinOperator {
         assertEquals(true, true); // Do not actually write a test like this!
     }
 
+    /**
+     * Test sample, do not modify.
+     */
+    @Test
+    @Category(StudentTestP3.class)
+    public void testSample111() {
+
+        assertEquals(true, true); // Do not actually write a test like this!
+        
+    }
+
     @Test(timeout=5000)
     public void testOperatorSchema() throws QueryPlanException, DatabaseException, IOException {
         TestSourceOperator sourceOperator = new TestSourceOperator();
@@ -207,6 +218,7 @@ public class TestJoinOperator {
         while (outputIterator.hasNext()) {
             assertEquals(expectedRecord, outputIterator.next());
             numRecords++;
+            System.out.println(numRecords);
         }
         System.out.println(numRecords);
         assertEquals(100*100, numRecords);
@@ -459,6 +471,7 @@ public class TestJoinOperator {
           }
           count++;
         }
+        System.out.println(count);
         assertTrue(count == 333*333*3);
     }
 }

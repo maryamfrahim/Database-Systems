@@ -137,9 +137,13 @@ public class SortMergeOperator extends JoinOperator {
     */
     public boolean hasNext() {
       /* TODO */
-      while (leftIterator.hasNext() && rightIterator.hasNext()) {
-        Page leftPage = leftIterator.next();
-        Page rightpage = rightIterator.next();
+//      if(this.nextRecord != null) {
+//        return true;
+//      }
+//      try {
+//      while (leftIterator.hasNext() && rightIterator.hasNext()) {
+//        Page leftPage = leftIterator.next();
+//        Page rightpage = rightIterator.next();
 
 //        DataBox leftKey = leftPage.getValues().get(SortMergeOperator.this.getLeftColumnIndex());
 //
@@ -162,9 +166,10 @@ public class SortMergeOperator extends JoinOperator {
 //          }
 //          using pages, rightKey to mark.
 //          leftKey.next
-        }
-//      }
+//        }
+////      }
       return false;
+//      }
     }
 
     private boolean advanceLeftTable() {

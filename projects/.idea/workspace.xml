@@ -4,6 +4,7 @@
     <list default="true" id="64426eef-a4b1-4311-8fa3-d76d958eaa43" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/GraceHashOperator.java" afterPath="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/GraceHashOperator.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/SortMergeOperator.java" afterPath="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/SortMergeOperator.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/edu/berkeley/cs186/database/query/TestJoinOperator.java" afterPath="$PROJECT_DIR$/src/test/java/edu/berkeley/cs186/database/query/TestJoinOperator.java" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
@@ -38,11 +39,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="418" column="0" selection-start-line="418" selection-start-column="0" selection-end-line="418" selection-end-column="0" />
-              <folding>
-                <element signature="imports" expanded="false" />
-                <element signature="e#6193#6194#0" expanded="false" />
-                <element signature="e#6225#6226#0" expanded="false" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -87,6 +84,23 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="GraceHashOperator.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/GraceHashOperator.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-66.06896">
+              <caret line="117" column="82" selection-start-line="117" selection-start-column="82" selection-end-line="117" selection-end-column="82" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#5471#5479#0" expanded="true" />
+                <element signature="e#6113#6122#0" expanded="true" />
+                <element signature="e#6343#6352#0" expanded="true" />
+                <element signature="e#8098#8099#0" expanded="true" />
+                <element signature="e#8153#8154#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="PNLJOperator.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/PNLJOperator.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -107,32 +121,25 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GraceHashOperator.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/GraceHashOperator.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-75.51724">
-              <caret line="185" column="11" selection-start-line="185" selection-start-column="11" selection-end-line="185" selection-end-column="11" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TestJoinOperator.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="TestJoinOperator.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/edu/berkeley/cs186/database/query/TestJoinOperator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="305" column="39" selection-start-line="305" selection-start-column="39" selection-end-line="305" selection-end-column="39" />
+            <state vertical-scroll-proportion="-0.6554217">
+              <caret line="54" column="8" selection-start-line="54" selection-start-column="8" selection-end-line="54" selection-end-column="8" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SortMergeOperator.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="SortMergeOperator.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/SortMergeOperator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-1.5481799">
-              <caret line="185" column="22" selection-start-line="185" selection-start-column="22" selection-end-line="185" selection-end-column="22" />
-              <folding />
+            <state vertical-scroll-proportion="-6.851852">
+              <caret line="255" column="48" selection-start-line="255" selection-start-column="48" selection-end-line="255" selection-end-column="48" />
+              <folding>
+                <element signature="e#8789#8790#0" expanded="true" />
+                <element signature="e#8844#8845#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -215,10 +222,10 @@
         <option value="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/SNLJOperator.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/JoinOperator.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/PNLJOperator.java" />
-        <option value="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/SortMergeOperator.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/BNLJOperator.java" />
-        <option value="$PROJECT_DIR$/src/test/java/edu/berkeley/cs186/database/query/TestJoinOperator.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/SortMergeOperator.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/GraceHashOperator.java" />
+        <option value="$PROJECT_DIR$/src/test/java/edu/berkeley/cs186/database/query/TestJoinOperator.java" />
       </list>
     </option>
   </component>
@@ -425,33 +432,7 @@
     <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
-  <component name="RunManager" selected="JUnit.TestJoinOperator.testBNLJDiffOutPutThanPNLJ">
-    <configuration default="false" name="TestJoinOperator.testSimpleJoinPNLJ" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="edu.berkeley.cs186.database.query.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <module name="database" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="edu.berkeley.cs186.database.query" />
-      <option name="MAIN_CLASS_NAME" value="edu.berkeley.cs186.database.query.TestJoinOperator" />
-      <option name="METHOD_NAME" value="testSimpleJoinPNLJ" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-      <method />
-    </configuration>
+  <component name="RunManager" selected="JUnit.TestJoinOperator.testSimpleGHJOutputOrderUsingThreePartitions">
     <configuration default="false" name="TestJoinOperator.testSimplePNLJOutputOrder" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
@@ -543,6 +524,32 @@
       <option name="PACKAGE_NAME" value="edu.berkeley.cs186.database.query" />
       <option name="MAIN_CLASS_NAME" value="edu.berkeley.cs186.database.query.TestJoinOperator" />
       <option name="METHOD_NAME" value="testSimpleJoinGHJ" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration default="false" name="TestJoinOperator.testSimpleGHJOutputOrderUsingThreePartitions" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="edu.berkeley.cs186.database.query.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <module name="database" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="edu.berkeley.cs186.database.query" />
+      <option name="MAIN_CLASS_NAME" value="edu.berkeley.cs186.database.query.TestJoinOperator" />
+      <option name="METHOD_NAME" value="testSimpleGHJOutputOrderUsingThreePartitions" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
@@ -993,19 +1000,19 @@
       <method />
     </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="JUnit.TestJoinOperator.testSimpleJoinPNLJ" />
-      <item index="1" class="java.lang.String" itemvalue="JUnit.TestJoinOperator.testSimplePNLJOutputOrder" />
-      <item index="2" class="java.lang.String" itemvalue="JUnit.TestJoinOperator.testSimpleJoinBNLJ" />
-      <item index="3" class="java.lang.String" itemvalue="JUnit.TestJoinOperator.testBNLJDiffOutPutThanPNLJ" />
-      <item index="4" class="java.lang.String" itemvalue="JUnit.TestJoinOperator.testSimpleJoinGHJ" />
+      <item index="0" class="java.lang.String" itemvalue="JUnit.TestJoinOperator.testSimplePNLJOutputOrder" />
+      <item index="1" class="java.lang.String" itemvalue="JUnit.TestJoinOperator.testSimpleJoinBNLJ" />
+      <item index="2" class="java.lang.String" itemvalue="JUnit.TestJoinOperator.testBNLJDiffOutPutThanPNLJ" />
+      <item index="3" class="java.lang.String" itemvalue="JUnit.TestJoinOperator.testSimpleJoinGHJ" />
+      <item index="4" class="java.lang.String" itemvalue="JUnit.TestJoinOperator.testSimpleGHJOutputOrderUsingThreePartitions" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="JUnit.TestJoinOperator.testBNLJDiffOutPutThanPNLJ" />
-        <item index="1" class="java.lang.String" itemvalue="JUnit.TestJoinOperator.testSimpleJoinBNLJ" />
-        <item index="2" class="java.lang.String" itemvalue="JUnit.TestJoinOperator.testSimpleJoinGHJ" />
-        <item index="3" class="java.lang.String" itemvalue="JUnit.TestJoinOperator.testSimplePNLJOutputOrder" />
-        <item index="4" class="java.lang.String" itemvalue="JUnit.TestJoinOperator.testSimpleJoinPNLJ" />
+        <item index="0" class="java.lang.String" itemvalue="JUnit.TestJoinOperator.testSimpleGHJOutputOrderUsingThreePartitions" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.TestJoinOperator.testSimpleJoinGHJ" />
+        <item index="2" class="java.lang.String" itemvalue="JUnit.TestJoinOperator.testBNLJDiffOutPutThanPNLJ" />
+        <item index="3" class="java.lang.String" itemvalue="JUnit.TestJoinOperator.testSimpleJoinBNLJ" />
+        <item index="4" class="java.lang.String" itemvalue="JUnit.TestJoinOperator.testSimplePNLJOutputOrder" />
       </list>
     </recent_temporary>
     <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android App">
@@ -1055,7 +1062,7 @@
       <workItem from="1491539747421" duration="15378000" />
       <workItem from="1491566048841" duration="69077000" />
       <workItem from="1491706170778" duration="728000" />
-      <workItem from="1491709951119" duration="25181000" />
+      <workItem from="1491709951119" duration="41948000" />
     </task>
     <task id="LOCAL-00001" summary="&quot;Initial Runthrough of Part 1&quot;">
       <created>1488428220029</created>
@@ -1097,39 +1104,39 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestJoinOperator_testBNLJDiffOutPutThanPNLJ - 2017.04.09 at 03h 24m 23s.xml">
-      <configuration name="TestJoinOperator.testBNLJDiffOutPutThanPNLJ" configurationId="JUnit" />
+    <history-entry file="TestJoinOperator_testSimpleGHJOutputOrderUsingThreePartitions - 2017.04.09 at 12h 14m 46s.xml">
+      <configuration name="TestJoinOperator.testSimpleGHJOutputOrderUsingThreePartitions" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestJoinOperator_testBNLJDiffOutPutThanPNLJ - 2017.04.09 at 03h 25m 51s.xml">
-      <configuration name="TestJoinOperator.testBNLJDiffOutPutThanPNLJ" configurationId="JUnit" />
+    <history-entry file="TestJoinOperator_testSimpleGHJOutputOrderUsingThreePartitions - 2017.04.09 at 12h 15m 20s.xml">
+      <configuration name="TestJoinOperator.testSimpleGHJOutputOrderUsingThreePartitions" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestJoinOperator_testBNLJDiffOutPutThanPNLJ - 2017.04.09 at 03h 26m 24s.xml">
-      <configuration name="TestJoinOperator.testBNLJDiffOutPutThanPNLJ" configurationId="JUnit" />
+    <history-entry file="TestJoinOperator_testSimpleGHJOutputOrderUsingThreePartitions - 2017.04.09 at 12h 16m 21s.xml">
+      <configuration name="TestJoinOperator.testSimpleGHJOutputOrderUsingThreePartitions" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestJoinOperator_testBNLJDiffOutPutThanPNLJ - 2017.04.09 at 03h 37m 28s.xml">
-      <configuration name="TestJoinOperator.testBNLJDiffOutPutThanPNLJ" configurationId="JUnit" />
+    <history-entry file="TestJoinOperator_testSimpleGHJOutputOrderUsingThreePartitions - 2017.04.09 at 12h 18m 39s.xml">
+      <configuration name="TestJoinOperator.testSimpleGHJOutputOrderUsingThreePartitions" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestJoinOperator_testBNLJDiffOutPutThanPNLJ - 2017.04.09 at 03h 40m 52s.xml">
-      <configuration name="TestJoinOperator.testBNLJDiffOutPutThanPNLJ" configurationId="JUnit" />
+    <history-entry file="TestJoinOperator_testSimpleGHJOutputOrderUsingThreePartitions - 2017.04.09 at 12h 21m 28s.xml">
+      <configuration name="TestJoinOperator.testSimpleGHJOutputOrderUsingThreePartitions" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestJoinOperator_testBNLJDiffOutPutThanPNLJ - 2017.04.09 at 03h 44m 10s.xml">
-      <configuration name="TestJoinOperator.testBNLJDiffOutPutThanPNLJ" configurationId="JUnit" />
+    <history-entry file="TestJoinOperator_testSimpleGHJOutputOrderUsingThreePartitions - 2017.04.09 at 12h 23m 30s.xml">
+      <configuration name="TestJoinOperator.testSimpleGHJOutputOrderUsingThreePartitions" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestJoinOperator_testBNLJDiffOutPutThanPNLJ - 2017.04.09 at 03h 46m 33s.xml">
-      <configuration name="TestJoinOperator.testBNLJDiffOutPutThanPNLJ" configurationId="JUnit" />
+    <history-entry file="TestJoinOperator_testSimpleGHJOutputOrderUsingThreePartitions - 2017.04.09 at 12h 24m 36s.xml">
+      <configuration name="TestJoinOperator.testSimpleGHJOutputOrderUsingThreePartitions" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestJoinOperator_testBNLJDiffOutPutThanPNLJ - 2017.04.09 at 03h 48m 00s.xml">
-      <configuration name="TestJoinOperator.testBNLJDiffOutPutThanPNLJ" configurationId="JUnit" />
+    <history-entry file="TestJoinOperator_testSimpleGHJOutputOrderUsingThreePartitions - 2017.04.09 at 12h 28m 49s.xml">
+      <configuration name="TestJoinOperator.testSimpleGHJOutputOrderUsingThreePartitions" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestJoinOperator_testBNLJDiffOutPutThanPNLJ - 2017.04.09 at 03h 48m 23s.xml">
-      <configuration name="TestJoinOperator.testBNLJDiffOutPutThanPNLJ" configurationId="JUnit" />
+    <history-entry file="TestJoinOperator_testSimpleGHJOutputOrderUsingThreePartitions - 2017.04.09 at 12h 31m 34s.xml">
+      <configuration name="TestJoinOperator.testSimpleGHJOutputOrderUsingThreePartitions" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestJoinOperator_testBNLJDiffOutPutThanPNLJ - 2017.04.09 at 03h 51m 26s.xml">
-      <configuration name="TestJoinOperator.testBNLJDiffOutPutThanPNLJ" configurationId="JUnit" />
+    <history-entry file="TestJoinOperator_testSimpleGHJOutputOrderUsingThreePartitions - 2017.04.09 at 12h 33m 10s.xml">
+      <configuration name="TestJoinOperator.testSimpleGHJOutputOrderUsingThreePartitions" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="189176000" />
+    <option name="totallyTimeSpent" value="205943000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1146,12 +1153,12 @@
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32569557" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3207856" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3289689" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.0" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32891566" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14566284" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2749591" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28555554" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31467474" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -1234,12 +1241,12 @@
         <line-breakpoint enabled="true" type="java-line">
           <condition expression="numRecords == 9997" language="JAVA" custom="" />
           <url>file://$PROJECT_DIR$/src/test/java/edu/berkeley/cs186/database/query/TestJoinOperator.java</url>
-          <line>149</line>
+          <line>160</line>
           <properties />
           <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="14" />
+      <option name="time" value="15" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1592,18 +1599,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/Database.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="418" column="0" selection-start-line="418" selection-start-column="0" selection-end-line="418" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#6193#6194#0" expanded="false" />
-            <element signature="e#6225#6226#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/junit/junit/4.12/junit-4.12.jar!/org/junit/Assert.class">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.35695538">
@@ -1623,14 +1618,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/JoinOperator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="128" column="84" selection-start-line="128" selection-start-column="84" selection-end-line="128" selection-end-column="84" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/BNLJOperator.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-5.137931">
@@ -1639,10 +1626,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/edu/berkeley/cs186/database/query/TestJoinOperator.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/Database.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="305" column="39" selection-start-line="305" selection-start-column="39" selection-end-line="305" selection-end-column="39" />
+          <caret line="418" column="0" selection-start-line="418" selection-start-column="0" selection-end-line="418" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1655,18 +1642,44 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/JoinOperator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="128" column="84" selection-start-line="128" selection-start-column="84" selection-end-line="128" selection-end-column="84" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/GraceHashOperator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-75.51724">
-          <caret line="185" column="11" selection-start-line="185" selection-start-column="11" selection-end-line="185" selection-end-column="11" />
-          <folding />
+        <state vertical-scroll-proportion="-66.06896">
+          <caret line="117" column="82" selection-start-line="117" selection-start-column="82" selection-end-line="117" selection-end-column="82" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#5471#5479#0" expanded="true" />
+            <element signature="e#6113#6122#0" expanded="true" />
+            <element signature="e#6343#6352#0" expanded="true" />
+            <element signature="e#8098#8099#0" expanded="true" />
+            <element signature="e#8153#8154#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/SortMergeOperator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.5481799">
-          <caret line="185" column="22" selection-start-line="185" selection-start-column="22" selection-end-line="185" selection-end-column="22" />
+        <state vertical-scroll-proportion="-6.851852">
+          <caret line="255" column="48" selection-start-line="255" selection-start-column="48" selection-end-line="255" selection-end-column="48" />
+          <folding>
+            <element signature="e#8789#8790#0" expanded="true" />
+            <element signature="e#8844#8845#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/edu/berkeley/cs186/database/query/TestJoinOperator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.6554217">
+          <caret line="54" column="8" selection-start-line="54" selection-start-column="8" selection-end-line="54" selection-end-column="8" />
           <folding />
         </state>
       </provider>
