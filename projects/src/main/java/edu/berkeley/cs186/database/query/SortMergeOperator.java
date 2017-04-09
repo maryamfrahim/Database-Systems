@@ -137,9 +137,9 @@ public class SortMergeOperator extends JoinOperator {
     */
     public boolean hasNext() {
       /* TODO */
-//      if(this.nextRecord != null) {
-//        return true;
-//      }
+      if(this.nextRecord != null) {
+        return true;
+      }
 //      try {
 //      while (leftIterator.hasNext() && rightIterator.hasNext()) {
 //        Page leftPage = leftIterator.next();
