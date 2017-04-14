@@ -26,35 +26,42 @@ public class GraceHashOperator extends JoinOperator {
             JoinType.GRACEHASH);
 
     this.numBuffers = transaction.getNumMemoryPages();
+    this.stats = this.estimateStats();
+    this.cost = this.estimateIOCost();
   }
 
   public Iterator<Record> iterator() throws QueryPlanException, DatabaseException {
     return new GraceHashIterator();
   }
 
+  public int estimateIOCost() throws QueryPlanException {
+    /* TODO: Implement me! */
+    return -1;
+  }
+
   /**
    * An implementation of Iterator that provides an iterator interface for this operator.
    */
   private class GraceHashIterator implements Iterator<Record> {
-    private Iterator<Record> leftIterator; //A singular table from Left Partition
-    private Iterator<Record> rightIterator; //A singular table from Right Partition
-    private String[] leftPartitions; //Array with all the strings of name Table
-    private String[] rightPartitions;
-    private Record leftRecord;
+    private Iterator<Record> leftIterator;
+    private Iterator<Record> rightIterator;
     private Record rightRecord;
     private Record nextRecord;
-    private List<Record> output_buffer; //The list of records that have a match in the left partition
-    private HashMap<DataBox, ArrayList<Record>> solution_buffer; //HM of left partition
-    private Iterator<Record> rightJoinedElem; //The sucessful elements to be joined yay
-    private DataBox key; //Key
-    private List<Record> toJoin; //Element from right partition to be joined
-    private int currPartition;
+    private String[] leftPartitions;
+    private String[] rightPartitions;
+    private int currentPartition;
+    private Map<DataBox, ArrayList<Record>> inMemoryHashTable;
+    private int currIndexInList;
+    private ArrayList<Record> currList;
+    private List<DataBox> rightRecordVals;
 
     public GraceHashIterator() throws QueryPlanException, DatabaseException {
       this.leftIterator = getLeftSource().iterator();
       this.rightIterator = getRightSource().iterator();
       leftPartitions = new String[numBuffers - 1];
       rightPartitions = new String[numBuffers - 1];
+      this.inMemoryHashTable = new HashMap<DataBox, ArrayList<Record>>();
+      currIndexInList = 0;
       String leftTableName;
       String rightTableName;
       for (int i = 0; i < numBuffers - 1; i++) {
@@ -65,31 +72,43 @@ public class GraceHashOperator extends JoinOperator {
         leftPartitions[i] = leftTableName;
         rightPartitions[i] = rightTableName;
       }
-      /* TODO */
+      List<DataBox> values;
+      DataBox val;
+      int partition;
       while (this.leftIterator.hasNext()) {
-        this.leftRecord = this.leftIterator.next();
-        DataBox leftJoinValue = this.leftRecord.getValues().get(GraceHashOperator.this.getLeftColumnIndex());
-        int leftBucket = leftJoinValue.hashCode() % (numBuffers - 1);
-        GraceHashOperator.this.addRecord(leftPartitions[leftBucket], leftRecord.getValues());
+        values = this.leftIterator.next().getValues();
+        val = values.get(GraceHashOperator.this.getLeftColumnIndex());
+        partition = val.hashCode() % (numBuffers - 1);
+        GraceHashOperator.this.addRecord(leftPartitions[partition], values);
       }
       while (this.rightIterator.hasNext()) {
+        values = this.rightIterator.next().getValues();
+        val = values.get(GraceHashOperator.this.getRightColumnIndex());
+        partition = val.hashCode() % (numBuffers - 1);
+        GraceHashOperator.this.addRecord(rightPartitions[partition], values);
+      }
+      this.currentPartition = 0;
+      leftIterator = GraceHashOperator.this.getTableIterator(leftPartitions[currentPartition]);
+      while (leftIterator.hasNext()) {
+        Record currRecord = leftIterator.next();
+        values = currRecord.getValues();
+        val = values.get(GraceHashOperator.this.getLeftColumnIndex());
+        if (this.inMemoryHashTable.containsKey(val)) {
+          this.inMemoryHashTable.get(val).add(currRecord);
+        } else {
+          ArrayList<Record> newList = new ArrayList<Record>();
+          newList.add(currRecord);
+          this.inMemoryHashTable.put(val, newList);
+        }
+      }
+      this.nextRecord = null;
+      this.rightIterator = GraceHashOperator.this.getTableIterator(rightPartitions[currentPartition]);
+      if (this.rightIterator.hasNext()) {
         this.rightRecord = this.rightIterator.next();
-        DataBox rightJoinValue = this.rightRecord.getValues().get(GraceHashOperator.this.getRightColumnIndex());
-        int rightBucket = rightJoinValue.hashCode() % (numBuffers - 1);
-        GraceHashOperator.this.addRecord(rightPartitions[rightBucket], rightRecord.getValues());
+        this.rightRecordVals = this.rightRecord.getValues();
+        this.currList = this.inMemoryHashTable.get(this.rightRecord.getValues().get(GraceHashOperator.this.getRightColumnIndex()));
       }
 
-      this.output_buffer = new ArrayList<Record>(); //RECORD THAT WE ARE RETURNING
-      this.currPartition = 0;
-            this.solution_buffer = new HashMap<DataBox, ArrayList<Record>>();
-      this.toJoin = new ArrayList<Record>();
-      this.key = null;
-
-      this.nextRecord = null;
-      this.rightJoinedElem = null;
-
-      this.leftIterator = null;
-      this.rightIterator = null;
     }
 
     /**
@@ -101,81 +120,50 @@ public class GraceHashOperator extends JoinOperator {
       if (this.nextRecord != null) {
         return true;
       }
-      try {
-//        for (; this.currPartition < this.leftPartitions.length; this.currPartition++) {
-          while (true) {
-          if (this.currPartition >= this.leftPartitions.length) { //out of partitions ie B-2 times
-            return false;
+      while (true) {
+        while (this.currList == null && this.rightIterator.hasNext()) {
+          this.rightRecord = this.rightIterator.next();
+          this.rightRecordVals = this.rightRecord.getValues();
+          this.currIndexInList = 0;
+          this.currList = this.inMemoryHashTable.get(this.rightRecord.getValues().get(GraceHashOperator.this.getRightColumnIndex()));
+        }
+        if (this.currList != null) {
+          if (this.currIndexInList < this.currList.size()) {
+            List<DataBox> leftValues = new ArrayList<DataBox>(this.currList.get(this.currIndexInList).getValues());
+            leftValues.addAll(rightRecordVals);
+            this.nextRecord = new Record(leftValues);
+            this.currIndexInList++;
+            return true;
+          } else {
+            this.currList = null;
           }
-          if(this.solution_buffer.size() == 0){ //Only need to put another left partiiton into hashmap if empty
-            this.leftIterator = GraceHashOperator.this.getTableIterator(this.leftPartitions[this.currPartition]);
-            this.rightIterator = GraceHashOperator.this.getTableIterator(this.rightPartitions[this.currPartition]);
-            while (this.leftIterator.hasNext()) {
-              //          for ( ; currTable.hasNext() ;) {
-              this.leftRecord = this.leftIterator.next();
-              DataBox key = this.leftRecord.getValues().get(GraceHashOperator.this.getLeftColumnIndex());
-              if (this.solution_buffer.containsKey(key)) {
-                Boolean temp = this.solution_buffer.get(key).add(this.leftRecord);
-                output_buffer.add(this.leftRecord);
+        } else {
+          if (this.currentPartition < numBuffers - 2)  {
+            this.currentPartition++;
+            try {
+              this.rightIterator = GraceHashOperator.this.getTableIterator(rightPartitions[currentPartition]);
+              this.leftIterator = GraceHashOperator.this.getTableIterator(leftPartitions[currentPartition]);
+            } catch (DatabaseException d){
+              return false;
+            }
+            this.inMemoryHashTable = new HashMap<DataBox, ArrayList<Record>>();
+            while (leftIterator.hasNext()) {
+              Record currRecord = leftIterator.next();
+              List<DataBox> values = currRecord.getValues();
+              DataBox val = values.get(GraceHashOperator.this.getLeftColumnIndex());
+              if (this.inMemoryHashTable.containsKey(val)) {
+                this.inMemoryHashTable.get(val).add(currRecord);
               } else {
-                ArrayList<Record> temp = new ArrayList<Record>();
-                temp.add(this.leftRecord);
-                this.solution_buffer.put(key, temp);
-                output_buffer.add(this.leftRecord);
-                //              solution_buffer.put(key, temp);
+                ArrayList<Record> newList = new ArrayList<Record>();
+                newList.add(currRecord);
+                this.inMemoryHashTable.put(val, newList);
               }
             }
+            this.currList = null;
+          } else {
+            return false;
           }
-
-          if (this.rightJoinedElem != null) { //RIGHT
-            if (!this.rightJoinedElem.hasNext()) {
-              this.rightJoinedElem = null;
-              this.rightRecord = null;
-
-                        }else {
-              Record rightRecords = this.rightRecord;
-              this.toJoin.add(this.rightRecord);
-              List<DataBox> rightVal = new ArrayList<DataBox>();
-              rightVal.addAll(rightRecords.getValues());
-
-              Record leftRecords = this.rightJoinedElem.next();
-              this.toJoin.add(leftRecords);
-              List<DataBox> leftVal = new ArrayList<DataBox>();
-              leftVal.addAll(leftRecords.getValues());
-              leftVal.addAll(rightVal);
-              this.nextRecord = new Record(leftVal);
-              return true;
-            }
-                    }
-
-          else if (this.rightIterator.hasNext()) {
-            if (this.rightRecord != null) {
-              this.key = this.rightRecord.getValues().get(GraceHashOperator.this.getRightColumnIndex());
-            } else  {
-              this.rightRecord = this.rightIterator.next();
-//              this.toJoin.add(this.rightRecord);
-              this.key = this.rightRecord.getValues().get(GraceHashOperator.this.getRightColumnIndex());
-            }
-            if (!this.solution_buffer.containsKey(this.key)) {
-              this.rightRecord = null;
-            } else {
-              ArrayList<Record> listing = this.solution_buffer.get(this.key);
-              this.rightJoinedElem = listing.iterator();
-            }
-            this.toJoin.add(this.rightRecord);
-          }
-          else {
-            this.currPartition++;
-            this.toJoin.add(this.rightRecord);
-            this.rightRecord = null;
-            this.solution_buffer.clear();
-
-          }
-           }
-      }
-      catch (DatabaseException database) {
-        System.out.println("Got a databaseException");
-        return false;
+        }
       }
     }
 
