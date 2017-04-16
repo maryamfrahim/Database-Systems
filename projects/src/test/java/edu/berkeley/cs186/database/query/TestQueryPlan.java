@@ -39,8 +39,8 @@ public class TestQueryPlan {
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
 
-  @Rule
-  public Timeout globalTimeout = Timeout.seconds(10); // 10 seconds max per method tested
+//  @Rule
+//  public Timeout globalTimeout = Timeout.seconds(20); // 10 seconds max per method tested
 
   @Before
   public void setUp() throws DatabaseException, IOException {

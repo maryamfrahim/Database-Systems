@@ -259,6 +259,14 @@ public class QueryPlan {
    */
   private QueryOperator pushDownSelects(QueryOperator source, int except) throws QueryPlanException, DatabaseException {
     /* TODO: Implement me! */
+    // Push down SELECT predicates that apply to this table and that were not
+    // used for an index scan
+    for (int i = 0; i < this.selectOperators.size(); i++) {
+      if ( i != except) {
+        // apply select predicate to source (query operator)
+
+      }
+    }
     return source;
   }
 
@@ -280,13 +288,30 @@ public class QueryPlan {
 
     // Find the cost of a sequential scan of the table
     // TODO: Implement me!
+    int costSequential = this.transaction.getStats(this.startTableName).getNumPages();
+    SequentialScanOperator seq = new SequentialScanOperator(this.transaction, startTableName);
 
     // For each eligible index column, find the cost of an index scan of the
     // table and retain the lowest cost operator
     // TODO: Implement me!
     List<Integer> selectIndices = this.getEligibleIndexColumns(table);
     int minSelectIdx = -1;
-
+    int minIndex = 100000;
+    for (int i = 0; i < selectIndices.size(); i++) {
+      int index = selectIndices.get(i);
+      try {
+        float rf = this.transaction.getStats(joinTableNames.get(index)).getReductionFactor(
+                this.transaction.getNumIndexPages(joinTableNames.get(index), joinLeftColumnNames.get(index)),
+                selectOperators.get(index), selectDataBoxes.get(index));
+        int records = this.transaction.getStats(this.joinTableNames.get(index)).getNumRecords();
+        int pages = this.transaction.getNumIndexPages(this.joinTableNames.get(index), joinLeftColumnNames.get(index));
+        System.out.println("rf is " + rf + " records is " +records + "pages is " +pages );
+        System.out.println("without try catch");
+        minIndex = Math.min(minIndex, (int) Math.ceil((rf * (records + pages))));
+      } catch (DatabaseException e) {
+        System.out.println("doesnt exist");
+      }
+    }
     // Push down SELECT predicates that apply to this table and that were not
     // used for an index scan
     minOp = this.pushDownSelects(minOp, minSelectIdx);

@@ -71,7 +71,7 @@ public class TestQueryPlanCosts {
 
     indexScanOperator = new IndexScanOperator(
       transaction, tableName, "int", PredicateOperator.GREATER_THAN_EQUALS, new IntDataBox(200));
-
+//    System.out.println("115 supposed to " + indexScanOperator.estimateIOCost());
     assertEquals(115, indexScanOperator.estimateIOCost());
 
     for (int i = 0; i < 700; i++) {
@@ -84,13 +84,14 @@ public class TestQueryPlanCosts {
     indexScanOperator = new IndexScanOperator(
       transaction, tableName, "int", PredicateOperator.GREATER_THAN_EQUALS, new IntDataBox(500));
 
+//    System.out.println("379 supposed to " + indexScanOperator.estimateIOCost());
     assertEquals(379, indexScanOperator.estimateIOCost());
 
     transaction.end();
   }
 
 
-  @Test(timeout=2000)
+  @Test(timeout=8000)
   public void testSNLJOperatorCost() throws DatabaseException, QueryPlanException {
     List<DataBox> values = TestUtils.createRecordWithAllTypes().getValues();
     this.database.createTable(TestUtils.createSchemaWithAllTypes(), "tempIntTable1");
@@ -118,7 +119,7 @@ public class TestQueryPlanCosts {
 
 
 
-  @Test(timeout=2000)
+  @Test(timeout=4000)
   public void testPNLJOperatorCost() throws DatabaseException, QueryPlanException {
     List<DataBox> values = TestUtils.createRecordWithAllTypes().getValues();
     this.database.createTable(TestUtils.createSchemaWithAllTypes(), "tempIntTable1");
@@ -145,7 +146,7 @@ public class TestQueryPlanCosts {
   }
 
 
-  @Test(timeout=2000)
+  @Test(timeout=4000)
   public void testBNLJOperatorCost() throws DatabaseException, QueryPlanException {
     List<DataBox> values = TestUtils.createRecordWithAllTypes().getValues();
     this.database.createTable(TestUtils.createSchemaWithAllTypes(), "tempIntTable1");

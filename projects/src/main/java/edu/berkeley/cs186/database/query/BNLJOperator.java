@@ -32,8 +32,14 @@ public class BNLJOperator extends JoinOperator {
   }
 
   public int estimateIOCost() throws QueryPlanException {
-    /* TODO: Implement me! */
-    return -1;
+    int pageR = this.getLeftSource().getStats().getNumPages();
+    int pageS = this.getRightSource().getStats().getNumPages();
+    float pagerr = (float) pageR;
+    float pagess = (float) pageS;
+    int blocks = (int) Math.ceil(pagerr / ( (float) this.numBuffers - (float) 2) );
+
+//    int blocks = pageR / (this.numBuffers - 2);
+    return pageR + ( blocks * pageS);
   }
 
 

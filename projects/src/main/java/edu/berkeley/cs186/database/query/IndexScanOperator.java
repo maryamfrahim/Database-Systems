@@ -95,8 +95,23 @@ public class IndexScanOperator extends QueryOperator {
    * @throws QueryPlanException
    */
   public int estimateIOCost() throws QueryPlanException {
-    /* TODO: Implement me! */
-    return -1;
+//    int index = this.columnIndex;
+//    QueryPlan.PredicateOperator predicate = this.predicate;
+//    DataBox value = this.value;
+    float rf = 0;
+    int records = 0;
+    int pages = 0;
+    try {
+      rf = this.transaction.getStats(this.tableName).getReductionFactor(this.columnIndex, this.predicate, this.value); // TableStats.getReductionFactor;
+      records = this.transaction.getStats(this.tableName).getNumRecords();
+      pages = this.transaction.getNumIndexPages(this.tableName, this.columnName);
+//      System.out.println("rf is " + rf + " records is " +records + "pages is " +pages );
+//      System.out.println("without try catch");
+      return (int) Math.ceil((rf * (records + pages)));
+    } catch (DatabaseException e) {
+      System.out.println("doesnt exist");
+    }
+    return (int) Math.ceil((rf * (records + pages)));
   }
 
   public Iterator<Record> iterator() throws QueryPlanException, DatabaseException {
