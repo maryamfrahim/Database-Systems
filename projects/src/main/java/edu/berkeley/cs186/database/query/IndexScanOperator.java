@@ -102,7 +102,9 @@ public class IndexScanOperator extends QueryOperator {
     int records = 0;
     int pages = 0;
     try {
+
       rf = this.transaction.getStats(this.tableName).getReductionFactor(this.columnIndex, this.predicate, this.value); // TableStats.getReductionFactor;
+      System.out.println(rf);
       records = this.transaction.getStats(this.tableName).getNumRecords();
       pages = this.transaction.getNumIndexPages(this.tableName, this.columnName);
 //      System.out.println("rf is " + rf + " records is " +records + "pages is " +pages );
