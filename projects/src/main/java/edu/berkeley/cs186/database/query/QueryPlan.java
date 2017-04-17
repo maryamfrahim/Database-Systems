@@ -253,6 +253,10 @@ public class QueryPlan {
    * this.selectColumnNames, this.selectOperators, and this.selectDataBoxes that
    * correspond to the same index of these lists.
    *
+   * Heuristic-based optimization we covered in class, you should push down any selections that correspond to the table
+   *
+   *  QueryPlan#addSelects()
+   *
    * @return a new QueryOperator after SELECT has been applied
    * @throws DatabaseException
    * @throws QueryPlanException
@@ -263,10 +267,20 @@ public class QueryPlan {
     // used for an index scan
     for (int i = 0; i < this.selectOperators.size(); i++) {
       if ( i != except) {
-        // apply select predicate to source (query operator)
+        source.getSource();
+        String col = this.selectColumnNames.get(i); //each of the select things
+        PredicateOperator po = this.selectOperators.get(i);
+        DataBox db = this.selectDataBoxes.get(i);
+        addSelects();
+        // Apply select predicate to source (query operator)
+        // Everything if no predicates
+        // Equivalent
+        // Inequality/range
 
+//        QueryOperator ret = new QueryOperator(this.selectColumnNames.get(i), source);
       }
     }
+
     return source;
   }
 
@@ -288,15 +302,17 @@ public class QueryPlan {
 
     // Find the cost of a sequential scan of the table
     // TODO: Implement me!
-    int costSequential = this.transaction.getStats(this.startTableName).getNumPages();
-    SequentialScanOperator seq = new SequentialScanOperator(this.transaction, startTableName);
+    int costSequential = this.transaction.getStats(table).getNumPages();
+    //this.transaction.getNumDataPages(table);
+    SequentialScanOperator seq = new SequentialScanOperator(this.transaction, table);
 
     // For each eligible index column, find the cost of an index scan of the
     // table and retain the lowest cost operator
     // TODO: Implement me!
     List<Integer> selectIndices = this.getEligibleIndexColumns(table);
     int minSelectIdx = -1;
-    int minIndex = 100000;
+    int minCostIndex = Integer.MAX_VALUE;
+    IndexScanOperator ind;
     for (int i = 0; i < selectIndices.size(); i++) {
       int index = selectIndices.get(i);
       try {
@@ -307,15 +323,30 @@ public class QueryPlan {
         int pages = this.transaction.getNumIndexPages(this.joinTableNames.get(index), joinLeftColumnNames.get(index));
         System.out.println("rf is " + rf + " records is " +records + "pages is " +pages );
         System.out.println("without try catch");
-        minIndex = Math.min(minIndex, (int) Math.ceil((rf * (records + pages))));
+        if (minCostIndex > (int) Math.ceil((rf * (records + pages)))) {
+          minCostIndex = (int) Math.ceil((rf * (records + pages)));
+          minSelectIdx = i;
+        }
+
       } catch (DatabaseException e) {
         System.out.println("doesnt exist");
       }
     }
+    ind = new IndexScanOperator(this.transaction, joinTableNames.get(minCostIndex),
+            joinLeftColumnNames.get(minCostIndex), selectOperators.get(minCostIndex), selectDataBoxes.get(minCostIndex));
+
     // Push down SELECT predicates that apply to this table and that were not
     // used for an index scan
-    minOp = this.pushDownSelects(minOp, minSelectIdx);
-    return minOp;
+    // Then  query operator that starts with either a
+    // SequentialScanOperator or IndexScanOperator followed by zero or more SelectOperator's
+
+    if (minCostIndex > costSequential) {
+      minOp = this.pushDownSelects(minOp, minSelectIdx);
+      return ind;
+    } else {
+      return seq;
+    }
+//    return minOp;
   }
 
   /**
