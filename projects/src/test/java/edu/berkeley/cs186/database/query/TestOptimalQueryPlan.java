@@ -141,7 +141,7 @@ public class TestOptimalQueryPlan {
     transaction.end();
   }
 
-  @Test(timeout=120000) //THIS ONE IS ERRORING
+  @Test(timeout=60000) //THIS ONE IS ERRORING
   public void testSimpleGroupByIterator() throws DatabaseException, QueryPlanException {
     Database.Transaction transaction = this.database.beginTransaction();
     QueryPlan queryPlan = transaction.query(this.defaulTableName);

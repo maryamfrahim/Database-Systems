@@ -262,23 +262,13 @@ public class QueryPlan {
    * @throws QueryPlanException
    */
   private QueryOperator pushDownSelects(QueryOperator source, int except) throws QueryPlanException, DatabaseException {
-    /* TODO: Implement me! */
-    // Push down SELECT predicates that apply to this table and that were not
-    // used for an index scan
+    // Push down SELECT predicates that apply to this table and that were not used for an index scan
     for (int i = 0; i < this.selectOperators.size(); i++) {
       if ( i != except) {
-//        source.getSource();
         String col = this.selectColumnNames.get(i); //each of the select things
         PredicateOperator po = this.selectOperators.get(i);
         DataBox db = this.selectDataBoxes.get(i);
-//        addSelects();
         source = new SelectOperator(source, col, po, db);
-        // Apply select predicate to source (query operator)
-        // Everything if no predicates
-        // Equivalent
-        // Inequality/range
-
-//        QueryOperator ret = new QueryOperator(this.selectColumnNames.get(i), source);
       }
     }
 
@@ -302,50 +292,36 @@ public class QueryPlan {
     QueryOperator minOp = null;
 
     // Find the cost of a sequential scan of the table
-    // TODO: Implement me!
-//    int costSequential = this.transaction.getStats(table).getNumPages();
-    //this.transaction.getNumDataPages(table);
     SequentialScanOperator seq = new SequentialScanOperator(this.transaction, table);
     int costSequential = seq.estimateIOCost(); //this.transaction.getStats(tableName)
 
     // For each eligible index column, find the cost of an index scan of the
     // table and retain the lowest cost operator
-    // TODO: Implement me!
     List<Integer> selectIndices = this.getEligibleIndexColumns(table);
     int minSelectIdx = -1;
     int minCostIndex = Integer.MAX_VALUE;
     IndexScanOperator ind = null;
     for (int i : selectIndices) {
-//    for (int i = 0; i < selectIndices.size(); i++) {
-      int index = selectIndices.get(i);
       try {
+        System.out.println("Maryam is goug");
         ind = new IndexScanOperator(this.transaction, joinTableNames.get(i),
                 joinLeftColumnNames.get(i), selectOperators.get(i), selectDataBoxes.get(i));
         int costIndex = ind.estimateIOCost();
-
         if (minCostIndex > costIndex) {
           minCostIndex = costIndex;
           minSelectIdx = i;
         }
-
       } catch (DatabaseException e) {
         System.out.println("doesnt exist");
       }
     }
 
-
     // Push down SELECT predicates that apply to this table and that were not
     // used for an index scan
-    // Then  query operator that starts with either a
-    // SequentialScanOperator or IndexScanOperator followed by zero or more SelectOperator's
-
     if (minCostIndex < costSequential) {
       minOp = ind;
-
-//      return ind;
     } else {
       minOp = seq;
-//      return seq;
     }
     minOp = this.pushDownSelects(minOp, minSelectIdx);
     return minOp;
@@ -358,6 +334,18 @@ public class QueryPlan {
    *
    * @return lowest cost join QueryOperator between the input operators
    * @throws QueryPlanException
+   *
+   * check the column, single.
+   *
+   * get table name at that index left, if that is what you want then youre good.
+   * joining the first tale. the main source table, when get join index, its not in here and you never find it.
+   *
+   * go though all the tables, then compare then
+   *
+   * join r name and l
+   *
+   * join table name go through all the tables.
+   *
    */
   private QueryOperator minCostJoinType(QueryOperator leftOp,
                                         QueryOperator rightOp,
@@ -366,6 +354,23 @@ public class QueryPlan {
                                                                    DatabaseException {
     QueryOperator minOp = null;
     /* TODO: Implement me! */
+    int minCost = Integer.MAX_VALUE;
+    BNLJOperator bn = new BNLJOperator(leftOp, rightOp, leftColumn, rightColumn, this.transaction);
+    SNLJOperator sn = new SNLJOperator(leftOp, rightOp, leftColumn, rightColumn, this.transaction);
+    PNLJOperator pn = new PNLJOperator(leftOp, rightOp, leftColumn, rightColumn, this.transaction);
+    GraceHashOperator gn = new GraceHashOperator(leftOp, rightOp, leftColumn, rightColumn, this.transaction);
+    if (bn.estimateIOCost() < minCost) {
+      minOp = bn;
+    }
+    if (sn.estimateIOCost() < minCost) {
+      minOp = sn;
+    }
+    if (pn.estimateIOCost() < minCost) {
+      minOp = pn;
+    }
+    if (gn.estimateIOCost() < minCost) {
+      minOp = gn;
+    }
     return minOp;
   }
 
@@ -385,7 +390,21 @@ public class QueryPlan {
                                                Map<Set, QueryOperator> pass1Map) throws QueryPlanException,
                                                                                         DatabaseException {
     Map<Set, QueryOperator> map = new HashMap<Set, QueryOperator>();
-    /* TODO: Implement me! */
+        /* TODO: Implement me! */
+// and then for every
+// predicate I look through the table sets in pass1Map for the corresponding joinTableName. If one of these sets has
+// the joinTableName then I find the minCostJoinType. However I keep getting:
+
+//    checkschemaforcolumn
+    for (Set set : prevMap.keySet()) {
+        for (int i = 0; i < joinRightColumnNames.size(); i++){
+          if (set.contains(joinRightColumnNames.get(i)) || set.contains(joinLeftColumnNames.get(i))) {
+            QueryOperator yo = minCostJoinType(prevMap.get(set), pass1Map.get(set),joinLeftColumnNames.get(i), joinRightColumnNames.get(i));
+            join(joinTableNames.get(i), joinLeftColumnNames.get(i), joinRightColumnNames.get(i));
+          }
+        }
+    }
+
     return map;
   }
 

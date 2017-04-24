@@ -73,7 +73,7 @@ public class TestOptimalQueryPlanJoins {
     transaction.end();
   }
 
-  @Test(timeout=5000)
+  @Test(timeout=12000)
   public void testSimpleJoinIterator() throws DatabaseException, QueryPlanException {
     Database.Transaction transaction = this.database.beginTransaction();
     transaction.queryAs(this.defaulTableName, "t1");
@@ -124,7 +124,7 @@ public class TestOptimalQueryPlanJoins {
     transaction.end();
   }
 
-  @Test(timeout=5000)
+  @Test(timeout=12000)
   public void testProjectJoinIterator() throws DatabaseException, QueryPlanException {
     Database.Transaction transaction = this.database.beginTransaction();
     transaction.queryAs(this.defaulTableName, "t1");
@@ -187,7 +187,7 @@ public class TestOptimalQueryPlanJoins {
     transaction.end();
   }
 
-  @Test(timeout=5000)
+  @Test(timeout=12000)
   public void testSelectJoinIterator() throws DatabaseException, QueryPlanException {
     Database.Transaction transaction = this.database.beginTransaction();
     transaction.queryAs(this.defaulTableName, "t1");
@@ -232,7 +232,7 @@ public class TestOptimalQueryPlanJoins {
     transaction.end();
   }
 
-  @Test(timeout=5000)
+  @Test(timeout=12000)
   public void testProjectSelectJoinIterator() throws DatabaseException, QueryPlanException {
     Database.Transaction transaction = this.database.beginTransaction();
     transaction.queryAs(this.defaulTableName, "t1");
