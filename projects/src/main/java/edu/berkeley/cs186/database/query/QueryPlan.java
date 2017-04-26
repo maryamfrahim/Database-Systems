@@ -268,10 +268,11 @@ public class QueryPlan {
         String col = this.selectColumnNames.get(i); //each of the select things
         PredicateOperator po = this.selectOperators.get(i);
         DataBox db = this.selectDataBoxes.get(i);
-        source = new SelectOperator(source, col, po, db);
+//        source = new SelectOperator(source, col, po, db);
+        this.finalOperator = new SelectOperator(source, col, po, db);
       }
     }
-
+    source = this.finalOperator;
     return source;
   }
 
@@ -391,16 +392,42 @@ public class QueryPlan {
                                                                                         DatabaseException {
     Map<Set, QueryOperator> map = new HashMap<Set, QueryOperator>();
         /* TODO: Implement me! */
-// and then for every
-// predicate I look through the table sets in pass1Map for the corresponding joinTableName. If one of these sets has
-// the joinTableName then I find the minCostJoinType. However I keep getting:
-
-//    checkschemaforcolumn
     for (Set set : prevMap.keySet()) {
-        for (int i = 0; i < joinRightColumnNames.size(); i++){
-          if (set.contains(joinRightColumnNames.get(i)) || set.contains(joinLeftColumnNames.get(i))) {
-            QueryOperator yo = minCostJoinType(prevMap.get(set), pass1Map.get(set),joinLeftColumnNames.get(i), joinRightColumnNames.get(i));
-            join(joinTableNames.get(i), joinLeftColumnNames.get(i), joinRightColumnNames.get(i));
+        for (int i = 0; i < joinTableNames.size(); i++){
+          String leftColumn = this.joinLeftColumnNames.get(i);
+          String leftTableName = leftColumn.split("\\.")[0];
+          Set<String> leftset = new HashSet<String>();
+          leftset.add(leftTableName);
+          String rightColumn = this.joinRightColumnNames.get(i);
+          String rightTableName = joinTableNames.get(i); ///maybe rightcolumnname
+          Set<String> rightset = new HashSet<String>();
+          rightset.add(rightTableName);
+          boolean containLeft = set.contains(leftTableName);
+          boolean containRight = set.contains(rightTableName);
+          System.out.println("marco");
+          if (containRight && !containLeft) {
+            System.out.println("polo1");
+            QueryOperator costJoin = minCostJoinType(prevMap.get(set), pass1Map.get(leftset),
+                    joinRightColumnNames.get(i), joinLeftColumnNames.get(i));
+            int hello;
+            Set<String> created = new HashSet<String>();
+            created.addAll(set);
+            created.add(leftTableName); //add one thats not in it
+            if (!map.containsKey(created) || map.get(created).estimateIOCost() < costJoin.estimateIOCost()) {
+              System.out.println("added to map add left");
+              map.put(created, costJoin);
+            }//if doesnt exit or cost is less
+          } else if (!containRight && containLeft) {
+            System.out.println("polo2");
+            QueryOperator costJoin = minCostJoinType(prevMap.get(set), pass1Map.get(rightset),
+                    joinLeftColumnNames.get(i), joinRightColumnNames.get(i));
+            Set<String> created = new HashSet<String>();
+            created.addAll(set);
+            created.add(rightTableName); //add one thats not in it
+            if (!map.containsKey(created) || map.get(created).estimateIOCost() < costJoin.estimateIOCost()) {
+              System.out.println("added to map add right");
+              map.put(created, costJoin);
+            }
           }
         }
     }
