@@ -265,10 +265,15 @@ public class QueryPlan {
     // Push down SELECT predicates that apply to this table and that were not used for an index scan
     for (int i = 0; i < this.selectOperators.size(); i++) {
       if ( i != except) {
-        String col = this.selectColumnNames.get(i); //each of the select things
-        PredicateOperator po = this.selectOperators.get(i);
-        DataBox db = this.selectDataBoxes.get(i);
-        source = new SelectOperator(source, col, po, db);
+        try {
+          source.checkSchemaForColumn(source.getOutputSchema(), this.selectColumnNames.get(i));
+          String col = this.selectColumnNames.get(i); //each of the select things
+          PredicateOperator po = this.selectOperators.get(i);
+          DataBox db = this.selectDataBoxes.get(i);
+          source = new SelectOperator(source, col, po, db);
+        } catch (QueryPlanException e) {
+          System.out.println("got exception in push down select");
+        }
 //        this.finalOperator = new SelectOperator(source, col, po, db);
       }
     }
@@ -304,7 +309,6 @@ public class QueryPlan {
     IndexScanOperator ind = null;
     for (int i : selectIndices) {
       try {
-        System.out.println("Maryam is goug");
         ind = new IndexScanOperator(this.transaction, joinTableNames.get(i),
                 joinLeftColumnNames.get(i), selectOperators.get(i), selectDataBoxes.get(i));
         int costIndex = ind.estimateIOCost();
@@ -409,22 +413,11 @@ public class QueryPlan {
           boolean containLeft = set.contains(leftTableName);
           boolean containRight = set.contains(rightTableName);
           System.out.println("marco");
-          if (containRight && !containLeft) {
-            System.out.println("polo1");
-            QueryOperator costJoin = minCostJoinType(prevMap.get(set), pass1Map.get(leftset),
-                    joinRightColumnNames.get(i), joinLeftColumnNames.get(i));
-            int hello;
-            Set<String> created = new HashSet<String>();
-            created.addAll(set);
-            created.add(leftTableName); //add one thats not in it
-            if (!map.containsKey(created) || map.get(created).estimateIOCost() < costJoin.estimateIOCost()) {
-              System.out.println("added to map add left");
-              map.put(created, costJoin);
-            }//if doesnt exit or cost is less
-          } else if (!containRight && containLeft) {
+          if (!containRight && containLeft) {
             System.out.println("polo2");
             QueryOperator costJoin = minCostJoinType(prevMap.get(set), pass1Map.get(rightset),
                     joinLeftColumnNames.get(i), joinRightColumnNames.get(i));
+//                    joinRightColumnNames.get(i), joinLeftColumnNames.get(i));
             Set<String> created = new HashSet<String>();
             created.addAll(set);
             created.add(rightTableName); //add one thats not in it
@@ -433,6 +426,21 @@ public class QueryPlan {
               map.put(created, costJoin);
             }
           }
+          else if (containRight && !containLeft) {
+            System.out.println("polo1");
+            QueryOperator costJoin = minCostJoinType(prevMap.get(set), pass1Map.get(leftset),
+                    joinRightColumnNames.get(i), joinLeftColumnNames.get(i));
+//            joinLeftColumnNames.get(i), joinRightColumnNames.get(i));
+            int hello;
+            Set<String> created = new HashSet<String>();
+            created.addAll(set);
+            created.add(leftTableName); //add one thats not in it
+            if (!map.containsKey(created) || map.get(created).estimateIOCost() < costJoin.estimateIOCost()) {
+              System.out.println("added to map add left");
+              map.put(created, costJoin);
+            }//if doesnt exit or cost is less
+          }
+
         }
     }
 

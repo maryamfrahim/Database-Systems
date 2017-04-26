@@ -214,6 +214,7 @@ public class TestOptimalQueryPlanJoins {
     }
 
     QueryOperator finalOperator = queryPlan.getFinalOperator();
+    System.out.println(finalOperator.toString());
     String tree = "type: BNLJ\n" +
                   "leftColumn: t1.string\n" +
                   "rightColumn: t2.string\n" +
@@ -228,6 +229,7 @@ public class TestOptimalQueryPlanJoins {
                   "\t(right)\n" +
                   "\ttype: SEQSCAN\n" +
                   "\ttable: t2";
+
     assertEquals(tree, finalOperator.toString());
 
     transaction.end();
