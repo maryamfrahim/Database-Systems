@@ -23,14 +23,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="QueryPlan.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="QueryPlan.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/QueryPlan.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.8101266">
-              <caret line="275" column="18" selection-start-line="275" selection-start-column="18" selection-end-line="275" selection-end-column="18" />
+            <state vertical-scroll-proportion="-6.339286">
+              <caret line="376" column="36" selection-start-line="376" selection-start-column="36" selection-end-line="376" selection-end-column="36" />
               <folding>
-                <element signature="e#14800#14808#0" expanded="true" />
-                <element signature="e#15041#15049#0" expanded="true" />
+                <element signature="e#14950#14958#0" expanded="true" />
+                <element signature="e#15191#15199#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -46,11 +46,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TestOptimalQueryPlanJoins.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="TestOptimalQueryPlanJoins.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/edu/berkeley/cs186/database/query/TestOptimalQueryPlanJoins.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="113" column="41" selection-start-line="113" selection-start-column="41" selection-end-line="113" selection-end-column="41" />
+            <state vertical-scroll-proportion="0.4236111">
+              <caret line="135" column="51" selection-start-line="135" selection-start-column="51" selection-end-line="135" selection-end-column="51" />
               <folding />
             </state>
           </provider>
@@ -60,7 +60,7 @@
         <entry file="file://$PROJECT_DIR$/target/surefire-reports/edu.berkeley.cs186.database.query.TestOptimalQueryPlanJoins.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="12" column="78" selection-start-line="12" selection-start-column="78" selection-end-line="12" selection-end-column="78" />
+              <caret line="26" column="52" selection-start-line="26" selection-start-column="34" selection-end-line="26" selection-end-column="52" />
               <folding />
             </state>
           </provider>
@@ -143,8 +143,8 @@
         <option value="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/IndexScanOperator.java" />
         <option value="$PROJECT_DIR$/target/surefire-reports/edu.berkeley.cs186.database.query.TestQueryPlanCosts.txt" />
         <option value="$PROJECT_DIR$/src/test/java/edu/berkeley/cs186/database/query/TestOptimalQueryPlan.java" />
-        <option value="$PROJECT_DIR$/src/test/java/edu/berkeley/cs186/database/query/TestOptimalQueryPlanJoins.java" />
         <option value="$PROJECT_DIR$/target/surefire-reports/edu.berkeley.cs186.database.query.TestOptimalQueryPlanJoins.txt" />
+        <option value="$PROJECT_DIR$/src/test/java/edu/berkeley/cs186/database/query/TestOptimalQueryPlanJoins.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/QueryPlan.java" />
       </list>
     </option>
@@ -871,20 +871,11 @@
       <option name="number" value="Default" />
       <updated>1492216213197</updated>
       <workItem from="1492216217947" duration="61179000" />
-      <workItem from="1493179103648" duration="8650000" />
+      <workItem from="1493179103648" duration="9221000" />
     </task>
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestOptimalQueryPlanJoins_testSimpleJoinIterator - 2017.04.26 at 13h 08m 50s.xml">
-      <configuration name="TestOptimalQueryPlanJoins.testSimpleJoinIterator" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestOptimalQueryPlanJoins_testSimpleJoinIterator - 2017.04.26 at 13h 17m 18s.xml">
-      <configuration name="TestOptimalQueryPlanJoins.testSimpleJoinIterator" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestOptimalQueryPlanJoins_testSimpleJoinIterator - 2017.04.26 at 13h 17m 32s.xml">
-      <configuration name="TestOptimalQueryPlanJoins.testSimpleJoinIterator" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="TestOptimalQueryPlanJoins_testSimpleJoinIterator - 2017.04.26 at 13h 20m 51s.xml">
       <configuration name="TestOptimalQueryPlanJoins.testSimpleJoinIterator" configurationId="JUnit" />
     </history-entry>
@@ -906,9 +897,18 @@
     <history-entry file="TestOptimalQueryPlanJoins_testSimpleJoinIterator - 2017.04.26 at 13h 41m 57s.xml">
       <configuration name="TestOptimalQueryPlanJoins.testSimpleJoinIterator" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="TestOptimalQueryPlanJoins_testSimpleJoinIterator - 2017.04.26 at 13h 54m 45s.xml">
+      <configuration name="TestOptimalQueryPlanJoins.testSimpleJoinIterator" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestOptimalQueryPlanJoins_testSimpleJoinIterator - 2017.04.26 at 13h 55m 12s.xml">
+      <configuration name="TestOptimalQueryPlanJoins.testSimpleJoinIterator" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestOptimalQueryPlanJoins_testSimpleJoinIterator - 2017.04.26 at 13h 57m 13s.xml">
+      <configuration name="TestOptimalQueryPlanJoins.testSimpleJoinIterator" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="69829000" />
+    <option name="totallyTimeSpent" value="70400000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1" y="1" width="1364" height="726" extended-state="0" />
@@ -921,8 +921,8 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21440262" sideWeight="0.5030257" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.14417177" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25632378" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32546374" sideWeight="0.4969743" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4688027" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17875211" sideWeight="0.4969743" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28757668" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -991,8 +991,8 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#14800#14808#0" expanded="true" />
-            <element signature="e#15041#15049#0" expanded="true" />
+            <element signature="e#14950#14958#0" expanded="true" />
+            <element signature="e#15191#15199#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1182,14 +1182,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/target/surefire-reports/edu.berkeley.cs186.database.query.TestOptimalQueryPlanJoins.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="12" column="78" selection-start-line="12" selection-start-column="78" selection-end-line="12" selection-end-column="78" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/BNLJOperator.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1206,11 +1198,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/edu/berkeley/cs186/database/query/TestOptimalQueryPlanJoins.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/QueryPlan.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="113" column="41" selection-start-line="113" selection-start-column="41" selection-end-line="113" selection-end-column="41" />
-          <folding />
+        <state vertical-scroll-proportion="-6.339286">
+          <caret line="376" column="36" selection-start-line="376" selection-start-column="36" selection-end-line="376" selection-end-column="36" />
+          <folding>
+            <element signature="e#14950#14958#0" expanded="true" />
+            <element signature="e#15191#15199#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1222,14 +1217,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/query/QueryPlan.java">
+    <entry file="file://$PROJECT_DIR$/target/surefire-reports/edu.berkeley.cs186.database.query.TestOptimalQueryPlanJoins.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8101266">
-          <caret line="275" column="18" selection-start-line="275" selection-start-column="18" selection-end-line="275" selection-end-column="18" />
-          <folding>
-            <element signature="e#14800#14808#0" expanded="true" />
-            <element signature="e#15041#15049#0" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="0.0">
+          <caret line="26" column="52" selection-start-line="26" selection-start-column="34" selection-end-line="26" selection-end-column="52" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/edu/berkeley/cs186/database/query/TestOptimalQueryPlanJoins.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4236111">
+          <caret line="135" column="51" selection-start-line="135" selection-start-column="51" selection-end-line="135" selection-end-column="51" />
+          <folding />
         </state>
       </provider>
     </entry>

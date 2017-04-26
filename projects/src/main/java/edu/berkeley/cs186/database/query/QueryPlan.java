@@ -268,11 +268,11 @@ public class QueryPlan {
         String col = this.selectColumnNames.get(i); //each of the select things
         PredicateOperator po = this.selectOperators.get(i);
         DataBox db = this.selectDataBoxes.get(i);
-//        source = new SelectOperator(source, col, po, db);
-        this.finalOperator = new SelectOperator(source, col, po, db);
+        source = new SelectOperator(source, col, po, db);
+//        this.finalOperator = new SelectOperator(source, col, po, db);
       }
     }
-    source = this.finalOperator;
+//    source = this.finalOperator;
     return source;
   }
 
@@ -362,15 +362,19 @@ public class QueryPlan {
     GraceHashOperator gn = new GraceHashOperator(leftOp, rightOp, leftColumn, rightColumn, this.transaction);
     if (bn.estimateIOCost() < minCost) {
       minOp = bn;
+      minCost = bn.estimateIOCost();
     }
     if (sn.estimateIOCost() < minCost) {
       minOp = sn;
+      minCost = sn.estimateIOCost();
     }
     if (pn.estimateIOCost() < minCost) {
       minOp = pn;
+      minCost = pn.estimateIOCost();
     }
     if (gn.estimateIOCost() < minCost) {
       minOp = gn;
+      minCost = gn.estimateIOCost();
     }
     return minOp;
   }

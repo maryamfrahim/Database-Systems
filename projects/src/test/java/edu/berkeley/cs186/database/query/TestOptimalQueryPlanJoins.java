@@ -119,6 +119,7 @@ public class TestOptimalQueryPlanJoins {
                   "\t(right)\n" +
                   "\ttype: SEQSCAN\n" +
                   "\ttable: t2";
+    System.out.println(finalOperator.toString());
     assertTrue(finalOperator.toString().equals(tree) || finalOperator.toString().equals(tree2));
 
     transaction.end();
