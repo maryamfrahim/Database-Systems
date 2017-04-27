@@ -84,8 +84,6 @@ public class TestIntHistogram {
     for (int i = 0; i < 120; i++) {
       histogram.addValue(i);
     }
-    System.out.println(120);
-    System.out.println(histogram.getEntriesInRange(0, 120));
     assertEquals(120, histogram.getEntriesInRange(0, 120));
   }
 
@@ -109,7 +107,6 @@ public class TestIntHistogram {
     for (int i = 0; i < 15; i++) {
       histogram.addValue(i);
     }
-    System.out.println(histogram.getEntriesInRange(0,10));
     assertEquals(10, histogram.getEntriesInRange(0,10));
   }
 
