@@ -366,19 +366,19 @@ public class QueryPlan {
     GraceHashOperator gn = new GraceHashOperator(leftOp, rightOp, leftColumn, rightColumn, this.transaction);
     if (bn.estimateIOCost() < minCost) {
       minOp = bn;
-      minCost = bn.estimateIOCost();
+      minCost = bn.getIOCost();
     }
     if (sn.estimateIOCost() < minCost) {
       minOp = sn;
-      minCost = sn.estimateIOCost();
+      minCost = sn.getIOCost();
     }
     if (pn.estimateIOCost() < minCost) {
       minOp = pn;
-      minCost = pn.estimateIOCost();
+      minCost = pn.getIOCost();
     }
     if (gn.estimateIOCost() < minCost) {
       minOp = gn;
-      minCost = gn.estimateIOCost();
+      minCost = gn.getIOCost();
     }
     return minOp;
   }
