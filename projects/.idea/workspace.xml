@@ -37,20 +37,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TestOptimalQueryPlanJoins.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="TestOptimalQueryPlanJoins.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/edu/berkeley/cs186/database/query/TestOptimalQueryPlanJoins.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.6551723">
-              <caret line="220" column="41" selection-start-line="220" selection-start-column="41" selection-end-line="220" selection-end-column="41" />
+            <state vertical-scroll-proportion="0.3846154">
+              <caret line="216" column="45" selection-start-line="216" selection-start-column="45" selection-end-line="216" selection-end-column="45" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="IntHistogram.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="IntHistogram.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/table/stats/IntHistogram.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.3323077">
+            <state vertical-scroll-proportion="-3.724138">
               <caret line="226" column="7" selection-start-line="226" selection-start-column="4" selection-end-line="226" selection-end-column="7" />
               <folding />
             </state>
@@ -1091,7 +1091,7 @@
       <option name="number" value="Default" />
       <updated>1492216213197</updated>
       <workItem from="1492216217947" duration="61179000" />
-      <workItem from="1493179103648" duration="25859000" />
+      <workItem from="1493179103648" duration="26290000" />
     </task>
     <servers />
   </component>
@@ -1128,7 +1128,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="87038000" />
+    <option name="totallyTimeSpent" value="87469000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1" y="1" width="1364" height="726" extended-state="0" />
@@ -1428,14 +1428,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/edu/berkeley/cs186/database/query/TestOptimalQueryPlanJoins.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.6551723">
-          <caret line="220" column="41" selection-start-line="220" selection-start-column="41" selection-end-line="220" selection-end-column="41" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/edu/berkeley/cs186/database/table/stats/TestIntHistogram.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-1.1607143">
@@ -1446,8 +1438,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/berkeley/cs186/database/table/stats/IntHistogram.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3323077">
+        <state vertical-scroll-proportion="-3.724138">
           <caret line="226" column="7" selection-start-line="226" selection-start-column="4" selection-end-line="226" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/edu/berkeley/cs186/database/query/TestOptimalQueryPlanJoins.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3846154">
+          <caret line="216" column="45" selection-start-line="216" selection-start-column="45" selection-end-line="216" selection-end-column="45" />
           <folding />
         </state>
       </provider>
